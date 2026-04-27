@@ -1,0 +1,190 @@
+GIOP v3.0 :: KINGDOM 00 — THE SCIENCE OF LIGHT
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_00_Science_of_Light.sci
+
+WHAT IS THIS KINGDOM
+The sovereign physics domain that defines light before it enters any sensor.
+It contains the dual nature of light (wave and photon), the laws governing
+its propagation, its quantitative measurement (radiometry and photometry),
+its spectral decomposition into color, and its interaction with surfaces
+through reflectance and scattering. It is the pre-sensor truth layer on
+which all subsequent Kingdoms depend.
+
+WHY IT EXISTS
+To replace fragmented textbook knowledge with a single, mathematically
+auditable source of light truth. To ensure that every downstream transform
+from IDT to ODT is grounded in physical law rather than empirical guesswork.
+To unify the language of physical light and perceived light, enabling
+accurate HDR capture, color reproduction, and physically plausible
+rendering.
+
+HOW IT IS STRUCTURED
+Six sub-domains in a causal chain: Nature of Light, Transport, Measurement,
+Spectral Formation, Surface Interaction, and Scattering Media. Each
+sub-domain provides the defining equations and their domain of validity,
+with explicit cross-references to interlock standards (CIE, ISO, SMPTE).
+
+WHERE IT IS APPLIED
+Camera sensor design (spectral sensitivity, OLPF specification), lens
+coating optimization, radiometric calibration of light sources, derivation
+of color matching functions, BRDF measurement for material databases,
+physically based rendering engines, and display luminance specification.
+
+WHO USES IT
+Imaging scientists, optical engineers, pipeline TDs, and color scientists
+who require the physical truth of light before any camera or display
+interpretation.
+
+WHAT PROBLEM IT SOLVES
+Eliminates the guesswork of light behavior in digital imaging. Provides
+the exact equation for why a camera sees a specular highlight differently
+than the human eye. Enables unambiguous specification of scene luminance,
+reflectance, and color stimulus, forming the basis for all ACES and HDR
+standards. Prevents metamerism errors by anchoring to spectral radiance
+rather than tristimulus alone.
+
+1. NATURE OF LIGHT
+Light is electromagnetic radiation within the wavelength range 380 nm to
+750 nm. It exhibits wave-particle duality.
+
+Photon energy: E = h * f = (h * c) / lambda
+where h = 6.62607015e-34 J·s (Planck constant)
+      c = 2.99792458e8 m/s (speed of light in vacuum)
+      lambda is wavelength in meters
+
+Wave model: a transverse electromagnetic wave satisfying Maxwell's equations.
+In free space, the electric field E and magnetic field B are perpendicular
+to each other and to the direction of propagation k. The wave equation:
+del^2 E = (1/c^2) * d^2E/dt^2.
+
+Polarization: describes the orientation of the electric field vector.
+Linear, circular, or elliptical polarization states are defined by the
+phase difference delta between orthogonal components.
+
+2. LIGHT TRANSPORT
+Light interacts with boundaries between media of different refractive
+indices n.
+
+Snell's law of refraction: n1 * sin(theta1) = n2 * sin(theta2)
+Fresnel equations for reflection and transmission coefficients (s and p
+polarizations):
+Rs = |(n1*cos(theta1) - n2*cos(theta2)) / (n1*cos(theta1) + n2*cos(theta2))|^2
+Rp = |(n1*cos(theta2) - n2*cos(theta1)) / (n1*cos(theta2) + n2*cos(theta1))|^2
+Transmittance T = 1 - R for each polarization.
+
+Total internal reflection occurs when n1 > n2 and theta1 > critical angle
+theta_c = arcsin(n2/n1).
+
+Scattering: Rayleigh scattering cross section for particles much smaller
+than lambda: sigma_R ~ 1/lambda^4. This explains blue sky and red sunset.
+Mie scattering applies to larger particles (dust, water droplets) and is
+forward-peaked, governed by complex refractive index and size parameter.
+
+Diffraction: bending of light around edges, described by the
+Huygens-Fresnel principle. Single-slit intensity pattern:
+I(theta) = I0 * (sin(beta)/beta)^2, where beta = (pi * a * sin(theta))/lambda,
+a is slit width.
+
+3. RADIOMETRY AND PHOTOMETRY
+Radiometry measures physical radiant energy. Photometry weights radiance
+by the human visual sensitivity function V(lambda).
+
+Key radiometric quantities:
+Radiant flux Phi_e (watts), Irradiance E_e (W/m^2), Radiance L_e
+(W / (sr·m^2)). Radiance is the fundamental quantity for imaging:
+L_e = d^2 Phi_e / (dA * cos(theta) * d_omega).
+
+Photometric equivalents: Luminous flux (lumen, lm), Illuminance (lux = lm/m^2),
+Luminance L_v (cd/m^2 = nit). The spectral luminous efficacy function K_m =
+683 lm/W at 555 nm (photopic peak). For any spectral distribution:
+L_v = 683 * integral( L_e,lambda(lambda) * V(lambda) d_lambda ), where V(lambda)
+is the CIE 1924 photopic luminosity function (corresponds to 2° observer).
+
+Scotopic vision uses V'(lambda) with peak at 507 nm and K'_m = 1700 lm/W.
+
+Conversion between illuminance and luminance for a Lambertian reflector of
+reflectance rho: L_v = (rho / pi) * E_v.
+
+4. SPECTRAL POWER DISTRIBUTION AND COLOR FORMATION
+The Spectral Power Distribution (SPD) S(lambda) fully describes a light
+source or reflected color. The CIE XYZ tristimulus values are obtained by
+integrating the SPD with the CIE 1931 2° standard observer color matching
+functions x_bar, y_bar, z_bar:
+
+X = k * integral( S(lambda) * x_bar(lambda) d_lambda )
+Y = k * integral( S(lambda) * y_bar(lambda) d_lambda )
+Z = k * integral( S(lambda) * z_bar(lambda) d_lambda )
+where k is a normalization constant (e.g., 683 lm/W for absolute
+photometric values, or normalized so Y=100 for a perfect white diffuser).
+
+The chromaticity coordinates are:
+x = X / (X + Y + Z), y = Y / (X + Y + Z).
+
+Blackbody (Planckian) radiator: spectral radiance B_lambda(T) =
+(2*h*c^2 / lambda^5) * 1 / (e^(h*c/(lambda*k*T)) - 1), where k is Boltzmann's
+constant. The locus of blackbody colors in the xy chromaticity diagram
+forms the Planckian locus. Correlated Color Temperature (CCT) is defined
+by the closest point on this locus.
+
+Metamerism: two different SPDs that produce the same XYZ values for a given
+observer. This is the foundation of all color reproduction, and its failure
+under different illuminants is a critical problem solved by spectral
+modeling.
+
+5. SURFACE-LIGHT INTERACTION
+The Bidirectional Reflectance Distribution Function (BRDF) describes how
+light reflects from an opaque surface:
+
+f_r(omega_i, omega_r) = dL_r(omega_r) / (L_i(omega_i) * cos(theta_i) * d_omega_i)
+
+Physically valid BRDFs satisfy:
+- Reciprocity: f_r(omega_i, omega_r) = f_r(omega_r, omega_i)
+- Energy conservation: for all omega_i, integral over hemisphere of
+  f_r * cos(theta_r) d_omega_r <= 1
+
+Common microfacets models: Cook-Torrance:
+f_r = (D * G * F) / (4 * (N·L) * (N·V))
+where D is the normal distribution function (GGX/Trowbridge-Reitz),
+G is the geometric attenuation factor, and F is the Fresnel term.
+
+For subsurface scattering, the BSSRDF S(x_i, omega_i; x_o, omega_o) is
+required. Dipole diffusion approximation for a semi-infinite homogeneous
+medium:
+R(r) = (alpha' / (4*pi)) * [ (sigma_tr * d_r + 1) * exp(-sigma_tr * d_r) /
+  (sigma_t' * d_r^3) + (sigma_tr * d_v + 1) * exp(-sigma_tr * d_v) /
+  (sigma_t' * d_v^3) ]
+where alpha' is the reduced albedo, sigma_tr is the effective transport
+coefficient, d_r and d_v are distances to the real and virtual point sources.
+
+This model is essential for rendering human skin, marble, and translucent
+materials.
+
+6. LIGHT TRANSPORT IN PARTICIPATING MEDIA
+For volumes with absorption and scattering, the Radiative Transfer Equation
+(RTE) governs radiance L(x, omega) along a path s:
+
+dL(x, omega) / ds = -sigma_a L - sigma_s L + sigma_s * integral_{4pi}
+  f_p(omega' -> omega) L(x, omega') d_omega' + epsilon(x, omega)
+
+Where sigma_a and sigma_s are absorption and scattering coefficients,
+f_p is the phase function, and epsilon is volume emission.
+
+The standard volume rendering equation used in NeRF and path tracing is
+the integral form:
+C(r) = integral_{t_n}^{t_f} T(t) * sigma(r(t)) * c(r(t)) dt
+where T(t) = exp( -integral_{t_n}^{t} sigma(r(s)) ds ) is transmittance.
+
+Henyey-Greenstein phase function: p(cos theta) = (1 - g^2) /
+  (4*pi * (1 + g^2 - 2g*cos theta)^{3/2}), where g is the asymmetry parameter
+  (g=0 isotropic, g>0 forward scattering).
+
+7. POLARIZATION AND ITS ROLE IN IMAGING
+Polarization by reflection (Brewster's angle): theta_B = arctan(n2/n1),
+at which p-polarized light is fully transmitted. Polarization filters
+exploit this to reduce glare. Stokes parameters (S0, S1, S2, S3) fully
+describe the polarization state, and Mueller matrices transform them
+through optical elements. This is critical for lens coating design and
+polarimetric imaging.
+
+END OF KINGDOM 00
