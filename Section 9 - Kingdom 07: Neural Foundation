@@ -1,0 +1,228 @@
+GIOP v3.0 :: KINGDOM 07 — NEURAL FOUNDATION
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_07_Neural_Foundation.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines neural representations of scenes and
+the AI-driven rendering techniques that reconstruct or synthesize
+photo-real images from those representations. It contains Neural
+Radiance Fields (NeRF), 3D Gaussian Splatting (3DGS), neural
+supersampling and denoising (DLSS Ray Reconstruction), neural
+video compression codecs, 4D dynamic scene representations, and
+neural materials and textures. It is the engine that translates
+learned scene parameters into final pixels, bridging the gap
+between computer vision and production rendering.
+
+WHY IT EXISTS
+Classical rendering computes images from explicit geometry,
+materials, and lights. Neural rendering learns these directly
+from images, enabling photo-realistic novel view synthesis,
+real-time global illumination, and unprecedented compression
+ratios. This kingdom provides the exact mathematical definitions
+of these representations and their rendering equations, ensuring
+that neural renders are physically consistent, temporally stable,
+and integrable into existing GIOP pipelines alongside traditional
+path tracers and camera captures.
+
+HOW IT IS STRUCTURED
+Six sub-domains: Neural Radiance Fields (NeRF), 3D Gaussian
+Splatting (3DGS), Neural Supersampling and Denoising (DLSS RR),
+Neural Video Compression, 4D Dynamic Neural Representations,
+and Neural Materials. Each section provides the core algorithms,
+training objectives, and the interface that allows GIOP to treat
+a neural representation as a standard scene asset.
+
+WHERE IT IS APPLIED
+Virtual production (real-time novel view synthesis on LED volumes),
+VFX postvis and previs, archival 3D capture of sets and actors,
+AI upscaling for streaming and home video, real-time path tracing
+denoising (NVIDIA DLSS, AMD FSR 4), neural compression for IMF
+and OTT delivery, and dynamic scene reconstruction for volumetric
+video.
+
+WHO USES IT
+Rendering engineers, machine learning researchers in neural
+rendering, pipeline TDs integrating NeRF/3DGS into VFX workflows,
+and anyone leveraging learned scene representations for production.
+
+WHAT PROBLEM IT SOLVES
+Replaces sparse photogrammetry with dense, view-consistent neural
+reconstructions. Provides the mathematical guarantee that a neural
+render of a known scene, under known illumination, matches a real
+photograph within a specified error bound. Eliminates temporal
+flicker and ghosting in neural upscalers through rigorous temporal
+consistency constraints. Enables neural compression that preserves
+color volume and dynamic range exactly as specified by the GIOP
+display management chain.
+
+1. NEURAL RADIANCE FIELDS (NeRF)
+NeRF represents a scene as a continuous 5D function that maps a
+3D position (x,y,z) and a 2D viewing direction (theta, phi) to an
+emitted color (R,G,B) and a volume density (sigma).
+
+Scene Function:
+  F_theta: (x, y, z, theta, phi) -> (R, G, B, sigma)
+
+The function is parameterized by a multi-layer perceptron (MLP)
+with weights theta. Positional encoding of the input coordinates
+using sin/cos functions at multiple frequencies enables the MLP
+to capture high-frequency detail.
+
+Volume Rendering Integral:
+For a camera ray r(t) = o + t * d, the expected color C(r) is
+computed by sampling points along the ray and alpha-compositing:
+
+  C(r) = sum_{i=1}^{N} T_i * alpha_i * c_i
+
+  T_i = exp( -sum_{j=1}^{i-1} sigma_j * delta_j )
+
+  alpha_i = 1 - exp( -sigma_i * delta_i )
+
+  delta_i = t_{i+1} - t_i
+
+Hierarchical sampling: a coarse network samples uniformly, then a
+fine network samples more densely in high-density regions.
+
+Training loss: L2 photometric loss between rendered and ground-truth
+pixel colors.
+
+GIOP integration: a trained NeRF is treated as a scene asset. Its
+output is linear radiance in ACES2065-1. GIOP provides a standard
+camera interface to query rays through the NeRF, applying the same
+lens distortion and vignetting models as physical cameras.
+
+2. 3D GAUSSIAN SPLATTING (3DGS)
+3DGS represents a scene as a collection of anisotropic 3D Gaussians,
+each defined by a mean position mu, a covariance matrix Sigma, an
+opacity alpha, and a view-dependent color encoded via spherical
+harmonics (SH) up to degree 3.
+
+Representation:
+  G(x) = exp( -1/2 * (x - mu)^T * Sigma^{-1} * (x - mu) )
+
+  Sigma = R * S * S^T * R^T
+
+where R is a rotation matrix (parameterized as a quaternion) and
+S is a diagonal scaling matrix.
+
+Rendering (EWA splatting with alpha-blending):
+  1. Project each 3D Gaussian to 2D: the projected 2D covariance
+     is Sigma_2D = J * W * Sigma * W^T * J^T, where J is the
+     Jacobian of the projection and W is the viewing transform.
+  2. Sort Gaussians by depth.
+  3. Front-to-back alpha compositing:
+
+     C_pixel = sum_{i} c_i * alpha_i * T_i
+
+     T_i = prod_{j<i} (1 - alpha_j)
+
+     alpha_i = o_i * exp( -1/2 * (x - mu_2D)^T * Sigma_2D^{-1} * (x - mu_2D) )
+
+Training: optimization of position, covariance, opacity, and SH
+coefficients via L1 loss and a D-SSIM term against training images.
+Adaptive density control: Gaussians are cloned or split in under-
+reconstructed regions and pruned where opacity is low.
+
+Performance: 30+ FPS at 1080p on a consumer GPU; training converges
+in 30-60 minutes per scene. 3DGS is the preferred real-time neural
+representation in GIOP for virtual production applications.
+
+3. NEURAL SUPERSAMPLING AND DENOISING (DLSS RR)
+DLSS Ray Reconstruction (NVIDIA) and equivalent neural denoisers
+reconstruct a clean, high-resolution image from a noisy,
+undersampled path-traced input.
+
+Architecture (DLSS 4 Ray Reconstruction):
+  Encoder: U-Net with residual blocks, 4 downscale levels.
+  Aggregator: Transformer with self-attention on 16x16 spatial
+    patches, cross-attention fusing encoder features.
+  Decoder: reconstruction head outputting supersampled color.
+
+Inputs:
+  - Current frame (noisy, low sample count path trace).
+  - Previous frame (warped via motion vectors).
+  - Motion vectors, depth, surface normals, and albedo (from
+    rasterization or path tracing G-buffer).
+
+Loss Function:
+  L_total = L1(C_pred, C_ref) + lambda_LPIPS * LPIPS(C_pred, C_ref)
+            + lambda_temp * temporal_consistency_loss
+
+Temporal consistency loss is computed by warping the predicted
+output of the previous frame using optical flow and enforcing
+coherence with the current prediction.
+
+GIOP mandates that any neural denoiser used in a mastering pipeline
+must pass a temporal stability test: the denoised output of a
+static scene must exhibit zero flicker (measured as the standard
+deviation of the pixel value over time) below the JND threshold
+defined by the ST.2084 PQ encoding.
+
+4. NEURAL VIDEO COMPRESSION
+Neural codecs replace or augment traditional block-based transforms
+with neural networks.
+
+VVC Neural Loop Filter (2026): a CNN processes each reconstructed
+block, conditioned on the quantization parameter (QP), to reduce
+coding artifacts. The filter is applied in-loop, meaning the
+filtered frame is used as a reference for subsequent frames,
+improving prediction.
+
+End-to-end neural codecs: an autoencoder with a learned entropy
+model. The encoder produces a quantized latent representation;
+the decoder reconstructs the frame. Rate-distortion optimization
+is performed with a Lagrangian:
+  J = D + lambda * R
+where D is a perceptual distortion metric (e.g., LPIPS, VMAF) and
+R is the estimated bitrate.
+
+GIOP defines a neural codec container that embeds:
+  - The trained decoder weights (or a URI to a standardized model).
+  - The compressed latent stream.
+  - A post-decode color transform to convert from the codec's
+    internal color space to ACES2065-1.
+
+5. 4D DYNAMIC NEURAL REPRESENTATIONS
+Extending NeRF and 3DGS to dynamic scenes (3D + time).
+
+4D Gaussian Splatting (2026): each Gaussian acquires a temporal
+component. Motion is modeled either as a learned trajectory per
+Gaussian or via a deformation field parameterized by a second MLP.
+
+MotionScale and Edge4DGS frameworks: enforce geometric consistency
+by aligning the 3D flow of Gaussian centers with the 2D optical
+flow derived from training views. This prevents ghosting and
+ensures that moving edges remain sharp in all synthesized views.
+
+HDR-NSFF (Neural Scene Flow Fields): models the dynamic scene as
+a continuous function of space, time, and view. Outputs HDR
+radiance (linear, up to 10 000 cd/m^2), 3D scene flow, and
+geometry. Enables re-timing, stabilization, and illumination
+adjustment in post.
+
+GIOP normalizes all dynamic neural representations to a common
+temporal coordinate frame based on SMPTE timecode, allowing
+frame-accurate integration with editorial and VFX pipelines.
+
+6. NEURAL MATERIALS AND TEXTURES
+Neural representations can model complex surface appearance more
+compactly than explicit maps.
+
+Neural BRDF: a small MLP takes (omega_i, omega_o, spatial_coord)
+and outputs RGB reflectance. Trained from multi-light captures.
+Guarantees reciprocity and energy conservation by architectural
+constraints (e.g., enforcing the Helmholtz condition).
+
+Neural Texture: a feature vector field on a 3D surface or in a
+2D UV parameterization. A decoder network converts the feature
+vector to a spatially varying BRDF. This compresses multi-layer
+materials (clear coat, subsurface, metallic flakes) into a latent
+space suitable for real-time rendering.
+
+GIOP certification for neural materials requires passing the
+white furnace test (Kingdom 04, Section 6) and the skin tone
+fairness validation (Kingdom 03, Section 8) when applied to
+human character models.
+
+END OF KINGDOM 07
