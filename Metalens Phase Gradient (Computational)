@@ -1,0 +1,40 @@
+GIOP v3.0 :: LENSES — MetaLens Phase Gradient (Computational)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/computational/MetaLens_Phase_Gradient.opt
+
+WHAT IS THIS FILE
+The certified optical model for a flat meta‑lens that uses sub‑wavelength
+nanostructures to impart a phase gradient, focusing light without bulk glass.
+It defines the phase profile φ(r) = (2π/λ)(f – √(r² + f²)) and the
+achromatic meta‑lens condition for broadband focusing.
+
+WHY IT EXISTS
+Meta‑lenses are entering commercial production (2026). They promise wafer‑thin
+cameras. GIOP must provide the normative equations so that imaging pipelines
+can simulate and correct the unique aberrations of meta‑lenses.
+
+HOW IT WORKS
+- Phase profile for a hyperbolic metalens: φ(r) = (2π/λ)(f – √(r²+f²)).
+- Chromatic dispersion: focal length f(λ) ∝ 1/λ. Achromatic metalenses
+  combine multiple nanofin geometries to satisfy φ(r,λ) = constant for
+  a set of wavelengths.
+- Efficiency η = transmitted_power/incident_power > 60% over 450–650 nm
+  for current generation.
+- Point spread function and MTF derived from the phase profile via Fourier
+  optics.
+
+WHERE IT IS DEPLOYED
+Smartphone cameras (2026+), AR glasses, medical endoscopes.
+GIOP uses this model to build IDTs for meta‑lens cameras.
+
+WHO USES IT
+L1 Architects specifying next‑gen sensors; L2 Engineers building software
+correction for meta‑lens aberrations.
+
+WHAT PROBLEM IT SOLVES
+Provides the first open standard for meta‑lens optical characterization,
+enabling software to correct strong chromatic focal shift and field curvature
+that differ fundamentally from refractive lenses.
+
+END OF MetaLens_Phase_Gradient.opt
