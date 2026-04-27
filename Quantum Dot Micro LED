@@ -1,0 +1,61 @@
+GIOP v3.0 :: NEW TECHNOLOGY — T/SUCA 053-2026 (Quantum Dot MicroLED)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /displays/Quantum_Dot_MicroLED.mon
+
+WHAT IS THIS FILE
+The certified standard reference for T/SUCA 053-2026, the world's first
+technical specification for photoluminescent quantum dot Mini/MicroLED
+display terminals. It defines the optical performance parameters, colour
+gamut, luminance, and reliability requirements for QD-enhanced MicroLED
+displays.
+
+WHY IT EXISTS
+Quantum dot Mini/MicroLED displays represent the convergence of two
+transformative technologies. Without a standard, manufacturers and
+content creators lack a common language for performance. This standard,
+published in March 2026 by the Shenzhen 8K UHD Video Industry
+Cooperation Alliance, fills a global gap. GIOP integrates it as the
+reference display model for next-generation emissive displays.
+
+HOW IT WORKS
+1. Technology Principle:
+   Photoluminescent quantum dots (QDs) absorb blue MicroLED emission
+   (~450 nm) and re-emit at red (~630 nm) and green (~530 nm). The QD
+   layer is integrated directly with the MicroLED array (in-situ
+   integration).
+
+2. Color Gamut Requirements:
+   DCI-P3 coverage: ≥ 99%
+   BT.2020 coverage: ≥ 90%
+   White point: D65 (tolerance Δu'v' < 0.003)
+
+3. Luminance:
+   Peak luminance: ≥ 1000 cd/m² (HDR)
+   Full-screen sustained: ≥ 500 cd/m²
+   Black level: ≤ 0.0005 cd/m²
+
+4. Photoluminescence Efficiency:
+   η_PL = photons_emitted / photons_absorbed ≥ 0.85
+   QD lifetime: L70 > 30,000 hours at 50°C.
+
+5. Measurement Methods:
+   Luminance and colour measured using a spectroradiometer at 25°C.
+   Angular colour shift Δu'v' < 0.005 at ±60° viewing angle.
+
+WHERE IT IS DEPLOYED
+- Next-generation consumer TVs and professional mastering monitors
+- Virtual production LED walls
+- AR/VR microdisplays
+- GIOP HDR mastering displays.
+
+WHO USES IT
+Display manufacturers; L2 Engineers building ODTs for QD-MicroLED
+displays; L3 Colorists mastering for premium emissive displays.
+
+WHAT PROBLEM IT SOLVES
+Establishes the first globally recognised quality benchmark for QD-
+MicroLED displays. Enables GIOP to define ODTs that exploit the full
+colour volume and luminance of this emerging display technology.
+
+END OF Quantum_Dot_MicroLED.mon
