@@ -1,0 +1,67 @@
+GIOP v3.0 :: FORMULAS — Geometry and Motion
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Geometry_Motion.sci
+
+WHAT IS THIS FILE
+A certified collection of formulas describing image‑space geometry and
+motion. It includes linear motion blur, the 180‑degree shutter rule, the
+Nyquist sampling theorem, quantum efficiency, saturation‑based ISO, the
+path tracing rendering equation, subsurface scattering (BSSRDF), and
+effective motion blur under stabilization.
+
+WHY IT EXISTS
+Motion blur and geometric transformations are fundamental to VFX
+compositing, camera tracking, and virtual production. This file provides
+a single source of truth for the equations that govern these phenomena.
+
+HOW IT WORKS
+Each equation is defined with its parameters and typical application
+context. Where applicable, cross‑references to the relevant Kingdom
+are given.
+
+WHERE IT IS DEPLOYED
+- Motion blur simulation and removal
+- Multi‑view geometry and structure‑from‑motion
+- Sensor calibration (QE, ISO)
+- Path tracing and global illumination.
+
+WHO USES IT
+L2 VFX Engineers; L1 Architects designing rendering and tracking
+algorithms.
+
+WHAT PROBLEM IT SOLVES
+Eliminates discrepancies in motion blur and geometric formulas that
+can cause misalignment between CGI and live‑action plates.
+
+1. Motion Blur (Linear Subject)
+   Blur_length = V * T
+   V = subject velocity on image plane (px/s), T = exposure time (s).
+
+2. Cinematic Motion Blur (180° Shutter)
+   T = 1 / (2 * Frame_Rate)
+   Blur_length = V / (2 * Frame_Rate)
+
+3. Nyquist Sampling Theorem
+   f_s > 2 * B
+   where f_s = sampling frequency, B = signal bandwidth.
+
+4. Quantum Efficiency (QE)
+   η(λ) = n_electron / n_photon
+
+5. Saturation‑based ISO
+   S_sat = 78 / H_sat
+   where H_sat = exposure (lux·s) that saturates the sensor.
+
+6. Path Tracing (Rendering Equation)
+   L_o(x, ω_o) = L_e(x, ω_o) + ∫_Ω f_r L_i (ω_i · n) dω_i
+
+7. Subsurface Scattering (BSSRDF)
+   L_o(x_o, ω_o) = ∫_A ∫_Ω S L_i (ω_i · n) dω_i dA
+
+8. Effective Motion Blur with Stabilization
+   Blur_effective = |V_subject – V_compensation| * T
+   where V_compensation is the camera compensation velocity from OIS
+   or gimbal.
+
+END OF Geometry_Motion.sci
