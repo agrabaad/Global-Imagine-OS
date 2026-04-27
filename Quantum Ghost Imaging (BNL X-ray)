@@ -1,0 +1,66 @@
+GIOP v3.0 :: NEW TECHNOLOGY — Quantum Ghost Imaging (BNL X-ray)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /kingdoms/appendix/Quantum_Ghost_Imaging.sci
+
+WHAT IS THIS FILE
+The certified reference for the quantum ghost imaging method developed
+at Brookhaven National Laboratory (BNL), published February 2026. It
+defines the principle of using quantum-entangled X-ray photon pairs for
+imaging, where one photon interacts with the sample while its entangled
+partner carries the imaging information without direct interaction.
+
+WHY IT EXISTS
+This method enables high-resolution X-ray imaging with significantly
+reduced radiation dose, which is critical for medical imaging and
+materials science. GIOP includes it as a foundational imaging principle
+that leverages quantum entanglement.
+
+HOW IT WORKS
+1. Entangled Photon Pair Generation:
+   X-ray photon pairs are generated via spontaneous parametric down-
+   conversion (SPDC) in a non-linear crystal at the NSLS-II synchrotron.
+   Each pair consists of a signal photon (λ_s) and an idler photon (λ_i)
+   with correlated properties.
+
+2. Ghost Imaging Measurement:
+   The signal photon passes through the sample. The idler photon never
+   interacts with the sample but is measured by a spatially resolving
+   detector. The coincidence count between the two detectors at
+   positions (r_s, r_i) is:
+     G(r_s, r_i) = ⟨ I_s(r_s) * I_i(r_i) ⟩
+
+3. Image Reconstruction:
+   The image of the sample T(r) is reconstructed from the second-order
+   correlation function:
+     T(r) ∝ G(r, r) - ⟨I_s⟩⟨I_i⟩
+   where the subtraction removes the background. The resolution is
+   determined by the idler detector pixel size and the correlation
+   width of the entangled pair.
+
+4. Dose Reduction:
+   Because the idler photon carries imaging information without
+   interacting with the sample, fewer signal photons are needed for a
+   given SNR. Theoretical dose reduction: factor of 10-100× compared
+   to conventional X-ray imaging.
+
+5. Wavelength and Resolution:
+   Wavelength: ~0.1 nm (X-ray, ~12 keV photon energy).
+   Achievable resolution: ~50 nm (limited by detector pixel size and
+   photon statistics).
+
+WHERE IT IS DEPLOYED
+- Medical X-ray imaging (low-dose)
+- Materials science and semiconductor inspection
+- Quantum imaging research.
+
+WHO USES IT
+Research scientists; medical imaging engineers; L1 Architects exploring
+quantum-enhanced imaging modalities.
+
+WHAT PROBLEM IT SOLVES
+Introduces quantum entanglement as an imaging tool in GIOP, enabling
+high-resolution X-ray microscopy with dramatically reduced radiation
+exposure.
+
+END OF Quantum_Ghost_Imaging.sci
