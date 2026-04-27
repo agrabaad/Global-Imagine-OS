@@ -1,0 +1,66 @@
+GIOP v3.0 :: NEW TECHNOLOGY — MetaHuman 5.6 (Unreal Engine)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/MetaHuman_5_6.fx
+
+WHAT IS THIS FILE
+The certified software module reference for MetaHuman 5.6, the digital
+human framework fully integrated into Unreal Engine 5.6. It defines
+the local MetaHuman Creator plugin, the 4D scanning pipeline, the
+animation transfer between Maya and UE, and the integration with GIOP
+for skin tone accuracy and SSS (subsurface scattering) validation.
+
+WHY IT EXISTS
+MetaHuman 5.6 represents the final transition of digital human creation
+from a cloud web application to a fully local, engine-integrated
+plugin. This marks the maturation of real-time digital humans. GIOP
+certifies the skin tone accuracy and SSS models used in MetaHuman 5.6
+to ensure they meet the biological integrity standards of Kingdom 04.
+
+HOW IT WORKS
+1. Local Creator Plugin:
+   MetaHuman Creator is now a plugin within Unreal Engine 5.6 (no
+   cloud dependency). Artists create and customise digital humans
+   directly in the engine. Facial rig includes 400+ blend shapes
+   based on FACS (Facial Action Coding System).
+
+2. 4D Scanning Pipeline:
+   Base identities are derived from 4D (3D + time) scans of real
+   humans, capturing dynamic facial expressions. The 4D data is
+   registered to a canonical topology using optical flow and mesh
+   tracking.
+
+3. Skin Rendering (GIOP Validation):
+   Uses a multi-layer BSSRDF model:
+     R(r) = Σ Gaussian_i(r, σ_i)
+   where σ_i parameters are fit to measured skin reflectance data.
+   GIOP validates that the model passes the skin tone fairness
+   validation (Kingdom 03, Section 8) across all 12 Fitzpatrick
+   skin types.
+
+4. Animation Transfer:
+   Maya animation curves transfer to MetaHuman via the MetaHuman
+   DNA file format. Expression weights are normalised to [0,1] and
+   mapped to the MetaHuman rig via a shared joint hierarchy.
+
+5. GIOP Colour Pipeline:
+   Rendered in ACEScg linear. The MetaHuman ODT applies the display
+   EOTF after subsurface scattering. All skin albedo maps are stored
+   in ACES2065-1.
+
+WHERE IT IS DEPLOYED
+- Real-time film production
+- Video games and interactive experiences
+- Virtual production (in-camera VFX)
+- GIOP digital human certification.
+
+WHO USES IT
+L3 Colorists grading digital humans; character artists; L2 Engineers
+integrating MetaHuman into GIOP pipelines.
+
+WHAT PROBLEM IT SOLVES
+Certifies that MetaHuman 5.6 digital humans meet GIOP's biological
+integrity and skin tone fairness standards, ensuring they are suitable
+for professional film and broadcast production.
+
+END OF MetaHuman_5_6.fx
