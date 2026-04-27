@@ -1,0 +1,49 @@
+GIOP v3.0 :: STANDARDS — JPEG AI (ISO/IEC 6048-1)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/JPEG_AI.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ISO/IEC 6048‑1, the JPEG AI
+learning‑based image compression standard. It defines the autoencoder
+architecture, the rate‑distortion training objective, and the bitstream
+syntax for AI‑compressed still images.
+
+WHY IT EXISTS
+JPEG AI achieves up to 60% bitrate reduction over JPEG 2000 at equivalent
+quality. GIOP must specify the reference decode pipeline to ensure
+consistent colour reproduction from JPEG AI files.
+
+HOW IT WORKS
+An autoencoder (CNN/Transformer) compresses the image to a latent
+representation, quantised and entropy‑coded. A decoder reconstructs
+the image. The training loss includes perceptual metrics.
+
+WHERE IT IS DEPLOYED
+- Next‑generation still image compression
+- GIOP archival and delivery.
+
+WHO USES IT
+L2 Engineers implementing JPEG AI codecs; archivists.
+
+WHAT PROBLEM IT SOLVES
+Defines the neural compression pipeline within GIOP, ensuring that
+decoded JPEG AI images match the original ACES2065‑1 reference.
+
+KEY FORMULAS
+
+1. Rate‑Distortion Loss (training)
+   L = D + λ * R
+   where D = perceptual distortion (LPIPS + L1), R = estimated bitrate
+   from entropy model.
+   λ controls the compression/quality trade‑off.
+
+2. Autoencoder Architecture
+   Encoder: y = f_enc(x; θ_enc)  (x = input image in ACES linear)
+   Quantised: ŷ = round(y – μ) + μ  (with learned bias μ)
+   Decoder: x̂ = f_dec(ŷ; θ_dec)
+
+3. Entropy Coding
+   Probability model P(ŷ|context) used for arithmetic coding.
+
+END OF JPEG_AI.sci
