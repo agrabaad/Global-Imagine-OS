@@ -1,0 +1,48 @@
+GIOP v3.0 :: STANDARDS — SMPTE ST 2110 (IP Transport)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/SMPTE_ST_2110_IP_Transport.sci
+
+WHAT IS THIS FILE
+The certified standard reference for the SMPTE ST 2110 suite, which
+defines the transport of uncompressed video, audio, and ancillary data
+over IP networks.
+
+WHY IT EXISTS
+ST 2110 is the backbone of modern broadcast and production facilities.
+GIOP must define its interlock with ST 2110 to ensure that GIOP‑encoded
+streams are correctly identified, synchronised, and colour‑managed.
+
+HOW IT WORKS
+The standard separates video, audio, and metadata into separate RTP
+streams, synchronised via PTP (IEEE 1588). This file specifies the
+bandwidth, timing, and SDP parameters required for GIOP compliance.
+
+WHERE IT IS DEPLOYED
+- Broadcast master control
+- Virtual production LED volumes
+- GIOP cloud rendering and transport.
+
+WHO USES IT
+L2 Engineers designing IP‑based imaging pipelines; broadcast engineers.
+
+WHAT PROBLEM IT SOLVES
+Ensures that GIOP metadata (ACESclip, AMF) is correctly embedded in
+ST 2110‑40 ancillary streams and that colour space information is
+signalled via SDP.
+
+KEY FORMULAS
+
+1. Video Payload Bandwidth
+   BW = (Raster_Width * Raster_Height * Frame_Rate * Bit_Depth * 3)
+        / Compression_Ratio
+   (Uncompressed 4:4:4 10‑bit: compression ratio = 1)
+
+2. PTP Synchronisation Accuracy
+   Max_time_error ≤ 1 μs for class B, ≤ 100 ns for class A.
+
+3. SDP Colourimetry Parameter
+   a=fmtp:... colorspace=BT2100-PQ ... (GIOP signals GIOP colour
+   spaces using the "x‑giop‑" prefix).
+
+END OF SMPTE_ST_2110_IP_Transport.sci
