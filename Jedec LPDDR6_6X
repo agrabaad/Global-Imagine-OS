@@ -1,0 +1,125 @@
+GIOP v3.0 :: COMPUTING — JEDEC LPDDR6 / LPDDR6X
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /computing/JEDEC_LPDDR6.soc
+
+WHAT IS THIS FILE
+The certified memory profile for the JEDEC LPDDR6 and LPDDR6X standards.
+It defines the data rate (10.7–14.4 Gbps per pin), the channel architecture
+(48 bits per channel, 16‑bit sub‑channels, quad‑channel), the bandwidth
+formula, the power efficiency (21% over LPDDR5), the maximum capacity
+(512 GB via SOCAMM2), the latency characteristics, and the Processing‑
+in‑Memory (PIM) capabilities. All parameters are expressed through
+auditable formulas.
+
+WHY IT EXISTS
+LPDDR6 is the memory backbone of 2026 flagship smartphones (Snapdragon 8
+Elite Gen 5, A19 Pro, Dimensity 9500, Exynos 2600) and is extending into
+AI datacenters via SOCAMM2 and PIM. GIOP must model its bandwidth, latency,
+and capacity as formulas to predict frame buffer transfer times, AI model
+loading latency, and real‑time HDR video encoding throughput.
+
+HOW IT WORKS
+Data Rate and Clocking:
+  LPDDR6: 10.7 Gbps to 14.4 Gbps per pin (JEDEC standard upper limit).
+  LPDDR6X: 12.8 Gbps (Samsung), targeting 14.0 Gbps.
+  Effective clock frequency (DDR):
+    f_clock = f_data / 2
+  At 14.4 Gbps, f_clock = 7.2 GHz.
+
+Channel Architecture:
+  Standard channel width: 48 bits (3 × 16‑bit sub‑channels).
+  Each sub‑channel operates independently with its own command/address bus.
+  Quad‑channel package: 4 × 48 bits = 192‑bit total width.
+
+Bandwidth per Channel:
+  BW_channel = (channel_width_bits * f_data * 2(DDR)) / 8 (bytes)
+  For a 48‑bit channel at 14.4 Gbps:
+    BW_channel = (48 * 14.4e9 * 2) / 8 = 172.8 GB/s
+  For a quad‑channel package (192‑bit total):
+    BW_package = 4 * 172.8 = 691.2 GB/s (peak theoretical).
+
+Bandwidth per Device (typical smartphone, 64‑bit):
+  Many smartphones use a 64‑bit interface (2 × 32‑bit or 4 × 16‑bit).
+    BW_device = (64 * 14.4e9 * 2) / 8 = 86.4 GB/s (at maximum 14.4 Gbps).
+
+Bandwidth per Package (SOCAMM2, 256‑bit AI module):
+    BW_SOCAMM2 = (256 * 14.4e9 * 2) / 8 = 921.6 GB/s.
+
+Impact on Imaging Workloads:
+  8K 60 fps HDR RAW (16‑bit float, 3 channels):
+    Data_rate = 7680 * 4320 * 60 * 6 = 11.9 GB/s
+    This is ~13.8% of a 86.4 GB/s device bandwidth.
+  8K 60 fps HDR encode (VVC, 4:2:0 10‑bit):
+    Data_rate (read+write) ≈ 2 GB/s, under 3% of bandwidth.
+  AI inference (Stable Diffusion XL, 3.5 B parameters, FP8):
+    Model weights: ~3.5 GB. Load time at 86.4 GB/s ≈ 40 ms.
+    Activation memory (batch 1, 1024×1024): ~2 GB. Transfer ≈ 23 ms.
+
+Power Efficiency:
+  Active power:
+    P_active = C_load * V_dd^2 * f_data * utilization
+  V_dd = 1.05 V (LPDDR6) vs 1.1 V (LPDDR5).
+  C_load typical: ~2.5 pF per pin.
+  At 14.4 Gbps, 100% utilization, single 16‑bit sub‑channel:
+    P_active ≈ 2.5e-12 * 1.05^2 * 14.4e9 ≈ 40 mW.
+  Total device power (4 sub‑channels fully active): ~160 mW (logic + I/O).
+  Power efficiency improvement: 21% over LPDDR5 at equivalent bandwidth
+  (JEDEC).
+  Self‑refresh power: <0.5 mW per Gb.
+  Deep power‑down: <0.1 mW per device.
+
+Processing‑in‑Memory (PIM):
+  LPDDR6 introduces an optional PIM standard.
+  PIM operations: ADD, MUL, MAC (multiply‑accumulate) directly in the
+  memory bank, reducing data movement over the memory bus.
+  MAC throughput per bank (FP16):
+    MACs_per_bank = 16 * f_mem_clock
+    At 7.2 GHz memory clock, 16 MACs per bank → 115 GFLOPS per bank.
+    For a 16‑bank device: up to 1.84 TFLOPS on‑die FP16.
+  PIM reduces energy for AI inference by up to 60% compared to off‑chip
+  DRAM → NPU transfer, because the weight matrix never leaves memory.
+  GIOP can target LPDDR6‑PIM by dispatching LMT weight‑matrix operations
+  as PIM MAC commands.
+
+Latency Model:
+  Row Activation: t_RCD = 18 ns.
+  Column Access: t_CL = 22 ns (at 14.4 Gbps).
+  Read Latency (first word): t_RL = t_RCD + t_CL ≈ 40 ns.
+  Subsequent words in burst: 1 word per 0.14 ns (BL16 = 2.2 ns).
+  Precharge: t_RP = 18 ns.
+  Sustained sequential read throughput: >90% of peak BW.
+
+Capacity:
+  Single die: 16 Gb (2 GB) at 14.4 Gbps (SK Hynix, ISSCC 2026).
+  Max package capacity: up to 512 GB via 8‑high stacked dies and
+  SOCAMM2 modules for AI datacenter applications.
+  Mobile SoC (PoP): up to 24 GB with 4‑high stacks.
+
+GIOP Runtime Implications:
+  The GIOP runtime must query the LPDDR6 bandwidth to schedule
+  concurrent read/write operations. For video encoding, the runtime
+  SHALL ensure that:
+    BW_available >= BW_read + BW_write + BW_AI_inference
+  When total demand exceeds 80% of peak BW, the runtime SHALL throttle
+  background AI tasks (e.g., auto‑tagging) to avoid frame drops.
+
+WHERE IT IS DEPLOYED
+- All 2026 flagship smartphones (Snapdragon 8 Elite Gen 5, A19 Pro,
+  Dimensity 9500, Exynos 2600).
+- AI datacenters via SOCAMM2 modules with PIM.
+- GIOP on‑device AI inference, real‑time HDR encoding.
+
+WHO USES IT
+L1 Architects designing memory‑bound GIOP transforms; L2 Engineers
+optimizing frame buffer transfer scheduling and AI model loading.
+
+WHAT PROBLEM IT SOLVES
+Replaces “faster memory” marketing with exact bandwidth, PIM capability,
+and power consumption formulas, enabling GIOP to predict whether an
+8K HDR neural denoising pass or a real‑time auto‑grade LMT will be memory‑
+bandwidth‑limited or compute‑limited on a given device.
+
+SHA3‑512: [To be computed after final content is sealed]
+
+END OF JEDEC_LPDDR6.soc
