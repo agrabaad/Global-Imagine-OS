@@ -1,0 +1,61 @@
+GIOP v3.0 :: FORMULAS — Video Engineering
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Video_Engineering.sci
+
+WHAT IS THIS FILE
+A certified collection of video engineering formulas used in compression,
+quality assessment, and synchronization. It includes the VMAF metric
+fusion model, the CCLM prediction equation (H.266/VVC), the AV1 rate‑
+distortion Lagrangian, and the SMPTE ST 12‑1 drop‑frame timecode
+calculation.
+
+WHY IT EXISTS
+Video engineering math is the foundation of codec comparison, automated
+QC, and frame‑accurate editing. A single canonical source prevents
+discrepancies in encoding quality tests and timecode logic.
+
+HOW IT WORKS
+Each formula is stated with its derivation context and normative use.
+VMAF and CCLM are given in full; timecode is expressed as a
+pseudocode‑style algorithm.
+
+WHERE IT IS DEPLOYED
+- Encoding parameter optimization
+- Automated QC (VMAF)
+- Broadcast and IMF packaging (timecode)
+- Codec‑aware color management.
+
+WHO USES IT
+L2 Engineers tuning encoding pipelines; broadcast engineers validating
+synchronization.
+
+WHAT PROBLEM IT SOLVES
+Provides the exact, unimpeachable math behind video quality metrics and
+codec tools, ensuring reproducibility across different encoder
+implementations.
+
+1. VMAF (Video Multimethod Assessment Fusion)
+   Feature vector F = [VIF, ADM, Motion]
+   VMAF = Σ w_i * K(F, support_vector_i) + b
+   where K is an RBF kernel, SVM trained on Netflix public dataset.
+   Pearson correlation with subjective MOS ≈ 0.98.
+
+2. CCLM Prediction (H.266/VVC)
+   pred_C[i,j] = a * L'[i,j] + b
+   a = (N * Σ(L'*C) – ΣL' * ΣC) / (N * Σ(L'²) – (ΣL')²)
+   b = (ΣC – a * ΣL') / N
+   Reduces chroma residual energy by ≈40% vs HEVC.
+
+3. AV1 Rate‑Distortion Optimisation (Lagrange Multiplier)
+   J = D + λ * R
+   λ = λ_base * Q_scale[QP][temporal_layer]
+   For HDR, luminance‑weighted SSE biases λ toward shadow preservation.
+
+4. SMPTE ST 12‑1 Drop‑Frame Timecode
+   Frame rate = 30/1.001 ≈ 29.97002997 fps.
+   dropped_frames = 2 * (minutes – floor(minutes/10))
+   N_drop_frame = N_total – dropped_frames
+   Time(s) = N_drop_frame / 29.97002997
+
+END OF Video_Engineering.sci
