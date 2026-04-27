@@ -1,0 +1,227 @@
+GIOP v3.0 :: KINGDOM 02 — FUNDAMENTAL IMAGING PHYSICS AND SENSOR METROLOGY
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_02_Fundamental_Imaging_Physics.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines the physical transformation of light into
+electronic signal inside a digital image sensor. It covers photon
+statistics, the complete sensor noise model, exposure theory, ISO
+sensitivity definitions, dual native ISO architecture, sensor
+metrology parameters, and the geometric invariance required for
+accurate measurement. It is the bridge between the optical image
+formed by the lens and the digital RAW file.
+
+WHY IT EXISTS
+Every downstream color transform and noise reduction algorithm
+depends on an accurate model of the sensor's response to light.
+Without this kingdom, SNR calculations, dynamic range claims, and
+exposure decisions are arbitrary. It provides the mathematical
+proof for why a sensor behaves as it does, enabling consistent
+RAW processing across all camera bodies and the correct design
+of IDTs and noise management strategies.
+
+HOW IT IS STRUCTURED
+Seven sub-domains: Photon Statistics, Sensor Noise Model, Exposure
+Theory, ISO Sensitivity and Dual Native ISO, Sensor Metrology,
+Photometric and Radiometric Unit Reference, and Geometric Invariance.
+Each sub-domain provides the primary equations, their domain of
+validity, and explicit links to the relevant ISO and SMPTE standards.
+
+WHERE IT IS APPLIED
+RAW linearization, black level subtraction, exposure index selection
+on set, digital ISO calibration, dual native ISO crossover point
+calculation, sensor performance benchmarking (QE, FWC, DR), noise
+profiling for denoising algorithms, and radiometric camera
+calibration for machine vision and VFX.
+
+WHO USES IT
+Camera engineers, RAW decoder developers, DITs, color scientists,
+and pipeline TDs who need to linearize sensor data and understand
+noise characteristics.
+
+WHAT PROBLEM IT SOLVES
+Replaces manufacturer marketing claims with auditable, formula-based
+sensor performance metrics. Enables accurate noise-adaptive grading
+by quantifying the photon shot noise and read noise contributions at
+every signal level. Defines the exact mathematical crossover for dual
+native ISO systems, eliminating guesswork. Provides the geometric
+invariance laws that guarantee a measurement on one sensor maps
+correctly to another in multi-camera shoots.
+
+1. PHOTON STATISTICS AND SHOT NOISE
+Photon arrival at the sensor follows a Poisson process. For a given
+average photon count lambda, the probability of detecting exactly k
+photons is:
+  P(N = k) = (lambda^k * e^{-lambda}) / k!
+
+The quantum efficiency eta(lambda) converts incident photons to
+electrons:
+  mu_e = eta(lambda) * lambda
+
+Photoelectron generation is itself a Poisson process with mean mu_e.
+The variance equals the mean:
+  sigma_shot^2 = mu_e
+
+Signal-to-noise ratio from shot noise alone:
+  SNR_shot = mu_e / sqrt(mu_e) = sqrt(mu_e)
+
+In linear digital numbers (DN), the signal is S = g * mu_e where g is
+the conversion gain (DN/e-). The shot noise in DN is g * sqrt(mu_e).
+
+2. SENSOR NOISE MODEL
+The total noise in a pixel is the quadrature sum of independent noise
+sources:
+
+Read noise (N_read): electronic noise from the pixel source follower
+and column amplifier, measured in electrons RMS. Typically 1-10 e-
+for modern sensors. It is Gaussian distributed and independent of
+signal.
+
+Dark current noise (N_dark): thermal generation of electrons. Mean
+rate D (e-/s) depends exponentially on temperature. For exposure
+time t_int, the dark signal is D * t_int, and its shot noise is
+sqrt(D * t_int).
+
+Total noise variance in electrons:
+  sigma_total^2 = sigma_shot^2 + sigma_read^2 + sigma_dark^2
+                = mu_e + N_read^2 + D * t_int
+
+Total Signal-to-Noise Ratio:
+  SNR = mu_e / sqrt(mu_e + N_read^2 + D * t_int)
+
+At low signal, read noise dominates. At high signal, shot noise
+dominates. Full well capacity (FWC) sets the maximum mu_e:
+  SNR_max = FWC / sqrt(FWC + N_read^2 + D * t_int)
+
+In decibels:
+  SNR_dB = 20 * log10(SNR)
+
+Dynamic Range (engineering definition):
+  DR = 20 * log10(FWC / N_read)  (ignoring dark current)
+This is the ratio of maximum signal to noise floor.
+
+3. EXPOSURE THEORY
+Exposure H at the sensor plane (lux·s) relates to scene luminance L
+and optical parameters:
+  H = (pi * L * t) / (4 * N^2)
+where t is exposure time, N is f-number. This assumes a Lambertian
+scene and unity lens transmittance.
+
+Image plane illuminance E_image (lux):
+  E_image = (pi * L) / (4 * N^2)
+
+Exposure Value at ISO 100:
+  EV100 = log2(N^2 / t)
+
+APEX system:
+  Av = 2 * log2(N)
+  Tv = -log2(t)
+  Sv = log2(ISO / 3.125)
+  Ev = Av + Tv = Bv + Sv
+
+Sunny 16 rule: on a bright sunny day at ISO 100, correct exposure
+is approximately f/16 and t = 1/ISO seconds.
+
+4. ISO SENSITIVITY AND DUAL NATIVE ISO
+Saturation-based ISO (S_sat, ISO 12232):
+  S_sat = 78 / H_sat
+where H_sat is the exposure (lux·s) that saturates the sensor. 78 is
+the calibration constant for sRGB output.
+
+Standard Output Sensitivity (SOS, ISO 12232):
+  S_sos = 10 / H_sos
+where H_sos gives 18% grey at 118 in 8-bit sRGB.
+
+Dual Native ISO: two discrete analog gain states with separate
+conversion gains and read noise characteristics.
+
+Let the low-gain state have conversion gain C_L (DN/e-) and read noise
+N_L (e-). The high-gain state has C_H = 2 * C_L (one stop higher ISO)
+and read noise N_H. Typically N_H < N_L / sqrt(2) because the higher
+gain amplifies the signal before downstream noise sources, reducing
+input-referred read noise.
+
+The crossover point S_x (signal in electrons) where the high-gain
+state yields a higher SNR than the low-gain state is determined by:
+
+  S_x = N_L^2 / (C_H/C_L - 1)   (approximate, assuming N_H is negligible)
+
+At signals below S_x, high gain is cleaner. At signals above S_x,
+low gain preserves highlight headroom. This equation is essential
+for automatic dual gain selection in GIOP-aware cameras.
+
+5. SENSOR METROLOGY
+Key parameters for any image sensor:
+
+Quantum Efficiency (QE): QE(lambda) = mu_e / mu_p, the ratio of
+collected electrons to incident photons at wavelength lambda.
+
+Full Well Capacity (FWC): maximum number of electrons a pixel can
+hold. Proportional to pixel area: FWC ≈ 1000 * (pixel area in μm^2)
+for typical CMOS.
+
+Conversion Gain (g): the factor converting electrons to digital
+numbers (DN/e-). Measured via photon transfer curve (PTC): the slope
+of variance vs mean signal in electrons gives g.
+
+Read Noise: determined from the PTC intercept at zero signal.
+
+Dynamic Range: DR_stops = log2(FWC / N_read).
+
+Signal-to-Noise Ratio at any given signal level: as defined in
+Section 2.
+
+Pixel Binning: combining B x B pixels reduces spatial resolution
+by factor B, but increases SNR by factor B (for shot noise limited)
+or less if read noise is significant. I_binned = (1/B^2) * sum I(x+i,y+j).
+
+Nokia PureView oversampling principle: oversampling ratio R(z) =
+max(1, R_base / z^2). At 1x zoom, multiple pixels are combined into
+one superpixel, yielding low noise and true color. At maximum zoom,
+R=1, meaning 1:1 pixel mapping.
+
+6. PHOTOMETRIC AND RADIOMETRIC UNIT REFERENCE
+This kingdom inherits the definitions in Kingdom 00 Section 3.
+Key relationships used in sensor calibration:
+
+Illuminance to Luminance: L_v = (rho / pi) * E_v
+For a 100% diffuse reflector (rho=1), 1 lux of illuminance produces
+1/pi cd/m^2 of luminance.
+
+Absolute Luminance from Relative: Absolute_Luminance = Y_linear *
+Peak_White_Luminance (in cd/m^2).
+
+Luminous efficacy K_m = 683 lm/W at 555 nm. For a sensor with known
+spectral sensitivity, radiometric units (W/m^2) can be converted to
+photometric (lux) by integration with V(lambda).
+
+7. GEOMETRIC INVARIANCE
+For imaging systems, certain geometric properties are preserved or
+transformed under different camera motions and lens projections.
+
+Euclidean (rigid) transformations: 3 DOF in 2D (translation x, y,
+rotation theta). Preserve lengths and angles.
+
+Similarity transformations: 4 DOF, add uniform scaling. Preserve
+angles but not lengths.
+
+Affine transformations: 6 DOF, preserve parallelism and ratios of
+distances along parallel lines.
+
+Projective (homography): 8 DOF, preserve cross-ratio of four
+collinear points. This is the most general transformation between
+two planar views of the same scene.
+
+Rolling shutter introduces a time-dependent affine shear:
+  (x', y') = (x + vx * (y/N_rows) * t_frame, y + vy * (y/N_rows) * t_frame)
+This violates Euclidean invariance, causing skew and wobble. Global
+shutter sensors preserve Euclidean invariants exactly, making them
+mandatory for high-precision photogrammetry and VFX camera tracking.
+
+Epipolar geometry: the fundamental matrix F relates corresponding
+points in two views: x'^T F x = 0. This constraint lies at the heart
+of stereo matching and structure-from-motion, and its integrity
+depends on the sensor's geometric fidelity.
+
+END OF KINGDOM 02
