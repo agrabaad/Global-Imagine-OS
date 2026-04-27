@@ -1,0 +1,67 @@
+GIOP v3.0 :: NEW TECHNOLOGY — JPEG XS (ISO/IEC 21122)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/JPEG_XS.sci
+
+WHAT IS THIS FILE
+The certified standard reference for JPEG XS (ISO/IEC 21122), a visually
+lossless, low-latency, low-complexity image and video coding system. It
+defines the core coding algorithm, the rate-distortion model, the latency
+budget, and the transport over RTP and SMPTE ST 2110. JPEG XS achieves
+compression ratios up to 32:1 with sub-millisecond latency, making it
+suitable for real-time IP video transport and virtual production.
+
+WHY IT EXISTS
+Traditional codecs like HEVC introduce latency unacceptable for live
+production and virtual reality. JPEG XS fills this gap by providing
+visually lossless compression with latency below 1 ms. It is the
+mandated codec for SMPTE ST 2110-22 transport and is adopted by the
+JPEG Committee, intoPIX, and Fraunhofer. GIOP integrates it as the
+reference low-latency codec for real-time imaging pipelines.
+
+HOW IT WORKS
+JPEG XS uses a line-based discrete wavelet transform (DWT) with 5/3
+filter banks, followed by a lightweight entropy coder. The algorithm
+processes only a few lines at a time, achieving sub-millisecond latency.
+
+1. Wavelet Transform:
+   The input image is decomposed into sub-bands using a 5/3 Le Gall
+   wavelet. The forward transform for a 1D signal:
+     y[2n] = x[2n] - floor((x[2n-1] + x[2n+1] + 2) / 4)
+     y[2n+1] = x[2n+1] + floor((y[2n] + y[2n+2]) / 2)
+
+2. Quantisation:
+   Each sub-band is quantised with a uniform dead-zone quantiser:
+     q = sign(c) * floor(|c| / delta)
+   where delta is the step size determined by the quality parameter.
+
+3. Rate Control:
+   The encoder adjusts delta to meet a target bitrate R_target:
+     R_target = (pixel_rate * bit_depth * components) / compression_ratio
+   For 4K 60p 4:4:4 10-bit, uncompressed rate = 3840*2160*60*3*10 = 14.93 Gbps.
+   At 32:1 compression, R_target ≈ 467 Mbps.
+
+4. Latency Budget:
+   T_total = T_input + T_encode + T_transport + T_decode + T_output
+   T_encode + T_decode < 32 lines (typically < 0.5 ms at 4K).
+
+5. RTP Payload (IETF RFC 9134):
+   The codestream is packetised into RTP packets. Each packet carries a
+   slice of the image, enabling line-sequential decoding.
+
+WHERE IT IS DEPLOYED
+- SMPTE ST 2110-22 IP video transport
+- Virtual production LED walls
+- AR/VR headsets
+- Autonomous vehicle camera links
+- GIOP real-time rendering and streaming.
+
+WHO USES IT
+L2 Engineers designing real-time IP video pipelines; broadcast engineers;
+virtual production technicians.
+
+WHAT PROBLEM IT SOLVES
+Eliminates the latency barrier for high-quality video compression. Provides
+a mathematically defined, royalty-free codec for real-time GIOP pipelines.
+
+END OF JPEG_XS.sci
