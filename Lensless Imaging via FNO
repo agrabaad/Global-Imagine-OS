@@ -1,0 +1,62 @@
+GIOP v3.0 :: NEW TECHNOLOGY — Lensless Imaging via Fourier Neural Operators
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/computational/Lensless_FNO.opt
+
+WHAT IS THIS FILE
+The certified optical profile for lensless imaging systems that use a
+diffuser or coded mask in place of a lens and reconstruct images via
+Fourier Neural Operators (FNOs). It defines the forward model (shift-
+invariant convolution), the FNO reconstruction architecture, the
+resolution-agnostic property, and the PSF characterisation method.
+
+WHY IT EXISTS
+Lensless cameras are ultra-thin and wide-angle, but their image
+reconstruction has historically been slow and resolution-dependent.
+FNOs (2026, arXiv) solve this with a Fourier-domain network that is
+structure-aligned with the physics of DiffuserCam. GIOP integrates this
+to support lensless camera ingest.
+
+HOW IT WORKS
+1. Forward Model (DiffuserCam):
+   The lensless measurement y is the convolution of the scene x with a
+   point spread function (PSF) h:
+     y = x (*) h + noise
+   In Fourier space: Y = X ⊙ H (pointwise multiplication).
+
+2. Fourier Neural Operator Reconstruction:
+   An FNO layer updates the spectral representation:
+     v_{t+1}(ω) = σ( W_t * v_t(ω) + (K_t * v_t)(ω) )
+   where K_t is a learned kernel in Fourier space, σ is a non-linear
+   activation (GELU). Because the forward model is diagonal in Fourier
+   space, FNO layers naturally align with the inverse problem.
+
+3. Resolution-Agnostic Property:
+   Unlike CNNs, FNOs learn operators that map between function spaces.
+   A single trained model reconstructs images at any resolution without
+   retraining.
+
+4. Physical PSF Calibration:
+   The PSF h is measured by imaging a point source (e.g., fibre-coupled
+   LED or pinhole) and normalising to unit integral.
+
+5. Reconstruction Formula:
+   x̂ = FNO( y, h, noise_estimate )
+   where FNO is the trained operator, h is the calibrated PSF.
+
+WHERE IT IS DEPLOYED
+- Ultra-thin smartphone cameras
+- Medical endoscopy
+- IoT and surveillance
+- GIOP lensless camera body profiles.
+
+WHO USES IT
+L1 Architects designing lensless camera IDTs; L2 Engineers implementing
+FNO reconstruction pipelines.
+
+WHAT PROBLEM IT SOLVES
+Enables GIOP to support lensless cameras for the first time, providing
+a resolution-agnostic, physics-aligned reconstruction method that
+achieves 244-nm linewidth resolution with visible light.
+
+END OF Lensless_FNO.opt
