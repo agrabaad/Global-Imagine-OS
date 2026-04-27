@@ -1,0 +1,72 @@
+GIOP v3.0 :: LENSES — MetaLens Phase Gradient (Computational)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/computational/MetaLens_Phase_Gradient.opt
+
+WHAT IS THIS FILE
+The certified optical model for a flat meta-lens that uses sub-wavelength
+nanostructures to impart a phase gradient, focusing light without bulk glass.
+It defines the phase profile φ(r) = (2π/λ)(f – √(r² + f²)) and the
+achromatic meta-lens condition for broadband focusing.
+
+WHY IT EXISTS
+Meta-lenses are entering commercial production (2026). They promise wafer-thin
+cameras. GIOP must provide the normative equations so that imaging pipelines
+can simulate and correct the unique aberrations of meta-lenses.
+
+HOW IT WORKS
+1. Principle:
+   A dielectric metasurface consists of an array of nanofins (TiO₂, GaN, etc.)
+   on a substrate. Each nanofin acts as a waveguide; its geometry (width,
+   length, rotation) controls the phase delay imparted to transmitted light.
+
+2. Required phase profile for a focusing lens:
+   φ(r,λ) = (2π/λ) (f(λ) – √(r² + f(λ)²))
+   where r is radial distance from the optical axis, λ is wavelength in the
+   medium, and f(λ) is the design focal length at that wavelength.
+
+3. Chromatic dispersion:
+   For a single-material meta-lens, f(λ) ∝ 1/λ. This leads to strong chromatic
+   focal shift: Δf/f ≈ Δλ/λ.
+   Achromatic metalenses correct this by using multiple nanofin geometries
+   (dispersion engineering). The condition for an achromatic doublet meta-lens:
+     φ(r,λ_1) = φ(r,λ_2) = φ(r,λ_3)  (for RGB)
+   achieved by combining two meta-layers of different materials or by
+   multiplexing nanopillar widths.
+
+4. Efficiency:
+   Focusing efficiency η = power in focused spot / incident power.
+   Current state (2026): η > 80% for NA < 0.2, >60% for NA up to 0.5.
+   Efficiency drops at large angles due to impedance mismatch.
+
+5. Point spread function (PSF) and MTF:
+   The complex amplitude at the image plane is the Fourier transform of the
+   metasurface phase profile. The PSF is |FT{exp(j φ(r))}|².
+   MTF is the modulus of the optical transfer function (OTF), computed via
+   autocorrelation of the pupil function.
+
+6. Aberrations:
+   - Spherical aberration: negligible when phase profile is exact.
+   - Coma and astigmatism: appear at field angles > 5°; scale with angle.
+   - Field curvature: strong; Petzval sum is non-zero because the meta-lens
+     is flat.
+   These aberrations are corrected by applying a space-variant deconvolution
+   or by designing a metasurface with field-dependent phase.
+
+WHERE IT IS DEPLOYED
+- Smartphone cameras (2026+: under-display cameras)
+- AR/MR glasses (ultra-thin combiners)
+- Medical endoscopes
+GIOP uses this model to build IDTs for meta-lens cameras.
+
+WHO USES IT
+L1 Architects specifying next-gen sensors; L2 Engineers building software
+correction for meta-lens aberrations.
+
+WHAT PROBLEM IT SOLVES
+Provides the first open standard for meta-lens optical characterization,
+enabling software to correct strong chromatic focal shift and field curvature
+that differ fundamentally from refractive lenses. Allows GIOP pipelines to
+ingest images from wafer-thin cameras.
+
+END OF MetaLens_Phase_Gradient.opt
