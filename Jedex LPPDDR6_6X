@@ -1,0 +1,77 @@
+GIOP v3.0 :: COMPUTING — JEDEC LPDDR6 / LPDDR6X
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /computing/JEDEC_LPDDR6.soc
+
+WHAT IS THIS FILE
+The certified memory profile for the JEDEC LPDDR6 and LPDDR6X standards.
+It defines the data rate (10.7–14.4 Gbps per pin), the channel
+architecture (48 bits per channel, 16-bit per sub-channel, quad-channel),
+the bandwidth formula, the power efficiency (21% over LPDDR5), and the
+maximum capacity (512 GB via SOCAMM2 modules).
+
+WHY IT EXISTS
+LPDDR6 is the memory backbone of 2026 flagship smartphones (Snapdragon
+8 Elite Gen 5, A19 Pro, Dimensity 9500) and is extending into AI
+datacenters via SOCAMM2 and PIM (Processing-in-Memory). GIOP must model
+its bandwidth and capacity as formulas to predict frame buffer transfer
+times and AI model loading latency.
+
+HOW IT WORKS
+Data Rate:
+  LPDDR6: 10.7 Gbps to 14.4 Gbps per pin (JEDEC standard upper limit).
+  LPDDR6X: 12.8 Gbps (Samsung), targeting 14.0 Gbps.[reference:29]
+
+Bandwidth per Package:
+  BW_package = (pins_per_channel * f_data * 2(DDR)) / 8 (bytes)
+  For a 48-bit channel at 14.4 Gbps:
+    BW_channel = (48 * 14.4e9 * 2) / 8 = 172.8 GB/s
+  For a quad-channel package (192-bit total):
+    BW_package = 4 * 172.8 = 691.2 GB/s (peak theoretical).
+  Typical smartphone (64-bit): BW_device = 86.4 GB/s (14.4 Gbps × 64 bits).
+  [reference:30]
+
+Capacity:
+  Single die: 16 Gb (2 GB) at 14.4 Gbps (SK Hynix, ISSCC 2026).
+  Max package capacity: up to 512 GB via stacked dies and SOCAMM2 modules
+  for AI datacenter applications.[reference:31]
+
+Power Efficiency:
+  P_ddr = V_dd * I_dd + P_termination
+  V_dd = 1.05 V (LPDDR6) vs 1.1 V (LPDDR5), I_dd scales with f_data.
+  Active power: P_active = C_load * V_dd^2 * f_data * utilization
+  Power efficiency: 21% improvement over LPDDR5 at equivalent bandwidth.
+  Self-refresh power: <0.5 mW per Gb.
+
+Processing-in-Memory (PIM):
+  LPDDR6 introduces PIM standard, where simple operations (ADD, MUL,
+  MAC) are performed directly in the memory bank, reducing data movement
+  for AI inference by up to 60%. GIOP can target PIM-enabled LPDDR6 for
+  neural network inference at the memory controller level.[reference:32]
+
+Latency:
+  t_RCD (RAS-to-CAS delay): ~18 ns
+  t_CL (CAS latency): ~22 ns at 14.4 Gbps
+  t_RP (precharge): ~18 ns
+  Effective first-word latency: (t_RCD + t_CL) * 1/f = ~40 ns.
+  Sustained read throughput reaches ~90% of peak BW for sequential access.
+
+WHERE IT IS DEPLOYED
+- 2026 flagship smartphones (Snapdragon 8 Elite Gen 5, A19 Pro, Dimensity
+  9500, Exynos 2600).
+- AI datacenters (SOCAMM2 modules with PIM).
+- GIOP on-device AI inference, real-time HDR video encoding.
+
+WHO USES IT
+L1 Architects designing memory-bound GIOP transforms; L2 Engineers
+optimizing frame buffer transfer scheduling.
+
+WHAT PROBLEM IT SOLVES
+Replaces "faster memory" with the exact bandwidth formula, PIM capability
+model, and power consumption curve, enabling GIOP to predict whether a
+workload (e.g., 8K HDR neural denoising) will be memory-bandwidth-limited
+or compute-limited on a given device.
+
+SHA3-512: [To be computed after final content is sealed]
+
+END OF JEDEC_LPDDR6.soc
