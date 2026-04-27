@@ -1,0 +1,71 @@
+GIOP v3.0 :: LENSES — Optical Breathing Suppression
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/anamorphic/Optical_Breathing_Suppression.opt
+
+WHAT IS THIS FILE
+The mathematical model of focus breathing and the multi-group floating cam
+system that suppresses it. It defines the condition ∂f_eff/∂object_distance = 0
+and how specific lens groups move to maintain constant field of view.
+
+WHY IT EXISTS
+Focus breathing breaks compositing and virtual production when a focus pull
+changes the apparent focal length. Understanding the suppression mechanism
+allows GIOP to certify "zero-breathing" lenses and to simulate residual
+breathing accurately.
+
+HOW IT WORKS
+1. Definition of breathing:
+   The effective focal length f_eff varies with object distance, changing
+   the angular field of view (AFoV):
+     AFoV = 2 arctan( d_sensor / (2 f_eff) )
+   Breathing is the percentage change in AFoV from infinity to minimum
+   focus distance.
+
+2. Cause:
+   Traditional unit-focus lenses move the entire optical block; the total
+   refractive power shifts as element separations change.
+
+3. Suppression mechanism:
+   Three independently moving lens groups are actuated by a precision cam
+   system.
+   - Group A (front, focusing): moves to change the object conjugate. Its
+     motion alone would introduce focal length variation.
+   - Group B (middle, compensator): counter-moves to nullify the focal length
+     shift introduced by Group A.
+   - Group C (rear, fixed): remains stationary to maintain telecentricity and
+     image plane stability.
+
+   Design constraint: solve the coupled lens equations for group positions
+   d_k (relative to image plane) such that:
+     ∂f_eff / ∂d_object = 0
+   across the specified focus range.
+
+4. Performance:
+   Breathing measured as percentage AFoV change:
+     Zeiss Compact Zoom CZ.2: <0.8%
+     Fujinon Premista: <0.5%
+     Canon CN-E primes: <2% (not fully compensated)
+   A lens is certified "zero-breathing" by GIOP if AFoV change < 1%.
+
+5. Breathing compensation in post:
+   If a breathing profile is known (residual AFoV vs. focus distance),
+   GIOP permits a digital counter-zoom applied in Nuke/Resolve as an
+   inverse homography that scales the image to maintain constant framing.
+
+WHERE IT IS DEPLOYED
+- Virtual production lens calibration
+- VFX camera tracking
+- CGI focus pulls that must match a breathing or non-breathing real lens.
+
+WHO USES IT
+L1 Architects defining new lens designs; L2 Engineers implementing breathing
+compensation in tracking/compositing software.
+
+WHAT PROBLEM IT SOLVES
+Eliminates inaccurate camera solves caused by unaccounted breathing. Provides
+the mathematical proof that a lens branded "zero-breathing" truly meets the
+claim. Enables synthetic rack focuses to perfectly replicate a real lens's
+behaviour.
+
+END OF Optical_Breathing_Suppression.opt
