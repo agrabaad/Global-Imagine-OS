@@ -1,0 +1,35 @@
+GIOP v3.0 :: NEW TECHNOLOGY — DVB HDR Vivid BlueBook
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/DVB_HDR_Vivid_BlueBook.sci
+
+WHAT IS THIS FILE
+The certified standard reference for the DVB BlueBook incorporating
+T/UWA 005 (HDR Vivid) into the DVB core video coding specification for
+broadcast and broadband services, published March 2026.
+
+WHY IT EXISTS
+The DVB BlueBook marks the formal adoption of HDR Vivid by European
+broadcast infrastructure. GIOP cross-references this with the HDR
+Vivid standard to provide a complete DVB-compliant delivery path.
+
+HOW IT WORKS
+The BlueBook defines:
+  1. How HDR Vivid metadata is carried in DVB transport streams (MPEG-TS
+     and DASH).
+  2. The signalling descriptors for service information (SI) that
+     identify HDR Vivid content.
+  3. The expected ETSI standard publication timeline (target May 2026).
+
+WHERE IT IS DEPLOYED
+- European DVB broadcast networks
+- GIOP HDR delivery to DVB-compliant receivers.
+
+WHO USES IT
+Broadcast engineers; DVB receiver manufacturers.
+
+WHAT PROBLEM IT SOLVES
+Provides the DVB-specific transport and signalling specification for
+HDR Vivid, enabling GIOP to generate fully compliant broadcast streams.
+
+END OF DVB_HDR_Vivid_BlueBook.sci
