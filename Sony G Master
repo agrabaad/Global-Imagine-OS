@@ -1,0 +1,39 @@
+GIOP v3.0 :: LENSES — Sony G Master 24mm f/1.4 (Spherical)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/spherical/Sony_G_Master_24.opt
+
+WHAT IS THIS FILE
+The certified optical DNA profile for the Sony FE 24mm f/1.4 G Master lens.
+It includes the XA (eXtreme Aspherical) element surface sag formula, the
+Nano AR Coating II reflectance characteristics, the Super ED glass achromatic
+condition, and the measured distortion, vignetting, and coma behaviour.
+
+WHY IT EXISTS
+The G Master series is Sony’s reference for high‑resolution cinema and still
+imaging. Knowing the exact aspherical coefficients and coating performance
+allows accurate simulation of the lens’s signature—critical for matching
+CGI to Sony‑shot plates.
+
+HOW IT WORKS
+- Aspherical surface sag: z = (c·r²)/(1+√(1-(1+κ)c²r²)) + A4r⁴ + A6r⁶ + ...
+  (XA element precision 0.01 µm).
+- Nano AR Coating II: R(λ) → 0 for 400–700 nm via sub‑wavelength nanostructures.
+- Super ED glass achromat: 1/(f1·V1) + 1/(f2·V2) ≈ 0 (Abbe Vd > 80 paired
+  with standard glass).
+- Distortion: k1 = -0.018, k2 = 0.005; vignetting < 1 stop at f/1.4.
+- Sagittal coma flare < 0.02 mm at full aperture.
+
+WHERE IT IS DEPLOYED
+Same as above; additionally, virtual production on Sony VENICE cameras.
+
+WHO USES IT
+L2 Engineers and L3 Colorists; Sony camera users who need native lens
+profiles for ACES ingest.
+
+WHAT PROBLEM IT SOLVES
+Ends the practice of using „generic 24mm” profiles for the G Master. Ensures
+the unique XA element’s contribution to sharpness and bokeh is faithfully
+reproduced in CGI and lens‑correction workflows.
+
+END OF Sony_G_Master_24.opt
