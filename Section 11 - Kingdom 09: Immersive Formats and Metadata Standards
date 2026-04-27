@@ -1,0 +1,168 @@
+GIOP v3.0 :: KINGDOM 09 — IMMERSIVE FORMATS AND METADATA STANDARDS
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_09_Immersive_Formats_Metadata.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines the file formats, metadata structures, and
+container specifications that carry immersive and high-fidelity
+visual content through the post-production and distribution chain.
+It covers ACESclip and its successor the ACES Metadata File (AMF),
+Multiview HEVC for stereo and multi-view video, Dolby Vision
+dynamic metadata XML, and the ancillary metadata tracks that
+preserve the color pipeline, geometric intent, and content
+authenticity from camera to consumer display.
+
+WHY IT EXISTS
+Image data without its metadata is ambiguous. A pixel's color is
+meaningless if the display does not know the mastering display
+luminance, the IDT chain, or the artistic intent trim passes.
+Immersive formats like stereo 3D or 6DoF require explicit
+synchronization and metadata to ensure both eyes see the correct
+view with zero disparity errors. This kingdom provides the
+normative wrapper that makes all preceding Kingdoms' outputs
+self-describing, portable, and automatically interpretable by
+any GIOP-compliant decoder or display.
+
+HOW IT IS STRUCTURED
+Four sub-domains: ACESclip and ACES Metadata File (AMF),
+Multiview HEVC (MV-HEVC) for Stereo and Multi-View, Dolby Vision
+Dynamic Metadata XML, and General Immersive Metadata Schema.
+Each section defines the data model, mandatory fields, and
+validation rules.
+
+WHERE IT IS APPLIED
+Digital cinema packages (DCP), IMF mastering, OTT streaming
+containers, VR and AR headsets, stereo 3D blu-ray and broadcast,
+LED volume metadata distribution, and archival preservation.
+
+WHO USES IT
+Mastering engineers, post-production supervisors, streaming
+architects, and anyone packaging final deliverables or ensuring
+cross-platform display consistency.
+
+WHAT PROBLEM IT SOLVES
+Eliminates metadata loss across the post-production chain by
+defining a single, immutable metadata envelope (AMF) that
+accompanies the image essence. Guarantees stereo and multi-view
+sync with frame-exact precision. Enables automated display
+adaptation via Dolby Vision XML, preventing the washed-out
+HDR-to-SDR conversions that plague consumer delivery.
+
+1. ACESCLIP AND ACES METADATA FILE (AMF)
+ACESclip (v1.2) and the ACES Metadata File (AMF, ACES 2.0) are
+the standardized containers for color pipeline metadata.
+
+ACESclip structure:
+  - IDT: identifies the input device transform applied to the
+    camera original.
+  - LMT stack: an ordered list of Look Modification Transforms,
+    each with a unique ID and parameter set.
+  - RRT: reference rendering transform version.
+  - ODT: output device transform, including display primaries,
+    white point, and EOTF.
+  - Mastering display: peak luminance (cd/m^2), black level,
+    color volume (e.g., P3, BT.2020).
+
+AMF extends ACESclip with:
+  - Versioning: semantic version of the AMF schema.
+  - Cryptographic hash (SHA3-512) of the source image data,
+    timestamped at capture. This enables content authenticity
+    verification.
+  - Non-ACES grading pipeline support: a GIOP-specific flag
+    signals that a GIOP IDT and LMT stack are in use, with
+    the exact GIOP file hashes and version identifiers.
+  - Display adaptation hints: suggested trim passes for common
+    target displays (SDR 100 cd/m^2, HDR 600, HDR 1000, HDR 4000).
+
+GIOP mandates that every rendered frame or sequence carries an
+AMF block, either embedded (e.g., EXR metadata) or as a sidecar
+XML. GIOP decoders that encounter a missing or incomplete AMF
+must raise a warning and default to a safe, pessimistic display
+transform.
+
+2. MULTIVIEW HEVC (MV-HEVC) FOR STEREO AND MULTI-VIEW
+MV-HEVC (Annex F of HEVC/H.265) enables efficient encoding of
+multi-view video, such as stereo 3D or light-field captures.
+
+Layer structure:
+  Layer 0: Base view (typically left eye). Fully self-contained
+    HEVC bitstream.
+  Layer 1 (and higher): Dependent views. Use inter-layer prediction
+    in addition to temporal prediction, exploiting inter-view
+    redundancy.
+
+Inter-layer prediction modes:
+  - Texture prediction: reuse decoded samples from the base view.
+  - Motion prediction: inherit motion vectors from the base view.
+  - Residual prediction: predict the difference signal between views.
+
+Apple Vision Pro parameters (2026 reference):
+  - Resolution: 2200 x 2200 pixels per eye.
+  - Frame rate: 30 fps (nominal), up to 60 fps supported.
+  - Color encoding: Rec.709 8-bit 4:2:0 for streaming delivery;
+    higher-quality masters use Rec.2020 10-bit 4:2:2.
+  - Bitrate: approximately 100 Mbps for streaming, up to 400 Mbps
+    for local high-quality playback.
+
+GIOP specifies for MV-HEVC:
+  - The AMF for each view must be independently embedded, with an
+    additional top-level AMF describing the stereoscopic rig:
+    interaxial distance, convergence plane, and view-dependent
+    color calibration offsets.
+  - The base view IDT and ODT shall be the same for both eyes unless
+    a per-eye color correction is intentionally applied (e.g., for
+    anaglyph compatibility).
+
+3. DOLBY VISION DYNAMIC METADATA XML
+Dolby Vision (SMPTE ST 2094-10) defines content-dependent metadata
+that enables intelligent display mapping.
+
+Metadata payload includes:
+  - Mastering display color volume: primaries, white point, peak
+    luminance (e.g., 1000, 4000 cd/m^2), black level.
+  - Level 1 metadata: per-shot or per-frame MaxCLL (Maximum Content
+    Light Level) and MaxFALL (Maximum Frame Average Light Level).
+  - Level 2 metadata: per-shot trim controls (lift, gamma, gain)
+    for secondary color grading on target displays (e.g., SDR 100,
+    HDR 600, HDR 1000).
+  - Level 3 metadata: region-of-interest based adjustments, color
+    enhancement parameters.
+  - Level 8 metadata: user-defined trim passes for specific display
+    types (e.g., cinema projector, tablet, phone).
+
+GIOP defines a normative mapping between Dolby Vision trim passes
+and GIOP LMTs. A Dolby Vision trim can be expressed as a GIOP LMT
+stack, archived in the AMF, and applied in any GIOP-compliant
+grading system. This ensures that the trim intent is not locked
+to Dolby's proprietary tools but is an open, auditable part of
+the color pipeline.
+
+XML structure conforms to ST 2094-10 schema. GIOP validators
+check for:
+  - Non-negative MaxCLL and MaxFALL values.
+  - Peak luminance not exceeding the mastering display capability.
+  - Trim gain values within the defined range.
+
+4. GENERAL IMMERSIVE METADATA SCHEMA
+Beyond specific codecs and standards, GIOP defines a general
+schema for immersive content metadata.
+
+Required fields for any GIOP immersive asset:
+  - Immersive type: mono, stereo, multi-view, light-field, 6DoF,
+    volumetric.
+  - View count and layout: mapping of view indices to physical
+    camera positions (position XYZ, orientation quaternion).
+  - Depth range: near and far clipping planes in scene units, or
+    a depth map channel assignment.
+  - Screen geometry: for VR/AR playback, the virtual screen
+    distance and angular field of view.
+  - Ambient environment: a reference HDR environment map for
+    relighting and reflections in spatial computing.
+
+These metadata fields are serialized as a JSON block inside the
+AMF or as a separate JSON-LD sidecar file. The schema is versioned
+and governed by the GIOP Foundation, with a public registry of
+extensions.
+
+END OF KINGDOM 09
