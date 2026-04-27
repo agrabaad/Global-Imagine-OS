@@ -1,0 +1,190 @@
+GIOP v3.0 :: KINGDOM 05 — SENSOR, LENS HARDWARE AND ISP PIPELINE
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_05_Sensor_Lens_Hardware_ISP.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines the complete electro-optical chain from
+the lens mount to the digital RAW output. It encompasses sensor
+physics and metrology, the architecture of the Image Signal
+Processor (ISP), lens hardware characteristics that influence the
+captured image, and the stabilization systems that control
+camera motion. It is the engineering layer that converts the
+optical image into a calibrated, linearizable digital file.
+
+WHY IT EXISTS
+A perfect color pipeline is useless if the underlying sensor
+response is uncalibrated or the ISP applies non-reversible
+processing. This kingdom provides the metrological foundation
+to characterize any sensor, the standard ISP stages that must
+be accounted for in linearization, and the lens-hardware
+interactions (vignetting, distortion, breathing) that must be
+inverted or compensated. It guarantees that GIOP can ingest
+the rawest possible data stream with full knowledge of its
+physical origins.
+
+HOW IT IS STRUCTURED
+Five sub-domains: Sensor Metrology, ISP Pipeline Architecture,
+Lens Hardware and Optical Compensation, Camera Stabilization
+and Motion Models, and Sensor-Lens Interaction Models. Each
+section defines the measurement protocols, mathematical models,
+and design constraints, with references to ISO and EMVA
+standards.
+
+WHERE IT IS APPLIED
+RAW development, camera firmware design, on-set DIT quality
+control (false color, exposure evaluation), lens metadata
+utilization in VFX (distortion maps), gimbal and OIS
+performance characterization, and computational photography
+algorithms that fuse multiple frames.
+
+WHO USES IT
+Camera engineers, RAW decoder developers, DITs, lens technicians,
+pipeline TDs who ingest and linearize camera data.
+
+WHAT PROBLEM IT SOLVES
+Removes ambiguity about how a specific sensor converts photons
+to code values. Defines the exact processing chain that must
+be inverted to reach linear scene light. Provides the lens
+correction models (distortion, fall-off) needed to align
+multi-camera arrays. Guarantees that stabilization-induced
+motion blur can be separated from scene motion, enabling
+accurate VFX tracking.
+
+1. SENSOR METROLOGY
+All measurements follow the EMVA 1288 standard unless noted.
+
+Quantum Efficiency (QE):
+  QE(lambda) = mu_e / mu_p
+Measured at each wavelength. Peak QE typically 0.6–0.9 for
+front-illuminated, 0.8–0.95 for back-illuminated CMOS.
+
+Full Well Capacity (FWC): maximum electrons per pixel.
+  FWC ≈ 1000 * (pixel area in μm²) for standard CMOS.
+Saturation signal S_sat = FWC * g, where g is conversion gain (DN/e-).
+
+Conversion Gain (g): measured via Photon Transfer Curve (PTC).
+  Variance_total - Variance_read = g * (Mean_Signal - Mean_Dark)
+Slope of linear fit gives g in DN/e-.
+
+Read Noise (N_read): standard deviation of signal at zero exposure.
+Typical values: 1–3 e- for high-gain modes, 5–15 e- for low-gain modes.
+
+Dynamic Range (DR):
+  DR = 20 * log10(FWC / N_read)  [dB]
+  DR_stops = log2(FWC / N_read)
+
+Dark Current (D): mean thermal electron rate (e-/s) at a given
+sensor temperature. Doubles approximately every 6–8 °C.
+
+Pixel Non-Uniformity: Photo Response Non-Uniformity (PRNU) and
+Dark Signal Non-Uniformity (DSNU) are corrected by flat-fielding.
+
+Spectral Sensitivity Curves: S_sensor(lambda) = QE(lambda) *
+CFA_transmittance(lambda) (including microlens and IR filter).
+GIOP Bodies/ store these curves for certified cameras.
+
+2. ISP PIPELINE ARCHITECTURE
+The standard ISP transforms raw sensor data into a viewable image.
+For GIOP linearization, all stages below must be invertible or
+bypassed to recover scene-linear data.
+
+Canonical stages (in processing order):
+  a. Black Level Subtraction: remove the sensor's optical black
+     offset (typical 64 DN for 10-bit).
+  b. Defect Pixel Correction: interpolate dead/hot pixels from
+     neighbors.
+  c. Lens Shading Correction (LSC): compensate for vignetting
+     and color shading using calibrated per-channel gain maps.
+  d. White Balance: apply RGB gains to neutralize the scene
+     illuminant.
+  e. Demosaicing: reconstruct full RGB from the Color Filter
+     Array (CFA) pattern (Bayer, X-Trans, Quad Bayer).
+     GIOP endorses linear demosaicing methods (e.g., Malvar-He-
+     Cutler) to avoid non-linear artifacts.
+  f. Color Correction Matrix (CCM): map sensor native RGB to a
+     standard color space (e.g., XYZ or sRGB) via a 3x3 matrix
+     optimized for a target illuminant.
+  g. Gamma Correction: apply OETF (e.g., sRGB, Rec.709) or log
+     encoding (S-Log3, LogC4) for perceptual encoding.
+  h. Noise Reduction (2D/3DNR) and Edge Enhancement: these are
+     destructive for VFX linearization. GIOP mandates the
+     availability of a "Minimal Processing" mode that bypasses
+     these stages, or provides the noise model for inversion.
+  i. Tone Mapping: global or local contrast adjustments. For
+     GIOP compliance, this must be dissociable from the IDT.
+
+Modern Cognitive ISP (2026 era): 20-bit internal pipeline,
+real-time semantic segmentation (up to 8 layers), quad-exposure
+HDR fusion, AI-driven local tone mapping and denoising. GIOP
+requires that metadata describing the exact operations and
+their parameters be embedded in the RAW container to permit full
+inversion by external linearization tools.
+
+3. LENS HARDWARE AND OPTICAL COMPENSATION
+Lens characteristics that must be modeled and compensated:
+
+Vignetting (natural cos^4 law):
+  I_theta = I_0 * cos^4(theta)
+where theta is the field angle. Mechanical vignetting
+further reduces intensity off-axis, modeled by a polynomial
+fit: I(x,y) = I_0 * (1 + k1*r^2 + k2*r^4 + ...), with r the
+normalized radial distance.
+
+Lens Distortion (Brown-Conrady model):
+  x_dist = x * (1 + k1*r^2 + k2*r^4 + k3*r^6) + 2*p1*x*y + p2*(r^2 + 2*x^2)
+  y_dist = y * (1 + k1*r^2 + k2*r^4 + k3*r^6) + p1*(r^2 + 2*y^2) + 2*p2*x*y
+where (k1,k2,k3) are radial distortion coefficients and (p1,p2) are
+tangential coefficients. GIOP provides inverse distortion using
+STMap generation.
+
+Chromatic Aberration: lateral (transverse) CA is modeled as a
+wavelength-dependent radial shift, corrected by scaling each
+channel relative to green.
+
+Focus Breathing: the change in effective focal length with focus
+distance. Quantified as the percentage change in field of view.
+GIOP lens profiles include breathing compensation data for
+virtual production.
+
+4. CAMERA STABILIZATION AND MOTION MODELS
+Camera motion compensation affects the effective exposure time
+per pixel and introduces geometric warping.
+
+Optical Image Stabilization (OIS): lens element shift or sensor
+shift to counteract angular velocity. The compensation vector
+V_comp is measured by gyroscopes. Effective blur:
+  Blur_effective = |V_subject - V_comp| * t_exposure
+
+Gimbal Stabilization (3-axis or 4DoF): feedback control system.
+PID controller:
+  u(t) = K_p * e(t) + K_i * integral(e dt) + K_d * de/dt
+where e(t) is the angular error.
+
+AI Horizon Lock: predictive model that anticipates user motion and
+applies intelligent cropping with minimal field-of-view loss.
+
+Rolling Shutter Compensation: in electronic stabilization, the
+readout time must be accounted for. The effective transformation
+is a composition of the rolling shutter skew (from sensor
+readout) and the OIS shift. GIOP defines a unified 2D motion
+field per frame that encapsulates all stabilization effects,
+allowing VFX pipelines to remove them entirely.
+
+5. SENSOR-LENS INTERACTION MODELS
+Pixel crosstalk and microlens effects become significant at
+small pixel pitches (<1 μm).
+
+Optical crosstalk: photons passing through one color filter
+may be absorbed in a neighboring pixel. Modeled by a 3x3
+convolution kernel per color channel.
+
+Microlens shading: the angular response of the pixel varies
+with position on the sensor; this is compensated by LSC.
+
+Lens-sensor alignment: flange focal distance and mount
+tolerances affect field tilt and sharpness uniformity.
+GIOP's lens profiles include a sensitivity matrix to these
+misalignments.
+
+END OF KINGDOM 05
