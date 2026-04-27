@@ -1,0 +1,264 @@
+GIOP v3.0 :: LEGACY, SETTINGS, PARAMETERS AND FAULT TOLERANCE
+SECTION 15 OF 15
+STATUS: CERTIFIED GOLDEN
+
+PART A — GIOP HISTORICAL CHRONOLOGY
+
+These milestones are not formulas. They are the shoulders on which GIOP
+stands. Each entry records the first deployment of a technology now
+foundational to modern imaging.
+
+01 Nokia PureView Oversampling (2012)
+  First 7:1 superpixel oversampling in a phone. Introduced lossless zoom.
+  Formula: R(z) = max(1, R_base / z^2). At 1x, R = 7:1; at max zoom, R = 1:1.
+  Significance: Origin of modern pixel binning and computational zoom.
+
+02 Nokia Optical Image Stabilization (2012)
+  First hardware floating-lens OIS in a smartphone (Lumia 920).
+  Ancestor of every OIS and sensor-shift stabilization system.
+
+03 Nokia Large Sensor and Xenon Flash (2010)
+  1/1.83-inch sensor in Nokia N8. First phone to challenge point-and-shoot
+  cameras with a large sensor and proper xenon flash.
+
+04 Nokia Carl Zeiss Optics and Autofocus (2005)
+  First Carl Zeiss Tessar lens on a phone (Nokia N90). Established the
+  optics-first philosophy for mobile imaging.
+
+05 Nokia Dual-Lens Camera (2005)
+  First 3G smartphone with front VGA camera (Nokia 6680). Foundation of the
+  multi-camera arrays now standard in every device.
+
+06 Panasonic Mobile Autofocus (2003)
+  First phone with autofocus CCD sensor (Panasonic mova P505iS). Proved that
+  mobile cameras could mechanically focus.
+
+07 Sony 4K Display Ecosystem (2011/2015)
+  First true 4K home projector (VPL-VW1000ES, 2011). First 4K smartphone
+  display (Xperia Z5 Premium, 2015). Established 4K as a consumer standard.
+
+08 Sony Optical Zoom and Exmor Sensor (2007/2013)
+  First folded optical zoom lens in a phone (SO905iCS, 2007). First large
+  Exmor RS sensor with BSI in a phone (Xperia Z1, 2013).
+
+09 Huawei Dual Sensor with Leica (2016)
+  RGB plus monochrome dual sensor in Huawei P9. Started the computational
+  bokeh era and proved dual-sensor fusion could rival larger single sensors.
+
+10 Huawei RYYB Periscope Zoom (2019)
+  RYYB color filter array captures 40 percent more light than traditional
+  Bayer. First commercial 5x periscope zoom lens (P30 Pro).
+
+11 Honor Integrated Micro-Gimbal (2026)
+  4DoF micro-gimbal with AI horizon lock. Mechanical stabilization meets
+  predictive electronic stabilization, enabling multi-second handheld
+  exposures with zero motion blur.
+
+PART B — CAMERA SETTINGS TOOLKIT
+
+B1. FALSE COLOR IRE ZONES
+IRE (Institute of Radio Engineers) scale maps luminance to a percentage
+where 0 IRE is black and 100 IRE is reference white.
+
+Formula: IRE = (Luminance / Reference_White) * 100
+Reference_White is 90 percent diffuse white in scene-referred space.
+
+Zone mapping for exposure assessment:
+  0 to 5 percent IRE (Purple): underexposure, noise floor.
+  5 to 15 percent IRE (Blue): deep shadows.
+  15 to 25 percent IRE (Cyan): shadows, minimal detail.
+  25 to 50 percent IRE (Green): midtones, well-exposed.
+  50 to 60 percent IRE (Pink): Caucasian skin tone (approximately 50 IRE).
+  60 to 75 percent IRE (Yellow): bright highlights.
+  75 to 95 percent IRE (Orange): very bright highlights.
+  95 to 100 percent IRE (Red): near clipping.
+  Above 100 percent IRE (White): clipped.
+
+B2. CONTRAST FORMULAS
+Contrast quantifies the difference between light and dark regions.
+
+Michelson Contrast:
+  C = (I_max - I_min) / (I_max + I_min)
+Defined for periodic patterns. Range: 0 (uniform) to 1 (maximum).
+
+RMS Contrast:
+  C_RMS = sqrt( (1/N) * sum( (I_i - I_mean)^2 ) )
+Defined for arbitrary images. Measures standard deviation of pixel
+intensities relative to the mean.
+
+S-Curve Contrast (Sigmoid):
+  I_out = 1 / (1 + exp(-gain * (I_in - pivot)))
+Applies a film-like contrast curve. gain controls steepness, pivot sets
+the mid-point. Input and output are scene-referred linear.
+
+B3. SATURATION FORMULAS
+Saturation controls the intensity of color relative to its luminance.
+
+HSL Saturation:
+  Saturation = (M - m) / M   if M != 0, else 0
+where M = max(R,G,B), m = min(R,G,B).
+
+CIELAB Chroma:
+  Chroma = sqrt( a*^2 + b*^2 )
+Perceptually uniform measure of colorfulness.
+
+Luminance-Preserving Saturation:
+  R_out = L + sat * (R_in - L)
+  G_out = L + sat * (G_in - L)
+  B_out = L + sat * (B_in - L)
+where L = 0.2126*R_in + 0.7152*G_in + 0.0722*B_in
+sat = 0 yields grayscale; sat = 1 yields original color; sat > 1 enhances.
+
+B4. EXPOSURE TRIANGLE REFERENCE
+The fundamental relationship:
+  E = k * (t * S) / N^2
+where E is exposure at the sensor, t is shutter speed, S is ISO gain,
+N is f-number, and k is a calibration constant.
+
+One stop represents a doubling or halving of light.
+
+APEX System:
+  Av = 2 * log2(N)
+  Tv = -log2(t)
+  Sv = log2(ISO / 3.125)
+  Ev = Av + Tv = Bv + Sv
+
+Exposure Value at ISO 100:
+  EV100 = log2(N^2 / t)
+
+Sunny 16 Rule: on a bright sunny day at ISO 100, set f/16 and 1/ISO seconds.
+Handheld Shutter Rule: minimum shutter speed is approximately
+  1 / (focal_length * crop_factor) seconds.
+
+PART C — PARAMETER GUARDRAILS AND FAULT TOLERANCE
+
+C1. SAFE OPERATING RANGES
+All parameters in the GIOP pipeline have defined safe ranges. Values
+outside these ranges trigger warnings or hard stops.
+
+Sensor parameters:
+  Quantum Efficiency: 0.0 to 1.0. Values outside trigger fault.
+  Full Well Capacity: must be positive. Negative FWC triggers fault.
+  Read Noise: must be positive. Zero or negative triggers warning.
+  Conversion Gain: must be positive. Non-positive triggers fault.
+
+Lens parameters:
+  Distortion coefficients k1, k2, k3: must produce unique mapping
+    (no fold-over) over the full sensor area. Fold-over triggers fault.
+  Vignetting fall-off: must not exceed 90 percent at any field angle.
+    Excessive fall-off triggers warning.
+  Chromatic aberration shift: must not exceed 2 pixels at sensor edges.
+    Exceeding 3 pixels triggers warning.
+
+Display parameters:
+  Peak luminance: 0.0 to 10,000 cd/m^2 for PQ. Values above 10,000 are
+    clipped. Negative values trigger fault.
+  Black level: 0.0 to peak_luminance. Black level above peak triggers fault.
+  EOTF: the ODT must produce code values within the valid range for the
+    bit depth (0 to 1023 for 10-bit, 0 to 4095 for 12-bit). Underflow or
+    overflow triggers hard clipping and a warning event.
+
+C2. SENSOR FAULT FLAGS
+Embedded in RAW metadata, these flags alert downstream processing.
+
+Dead pixel map: a binary map per color channel indicating permanently stuck
+  or dead pixels. The ISP or GIOP linearization must interpolate these.
+  If more than 0.5 percent of pixels in any channel are flagged, a warning
+  is emitted. If more than 2 percent, a fault is raised.
+
+Black level instability: the optical black region's mean value shifts by
+  more than 2 digital numbers between consecutive frames. Triggers a warning.
+  Shift exceeding 10 DN triggers a fault and the frames are marked as suspect.
+
+Column or row noise: a periodic pattern in the dark frame with amplitude
+  exceeding 1.5 times the read noise standard deviation. Triggers warning.
+
+Temperature excursion: sensor temperature exceeding manufacturer maximum
+  by more than 5 degrees Celsius. Triggers immediate throttle or shutdown.
+
+C3. DUAL NATIVE ISO CROSSOVER FAULT DETECTION
+Dual native ISO systems switch between two analog gain paths at a
+calculated crossover point.
+
+Crossover signal level S_x (in electrons):
+  S_x = N_read,low^2 / (GC_high / GC_low - 1)
+where GC is gain (DN/e-) and N_read,low is the low-gain read noise.
+
+Fault detection logic:
+  If the camera reports a dual gain mode but S_x is negative (implies
+  GC_high <= GC_low), the system raises a configuration fault.
+  If the actual signal at the crossover frame exceeds S_x by more than
+  20 percent but high gain remains active, a crossover failure fault
+  is raised. The frame is flagged for potential highlight clipping.
+  If the actual signal is below 0.8 * S_x but low gain is active, a
+  noise-floor fault is raised. The frame is flagged for excessive noise.
+
+C4. ROLLING SHUTTER SKEW TOLERANCE
+Rolling shutter introduces geometric distortion in moving scenes.
+
+Skew angle theta with respect to vertical:
+  tan(theta) = (vx * t_frame) / (N_rows * pixel_pitch)
+where vx is horizontal image-plane velocity in pixels per second, t_frame
+is total sensor readout time, N_rows is total row count.
+
+Tolerance limits:
+  For cinematic acquisition (24 fps, 180-degree shutter): skew angle must
+    not exceed 0.5 degrees. If exceeded, the frame is flagged for VFX
+    pipeline review and the skew angle is embedded in metadata.
+  For broadcast (50/60 fps): skew angle must not exceed 0.25 degrees.
+  For high-speed (100+ fps): skew angle must not exceed 0.1 degrees.
+  If skew exceeds 2.0 degrees, the frame is marked as degraded and the
+    GIOP runtime raises a warning event.
+
+C5. CLIPPING INDICATORS
+The GIOP pipeline monitors for clipping at multiple stages.
+
+Sensor saturation: pixel value equals FWC within 2 percent tolerance.
+  Flagged as saturated. Number of saturated pixels per frame is logged.
+  If more than 5 percent of the frame is saturated, a highlight warning
+  is emitted.
+
+Codec quantization clipping: after encoding and decoding, pixels that
+  exceed the original pre-encode value by more than 1 percent are
+  flagged as codec overshoot. These are tracked per GOP.
+
+Display clipping: any linear color component exceeding the display peak
+  luminance (in cd/m^2 mapped to PQ code value) triggers display clipping
+  flag and the ODT clamps to peak.
+
+C6. CONFIGURATION FAULT DETECTION
+GIOP runtime validates its own configuration at startup and periodically
+during operation.
+
+Checks:
+  All referenced LUT files exist and pass hash verification.
+  All plugin manifests match their binaries.
+  The OCIO config parses without error.
+  The display profile matches the connected monitor EDID.
+  GPU driver version meets minimum specified in the runtime release notes.
+
+Any check failure raises a fault event. If the fault affects color
+fidelity (LUT hash mismatch, plugin cert expired, OCIO parse error),
+the runtime enters safe mode: all transforms are bypassed and a magenta
+overlay is applied to the viewer until the fault is resolved.
+
+C7. RECOVERY PROCEDURES
+When a fault is detected, the runtime follows a documented recovery
+sequence.
+
+Transient faults (single frame GPU timeout, IPC delay):
+  Frame is reprocessed with bypassed suspect component.
+  If reprocessing succeeds, normal operation resumes.
+  If three consecutive frames fail, the component is quarantined.
+
+Persistent faults (hash mismatch, plugin crash, config error):
+  Faulted component is disabled.
+  Identity transform is inserted in its place.
+  Event with severity FATAL is emitted.
+  Operator must acknowledge the fault before production continues.
+
+All fault events are written to an append-only log with SHA3-512
+chaining: each log entry includes the hash of the previous entry,
+preventing tampering with the operational history.
+
+END OF SECTION 15
