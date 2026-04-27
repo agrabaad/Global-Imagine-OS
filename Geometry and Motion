@@ -1,0 +1,67 @@
+GIOP v3.0 :: FORMULAS — Geometry and Motion
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Geometry_Motion.sci
+
+WHAT IS THIS FILE
+The certified standalone formula reference for geometric image formation,
+motion blur, and the fundamental physical limits of sampling.
+
+WHY IT EXISTS
+Motion blur, shutter angle, aperture, and Nyquist are the mechanical
+cornerstones of camera operation. A single reference guarantees that
+every GIOP motion‑compensated effect (timewarp, de‑blur, synthetic
+shutter) obeys the same physical laws.
+
+HOW IT WORKS
+Formulas for blur length, shutter speed / angle conversion, and the
+sampling theorem are defined.
+
+WHERE IT IS DEPLOYED
+- Shutter simulation (CGI and virtual production)
+- Rolling‑shutter artefact calculation
+- Motion‑compensated temporal filtering
+
+WHO USES IT
+L2 VFX Engineers; compositors; camera tracking teams.
+
+WHAT PROBLEM IT SOLVES
+Prevents mismatches between synthetic motion blur and real camera blur
+by anchoring all calculations to the same optical and mechanical models.
+
+1. Motion Blur (Linear Subject)
+   Blur_length = V * T
+   V = subject velocity (pixels/s), T = exposure time (s).
+
+2. Cinematic Motion Blur (180° Shutter)
+   T = 1 / (2 * Frame_Rate)
+   Blur_length = V / (2 * Frame_Rate)
+
+3. Aperture (f‑number)
+   N = f / D
+   f = focal length, D = entrance pupil diameter.
+
+4. Nyquist Sampling Theorem
+   f_s > 2 * B
+   f_s = sampling frequency (pixel⁻¹), B = max spatial frequency in
+   the optical image. Violation causes aliasing.
+
+5. Quantum Efficiency (QE)
+   η(λ) = n_electron / n_photon
+   n_electron = collected charge carriers, n_photon = incident photons.
+
+6. Saturation‑based ISO (ISO 12232)
+   S_sat = 78 / H_sat
+   H_sat = exposure (lux·s) that saturates the sensor.
+
+7. Path Tracing (Rendering Equation)
+   L_o(x, ω_o) = L_e(x, ω_o) + ∫_Ω f_r L_i (ω_i·n) dω_i
+
+8. Subsurface Scattering (BSSRDF)
+   L_o(x_o, ω_o) = ∫_A ∫_Ω S(x_i,ω_i; x_o,ω_o) L_i (ω_i·n) dω_i dA
+
+9. Effective Motion Blur with Stabilisation
+   Blur_effective = |V_subject - V_compensation| * T
+   V_compensation = stabilisation‑induced image shift (pixels/s).
+
+END OF Geometry_Motion.sci
