@@ -1,0 +1,53 @@
+GIOP v3.0 :: FORMULAS — Neural Rendering
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Neural_Rendering.sci
+
+WHAT IS THIS FILE
+A certified collection of neural rendering equations that underpin
+NeRF, 3D Gaussian Splatting, and DLSS Ray Reconstruction. It includes
+the NeRF volume rendering integral, the 3DGS EWA splatting alpha‑
+blending equation, and the DLSS Ray Reconstruction loss function.
+
+WHY IT EXISTS
+Neural rendering is the fastest‑evolving area of imaging. Having the
+core formulas in one auditable location ensures that GIOP neural
+renders are physically consistent and that new implementations can be
+validated against certified math.
+
+HOW IT WORKS
+Each formula is expressed in its full mathematical form, with variable
+definitions and references to the original published work.
+
+WHERE IT IS DEPLOYED
+- Virtual production neural view synthesis
+- Real‑time path tracing denoising
+- Neural compression for OTT.
+
+WHO USES IT
+L2 Engineers implementing neural rendering plugins; L1 Architects
+certifying new neural representations.
+
+WHAT PROBLEM IT SOLVES
+Prevents fragmentation in neural rendering implementations by providing
+a single, hash‑verified mathematical foundation.
+
+1. NeRF Volume Rendering Integral
+   C(r) = Σ_i T_i α_i c_i
+   T_i = exp( –Σ_{j=1}^{i‑1} σ_j δ_j )
+   α_i = 1 – exp(–σ_i δ_i)
+   δ_i = t_{i+1} – t_i
+
+2. 3D Gaussian Splatting (EWA Alpha‑Blending)
+   G(x) = exp( –½ (x – μ)ᵀ Σ⁻¹ (x – μ) )
+   Σ = R S Sᵀ Rᵀ
+   Colour from spherical harmonics (degree ≤ 3).
+   C_pixel = Σ_i c_i α_i T_i
+   T_i = Π_{j<i} (1 – α_j)
+
+3. DLSS Ray Reconstruction Loss
+   L = L1_loss + λ_LPIPS * LPIPS + λ_temp * temporal_consistency
+   Temporal consistency computed by warping previous output with optical
+   flow and enforcing coherence.
+
+END OF Neural_Rendering.sci
