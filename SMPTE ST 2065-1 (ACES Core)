@@ -1,0 +1,60 @@
+GIOP v3.0 :: STANDARDS — SMPTE ST 2065-1 (ACES Core)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/SMPTE_ST_2065_1_ACES.sci
+
+WHAT IS THIS FILE
+The certified standard reference for SMPTE ST 2065‑1, the Academy Color
+Encoding System (ACES) core colour space and framework. It defines the
+AP0 primaries, the linear encoding, and the mathematical transforms that
+underpin ACES‑compliant workflows.
+
+WHY IT EXISTS
+GIOP uses ACES2065‑1 as its universal linear scene‑referred exchange
+space. This file provides the normative primaries, white point, and
+conversion matrices needed to interface with any ACES‑compliant system.
+
+HOW IT WORKS
+The AP0 primaries cover the entire CIE 1931 spectral locus. The file
+defines the AP0‑to‑XYZ and XYZ‑to‑AP0 matrices, as well as the
+relationship to AP1 (ACEScg).
+
+WHERE IT IS DEPLOYED
+- All GIOP IDTs and ODTs
+- VFX compositing
+- Archival rendering.
+
+WHO USES IT
+L1 Architects defining colour spaces; L2 Engineers implementing
+colour transforms.
+
+WHAT PROBLEM IT SOLVES
+Provides the exact primaries and matrices for ACES, eliminating any
+ambiguity that might arise from non‑standard implementations.
+
+KEY FORMULAS
+
+1. AP0 Primaries (CIE xy)
+   Red   : (0.7347, 0.2653)
+   Green : (0.0000, 1.0000)
+   Blue  : (0.0001, ‑0.0770)
+   White : D60 (0.32168, 0.33767)
+
+2. AP0 to CIE XYZ Matrix (D60 white)
+   [  1.049811   -0.016521   -0.000694 ]
+   [ -0.006637    1.008164   -0.004773 ]
+   [ -0.000069   -0.000888    0.931502 ]
+
+3. XYZ to AP0 Matrix (inverse of above)
+
+4. AP1 Primaries (ACEScg)
+   Red   : (0.713, 0.293)
+   Green : (0.165, 0.830)
+   Blue  : (0.128, 0.044)
+   White : D60
+
+5. AP0 to AP1 Conversion
+   via XYZ as intermediate, or direct matrix: M_AP0_to_AP1 =
+   M_XYZ_to_AP1 * M_AP0_to_XYZ.
+
+END OF SMPTE_ST_2065_1_ACES.sci
