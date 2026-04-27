@@ -1,0 +1,85 @@
+GIOP v3.0 :: FORMULAS — Optics Physics
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Optics_Physics.sci
+
+WHAT IS THIS FILE
+The certified standalone formula reference for fundamental optics and
+physics equations that govern how light is formed, distorted, and
+transmitted by lenses.
+
+WHY IT EXISTS
+These equations appear repeatedly in camera modeling, lens simulation,
+and image quality assessment. A single, immutable reference prevents
+rounding or sign errors that propagate into VFX and lens calibration.
+
+HOW IT WORKS
+Each equation is given with its parameters, domain of validity, and a
+typical use case.
+
+WHERE IT IS DEPLOYED
+- Lens calibration (distortion, vignetting, depth of field)
+- Image simulation (MTF, bokeh, diffraction)
+- Sensor‑shift and pixel‑binning calculations
+
+WHO USES IT
+L2 Pipeline TDs integrating lens models into Nuke/Resolve; L1 Architects
+designing new optical systems.
+
+WHAT PROBLEM IT SOLVES
+Eliminates the guesswork of “which form of the Brown‑Conrady model” by
+providing the exact polynomial order and coefficient sign convention that
+GIOP mandates.
+
+1. Modulation Transfer Function (MTF)
+   MTF(ν) = |OTF(ν)|
+   where OTF(ν) is the Fourier transform of the point spread function.
+   GIOP uses MTF at Nyquist frequency (ν_Nyquist = 1/(2*pixel_pitch))
+   as the primary resolution metric.
+
+2. Radial Distortion (Brown‑Conrady)
+   ru = rd + k1 * rd^3 + k2 * rd^5 + k3 * rd^7
+   where ru = undistorted radius, rd = distorted radius from the
+   principal point. k1 < 0 gives barrel distortion; k1 > 0 pincushion.
+   Tangential terms are added separately (see Lens domain files).
+
+3. Natural Vignetting (cos⁴ Law)
+   I_θ = I_0 * cos⁴(θ)
+   θ is the field angle. This is the geometric fall‑off for a thin
+   lens. Mechanical vignetting is added via polynomial as documented
+   in individual .opt files.
+
+4. Achromatic Doublet Condition
+   1 / (f1 * V1) + 1 / (f2 * V2) = 0
+   f1, f2 are focal lengths of the two elements; V1, V2 their Abbe
+   numbers. This condition makes the focal length equal at two
+   wavelengths (typically F′ and C′ lines).
+
+5. Lens Maker’s Equation (Thick Lens)
+   1/f = (n - 1) * [1/R1 - 1/R2 + (n - 1)*d / (n * R1 * R2)]
+   n = refractive index, R1, R2 radii of curvature (sign convention:
+   convex = +), d = centre thickness.
+
+6. Hyperfocal Distance
+   H = f^2 / (N * c)
+   f = focal length, N = f‑number, c = circle of confusion diameter.
+
+7. Depth of Field (Approximation)
+   DOF ≈ 2 * N * c * (u / f)^2
+   u = focus distance. Valid for u ≪ H.
+
+8. Fresnel Reflection (Normal Incidence)
+   R = ((n1 - n2) / (n1 + n2))^2
+
+9. Pixel Binning
+   I_binned(x,y) = (1/B^2) * Σ_i Σ_j I(x+i, y+j)
+   B = binning factor. Reduces noise by √(B²) = B in photon‑shot‑
+   limited regime.
+
+10. Lossless Zoom (Nokia PureView)
+    R(z) = max(1, R_base / z^2)
+    R(z) = oversampling ratio at zoom factor z.
+    R_base = base oversampling (typ. 7:1 or 8:1).
+    Sensor_Region_Pixels = Output_Pixels * R(z)
+
+END OF Optics_Physics.sci
