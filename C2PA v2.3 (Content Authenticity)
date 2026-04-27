@@ -1,0 +1,62 @@
+GIOP v3.0 :: NEW TECHNOLOGY — C2PA v2.3 (Content Authenticity)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/C2PA_v2_3.sci
+
+WHAT IS THIS FILE
+The certified standard reference for the Coalition for Content Provenance
+and Authenticity (C2PA) specification version 2.3. It defines the
+cryptographic protocol for signing live and broadcast media, the manifest
+structure, the trust list infrastructure, and the integration with
+streaming formats (CMAF, DASH, HLS). C2PA v2.3 extends content provenance
+to live video for the first time.
+
+WHY IT EXISTS
+C2PA v2.3 closes the gap between file-based and live media authenticity.
+With Irdeto approved as a trust list issuer in April 2026, the ecosystem
+now supports signing of broadcast streams without interrupting delivery.
+GIOP mandates C2PA v2.3 compliance for any AI-augmented or distributed
+content to establish an auditable chain of trust from photon to pixel.
+
+HOW IT WORKS
+1. Manifest Structure:
+   A C2PA manifest is a CBOR-encoded data structure containing:
+     - Claim: the content creator, capture device, timestamp, location.
+     - Assertions: metadata about the content (e.g., camera model, editing
+       operations, AI transformations applied).
+     - Signature: a digital signature over the claim and assertions.
+   The manifest is embedded in the file header (JPEG, PNG, HEIF) or
+   carried as a timed metadata track in video containers (MP4, CMAF).
+
+2. Live Signing Protocol (v2.3):
+   For live streams, the manifest is segmented per CMAF segment.
+   Each segment carries a signature over its GOP. The signature uses
+   ECDSA with NIST P-256 or P-384 curves.
+     Signature = ECDSA_sign( Hash(Segment_data) || Manifest_chain )
+
+3. Trust List:
+   A public key infrastructure (PKI) managed by the C2PA trust list.
+   As of January 2026, the interim trust list was frozen; only approved
+   certificate authorities (e.g., Irdeto, SSL.com) can issue signing
+   certificates. Certificates chain to a root of trust.
+
+4. Verification:
+   The verifier extracts the manifest, checks the signature against the
+   public key in the trust list, and validates the content hash.
+
+WHERE IT IS DEPLOYED
+- Broadcast and OTT streaming
+- News media authenticity
+- GIOP content provenance chain
+- Deepfake detection and mitigation.
+
+WHO USES IT
+L2 Engineers integrating content authenticity into pipelines; broadcasters;
+streaming platforms; AI model auditors.
+
+WHAT PROBLEM IT SOLVES
+Provides a standardised, cryptographic proof of content origin and
+edit history, enabling GIOP-certified content to carry its entire
+processing lineage from camera (IDT) to display (ODT).
+
+END OF C2PA_v2_3.sci
