@@ -1,0 +1,58 @@
+GIOP v3.0 :: SOFTWARE — DaVinci Resolve Fusion Node Expressions
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/DaVinci_Resolve_Fusion.fx
+
+WHAT IS THIS FILE
+The certified software module reference for DaVinci Resolve Fusion node
+expressions (Lua-based). It defines the node reference syntax, simple math
+expressions, conditional logic (iif), time-dependent functions, and the
+method to link parameters across nodes.
+
+WHY IT EXISTS
+Fusion expressions drive procedural composites and advanced motion graphics
+inside Resolve. A standard definition guarantees that a .comp file with
+expressions behaves identically on any GIOP-compliant system.
+
+HOW IT WORKS
+1. Node parameter reference:
+     :NodeName.ParameterName
+   Example: :Transform1.Angle references the Angle slider of Transform1.
+   Expressions are evaluated each frame unless cached.
+
+2. Simple math functions:
+     time          : current frame time (in seconds, from composition start).
+     sin(angle), cos(angle), tan(angle)
+     log(x), log10(x)
+     sqrt(x), abs(x)
+     random(min, max) : uniform random; seed set by node name and frame.
+     noise(x) : 1D Perlin noise.
+
+3. Conditional:
+     iif(condition, true_value, false_value)
+   Example: iif(time < 10, 0, 100) — value jumps to 100 after 10 seconds.
+
+4. Multi-dimensional variables:
+   Vectors can be accessed by .x, .y, .z, .w.
+   Custom variables can be created using Lua's scoping rules.
+
+5. GIOP integration:
+   Fusion expressions can call GIOP-verified functions by loading a GIOP
+   fuse or script. The expression engine itself does not enforce color
+   management; the surrounding node tree handles that.
+
+WHERE IT IS APPLIED
+- Procedural animation
+- Automated rigging in Fusion compositions
+- Parameter linking for dynamic templates.
+
+WHO USES IT
+L2 Engineers building complex Fusion tools; L3 Compositors and motion
+designers.
+
+WHAT PROBLEM IT SOLVES
+Documents the complete expression language for Fusion, removing guesswork
+about function availability and node reference syntax. Guarantees that
+Fusion expressions evaluate deterministically.
+
+END OF DaVinci_Resolve_Fusion.fx
