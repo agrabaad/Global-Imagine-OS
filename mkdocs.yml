@@ -1,0 +1,76 @@
+site_name: "Global Imagine OS Protocol (GIOP)"
+site_description: "The unified, formula-defined imaging protocol — connecting every camera, lens, and display through a single mathematical truth."
+site_author: "Founder, GIOP"
+repo_url: https://github.com/agrabaad/Global-Imagine-OS
+repo_name: "GitHub"
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: deep purple
+    accent: amber
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - awesome-pages
+
+nav:
+  - Home: index.md
+  - Kingdoms:
+      - Kingdom 00 - Science of Light: kingdoms/Kingdom_00_Science_of_Light.md
+      - Kingdom 01 - Human Vision vs Camera: kingdoms/Kingdom_01_Human_Vision_vs_Camera.md
+      - Kingdom 02 - Fundamental Imaging Physics: kingdoms/Kingdom_02_Fundamental_Imaging_Physics.md
+      - Kingdom 03 - Color Science & Visual Perception: kingdoms/Kingdom_03_Color_Science_and_Visual_Perception.md
+      - Kingdom 04 - Physics & Mathematics: kingdoms/Kingdom_04_Physics_and_Mathematics_for_Imaging.md
+      - Kingdom 05 - Sensor, Lens Hardware & ISP: kingdoms/Kingdom_05_Sensor_Lens_Hardware_ISP.md
+      - Kingdom 06 - AI Foundation: kingdoms/Kingdom_06_AI_Foundation.md
+      - Kingdom 07 - Neural Foundation: kingdoms/Kingdom_07_Neural_Foundation.md
+      - Kingdom 08 - Video Engineering & Broadcast: kingdoms/Kingdom_08_Video_Engineering_Broadcast.md
+      - Kingdom 09 - Immersive Formats & Metadata: kingdoms/Kingdom_09_Immersive_Formats_Metadata.md
+      - Kingdom 10 - Immersive & Volumetric Capture: kingdoms/Kingdom_10_Immersive_Volumetric_Capture.md
+      - Kingdom 11 - Spatial Computing: kingdoms/Kingdom_11_Spatial_Computing.md
+  - Camera Bodies:
+      - ARRI ALEXA 35: bodies/ARRI_ALEXA_35.md
+      - RED V-RAPTOR: bodies/RED_V_RAPTOR.md
+      - Sony VENICE 2: bodies/Sony_VENICE_2.md
+      - Canon C700: bodies/Canon_C700.md
+      - Nikon Z9 N-RAW: bodies/Nikon_Z9_NRAW.md
+      - Fujifilm GFX: bodies/Fujifilm_GFX.md
+      - Leica SL: bodies/Leica_SL.md
+      - Hasselblad HNCS HDR: bodies/Hasselblad_HNCS_HDR.md
+      - Blackmagic Gen 5: bodies/Blackmagic_Gen5.md
+      - Panasonic V-Log: bodies/Panasonic_V_Log.md
+      - DJI D-Log: bodies/DJI_D_Log.md
+      - Canon MS-510 SPAD: bodies/Canon_MS_510.md
+      - Raytheon FENCE Event Camera: bodies/Raytheon_FENCE.md
+  - Lenses: lenses/index.md
+  - Displays: displays/index.md
+  - Computing: computing/index.md
+  - Software: software/index.md
+  - Formulas: formulas/index.md
+  - Standards: standards/index.md
+  - Runtime & Legacy:
+      - Runtime Specification: runtime/Section_14_Runtime_Specification.md
+      - Legacy & Fault Tolerance: legacy/Section_15_Legacy_Settings_Fault_Tolerance.md
