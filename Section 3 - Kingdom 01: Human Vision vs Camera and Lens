@@ -1,0 +1,193 @@
+GIOP v3.0 :: KINGDOM 01 — HUMAN VISION VS CAMERA AND LENS
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_01_Human_Vision_vs_Camera.sci
+
+WHAT IS THIS KINGDOM
+The domain that quantifies the difference between how a human observer
+perceives light, color, and detail and how a camera sensor captures them.
+It defines the biological limits of the Human Visual System (HVS), the
+laws of perceptual adaptation, the origins of logarithmic encoding, and
+the design logic behind every OETF, EOTF, tone mapper, and color
+appearance model used in modern imaging.
+
+WHY IT EXISTS
+A camera records linear photon counts; a human sees a scene via a
+complex, nonlinear, and adaptive biological processor. Ignoring this
+gap leads to flat tonal gradation, incorrect highlight roll-off, color
+inconsistency, and viewer discomfort. This kingdom provides the
+perceptual mandate for every transform in the GIOP pipeline, ensuring
+that the final image is not just numerically accurate but visually
+faithful to the original scene.
+
+HOW IT IS STRUCTURED
+Seven sub-domains: HVS Architecture, Luminance Adaptation,
+Dynamic Range Gap, Spectral Sensitivity and Metamerism, Perceptual
+Encoding (OETF/EOTF design), Tone Mapping and Color Appearance, and
+Practical Consequences for the Imaging Pipeline. Each section provides
+the defining biological or psychophysical equations alongside the
+corresponding camera-side equations, exposing the exact mathematical
+distance that GIOP transforms must bridge.
+
+WHERE IT IS APPLIED
+In-camera log curve design (S-Log3, LogC4, Log3G10, F-Log2), HDR
+transfer function specification (PQ, HLG), display EOTF calibration,
+tone mapping operator (TMO) design for format conversion, ACES Output
+Transform design, color appearance modeling for cross-media reproduction,
+and quality assurance for cinematic looks.
+
+WHO USES IT
+Camera engineers designing log curves, color scientists defining
+working spaces, pipeline TDs implementing tone mappers, and colorists
+who need to understand why a specific grade feels right or wrong.
+
+WHAT PROBLEM IT SOLVES
+Eliminates the "flat HDR" syndrome by anchoring log curves to the eye's
+compressive response. Fixes metamerism mismatches between camera RGB and
+human LMS cones. Provides the perceptual rationale for tone mapping,
+ensuring that HDR content on an SDR display retains artistic intent.
+Prevents viewer fatigue caused by incorrect luminance encoding. Converts
+imaging from a purely engineering exercise to a biologically respectful
+visual art.
+
+1. HUMAN VISUAL SYSTEM ARCHITECTURE
+The retina contains two classes of photoreceptors.
+Rods (approximately 120 million): operate below 0.005 cd/m^2 (scotopic),
+  peak sensitivity at 507 nm (V'(lambda)), no color discrimination.
+Cones (approximately 6 million): three types, L, M, S, with peak
+  sensitivities at approximately 560 nm, 530 nm, and 420 nm respectively.
+  Active above 5 cd/m^2 (photopic), provide trichromatic color vision.
+
+Mesopic range (0.005 to 5 cd/m^2): both rods and cones active,
+luminosity function shifts gradually from V'(lambda) to V(lambda).
+CIE 191:2010 provides mesopic photometry.
+
+Receptor distribution is highly non-uniform. Cones are densely packed
+in the fovea (central approximately 2 degree field), while rods dominate
+the periphery. This is why the 2 degree CIE 1931 standard observer uses
+foveal cone fundamentals; the 10 degree CIE 1964 supplementary observer
+incorporates some rod contribution.
+
+2. LUMINANCE ADAPTATION AND THE WEBER-FECHNER LAW
+The visual system adapts to ambient luminance over an enormous range
+(10^-6 to 10^8 cd/m^2). This adaptation involves pupil dilation,
+photoreceptor gain control, and neural adaptation.
+
+Weber's Law: within a given adaptation state, the just-noticeable
+difference (JND) in luminance Delta L is proportional to the background
+luminance L:
+  Delta L / L = k (k approximately 0.02 for a wide range of luminance levels)
+This implies that visual sensitivity to luminance differences is
+logarithmic.
+
+Fechner's formulation: perceived brightness B = c * ln(L/L0).
+In modern terms, the photoreceptor response follows a compressive
+Naka-Rushton equation:
+  R / R_max = L^n / (L^n + sigma^n)
+where n is approximately 0.7 to 1.0 and sigma is the semi-saturation
+constant. The response compresses highlights and expands shadows,
+creating the biological basis for log gamma curves.
+
+3. DYNAMIC RANGE GAP: EYE vs CAMERA
+Instantaneous dynamic range (DR) of the HVS (single adaptation state)
+is approximately 10 to 14 stops (1000:1 to 16000:1). Total adaptive DR
+exceeds 20 stops. Modern CMOS sensors achieve 14 to 17 stops of linear DR.
+
+The eye achieves high DR via local adaptation: each region of the retina
+adapts independently, effectively applying a spatially varying gain map.
+A camera sensor captures a globally uniform linear response, requiring
+a global tone curve to compress the scene DR into the display's limited
+range.
+
+Key difference: the eye's effective OETF is local and temporal; the
+camera's OETF must be globally applied to every pixel. This is the
+fundamental reason why single-global-log-curve cameras still fail to
+perfectly mimic human vision in extreme contrast scenes.
+
+4. SPECTRAL SENSITIVITY AND METAMERISM
+The LMS cone fundamentals define the spectral sensitivity of the human
+observer. The CIE 1931 2 degree color matching functions x_bar, y_bar,
+z_bar are linear transformations of these fundamentals.
+
+A camera's RGB spectral sensitivities (including IR cut and color filter
+array) do not exactly match any linear combination of the LMS
+fundamentals. This leads to observer metamerism: two spectrally
+different stimuli that match for the human eye may produce different
+camera RGB values, and vice versa.
+
+Camera color correction matrices (e.g., from sensor RGB to XYZ or ACES)
+are designed to minimize metamerism error for a given illuminant and
+set of training colors, but residual error always exists. Spectral
+imaging (31 bands, 400 to 700 nm) eliminates this error and is the
+reference truth for GIOP.
+
+5. PERCEPTUAL ENCODING: OETF AND EOTF DESIGN
+All encoding transfer functions are designed around the HVS contrast
+sensitivity function (CSF) or the Weber-Fechner law.
+
+SDR OETF (e.g., BT.709, sRGB): approximate gamma 2.2 or 2.4,
+mimicking the inverse of the perceptual response over a luminance
+range of about 100:1. The linear section near black reduces sensor
+noise amplification.
+
+HDR OETF (HLG): Hybrid Log-Gamma (ITU-R BT.2100) uses a square-root
+portion near black and a logarithmic portion for highlights:
+  E' = sqrt(3*E)/2   for 0 <= E <= 1/12
+  E' = a * ln(12*E - b) + c   for E > 1/12
+This provides backward compatibility with SDR displays while encoding
+extended dynamic range.
+
+HDR EOTF (PQ): ST 2084 Perceptual Quantizer is derived from Barten's
+CSF model and defines the JND step as exactly one code level over the
+range 0 to 10 000 cd/m^2. The formula:
+  V = ((c1 + c2 * L^m1) / (1 + c3 * L^m1))^m2
+with constants defined in the Standard (m1=0.1593, m2=78.84, c1=0.8359,
+c2=18.85, c3=18.69). This ensures that the bit depth (10 or 12 bits) is
+fully utilized without visible banding.
+
+All camera log curves (S-Log3, LogC4, Log3G10, F-Log2) approximate a
+perceptually uniform encoding by applying a logarithmic function to
+linear scene light. Their mathematical forms are documented in GIOP
+Bodies. They share the same design principle: mid-grey (18%) maps to
+approximately the middle of the 10-bit code value range, leaving equal
+JND steps for shadows and highlights.
+
+6. TONE MAPPING AND COLOR APPEARANCE MODELS
+Tone Mapping Operators (TMOs) convert scene-referred linear luminance
+to display-referred luminance, mimicking human adaptation.
+
+Simple global TMOs: Reinhard (L_d = L / (1+L)), exponential, filmic
+(ACES RRT). Their purpose is to compress highlights while preserving
+local contrast.
+
+Color Appearance Models go beyond luminance and model chromatic
+adaptation, surround effects, and brightness/colorfulness attributes.
+CIECAM02 and CAM16 are the most widely accepted. They accept XYZ
+tristimulus values, adapting field luminance (L_A), and surround
+parameters, and output perceptual correlates: lightness J, chroma C,
+hue h, brightness Q, etc.
+
+GIOP mandates the use of CAM16 for any cross-display or cross-ambient
+color matching. The forward model from XYZ to CAM16 JCh and the inverse
+are defined in CIE 248:2022.
+
+The ACES 2.0 Gamut Compression algorithm operates in a perceptual
+space derived from CAM16, compressing out-of-gamut colors toward the
+achromatic axis while preserving hue with less than 2 degree shift.
+
+7. PRACTICAL CONSEQUENCES FOR THE GIOP PIPELINE
+- IDT design must handle the camera's linear capture, not mimic the eye.
+  Perceptualization happens only at the output stage via ODT.
+- Log grading spaces (ACEScct, LogC, etc.) are preferred by colorists
+  because they approximate the eye's JND distribution: equal code value
+  steps correspond to roughly equal perceived differences.
+- The ODT must include not just the EOTF but also a rendering intent
+  that accounts for display peak luminance and surround (dark, dim, or
+  average). This is where CAM16-based mapping is invoked.
+- For virtual production, the LED wall's luminance must be calibrated
+  so that the camera seeing the wall perceives the same relative
+  luminances as the human eye seeing the real scene. This requires a
+  camera-and-eye co-model, provided by Kingdom 01 and deployed via
+  GIOP's volumetric rendering tools.
+
+END OF KINGDOM 01
