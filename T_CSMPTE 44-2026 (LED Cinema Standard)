@@ -1,0 +1,59 @@
+GIOP v3.0 :: NEW TECHNOLOGY — T/CSMPTE 44-2026 (LED Cinema Standard)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/LED_Cinema_China.sci
+
+WHAT IS THIS FILE
+The certified standard reference for T/CSMPTE 44-2026, the China Society
+of Motion Picture and Television Engineers standard for LED displays used
+in virtual production. It specifies performance requirements and measurement
+methods for LED background walls, including luminance, colour accuracy,
+viewing angle, stability, and uniformity.
+
+WHY IT EXISTS
+LED volumes have become essential for virtual production, but lacked a
+standardised specification until T/CSMPTE 44-2026. This standard, developed
+with input from Chinese film studios and LED manufacturers, provides the
+first comprehensive quality framework for virtual production LED walls.
+GIOP adopts it to validate and calibrate LED volumes in its ODT pipeline.
+
+HOW IT WORKS
+1. Luminance Requirements:
+   Minimum luminance: 1000 cd/m² (for HDR content on LED wall)
+   Uniformity: luminance variation < 5% across the active area.
+
+2. Colour Accuracy:
+   Colour gamut: ≥ 95% DCI-P3 coverage
+   White point: D65 (tolerance Δu'v' < 0.002)
+   Colour uniformity: ΔE < 2.0 across the panel.
+
+3. Optical Performance:
+   Viewing angle: ≥ 160° horizontal and vertical without colour shift
+   exceeding ΔE 3.0.
+   Refresh rate: ≥ 3840 Hz (to avoid camera scan artifacts).
+   Grey scale: 16-bit or higher internal processing.
+
+4. Stability:
+   Luminance drift < 5% over 1000 hours of continuous operation.
+   Temperature range: 0°C to 40°C operational.
+
+5. Measurement Methods:
+   Luminance and colour measured with a spectroradiometer (e.g., CS-2000)
+   at 9-point grid. Grey scale measured at 256 levels, checking linearity
+   of the PQ or gamma curve.
+
+WHERE IT IS DEPLOYED
+- Virtual production stages in China
+- GIOP LED volume calibration
+- International virtual production studios adopting the standard.
+
+WHO USES IT
+L2 Engineers calibrating LED walls; virtual production supervisors;
+display manufacturers; DITs.
+
+WHAT PROBLEM IT SOLVES
+Provides a verifiable quality standard for LED volumes, enabling GIOP
+to certify that a virtual production wall meets the luminance, colour,
+and stability requirements for professional cinematography.
+
+END OF LED_Cinema_China.sci
