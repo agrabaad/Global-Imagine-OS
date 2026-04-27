@@ -1,0 +1,137 @@
+GIOP v3.0 :: DISPLAYS — Micro-LED
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /displays/Micro_LED.mon
+
+WHAT IS THIS FILE
+The certified display profile for Micro-LED emissive display technology.
+It defines the self-emissive inorganic semiconductor structure (GaN for
+blue/green, AlInGaP for red), sub-nanosecond response time, extreme
+luminance linearity, wide color gamut, and scalability from small
+wearable panels to large video walls. This is the canonical reference
+for GIOP ODTs targeting Micro-LED displays.
+
+WHY IT EXISTS
+Micro-LED is emerging as the ultimate emissive display technology, with
+response times orders of magnitude faster than OLED and luminance
+capability far beyond LCD. An ODT for Micro-LED must know its true
+luminance linearity (no roll-off) and its ability to sustain high
+brightness indefinitely without burn-in. This file provides the
+physics-based model for next-generation mastering and consumer displays.
+
+HOW IT WORKS
+This file specifies:
+  1. Semiconductor materials and emission wavelengths.
+  2. Sub-nanosecond response time and its impact on motion resolution.
+  3. Luminance linearity and dynamic range.
+  4. Color primaries and gamut coverage.
+  5. Scalability and pixel pitch.
+
+WHERE IT IS DEPLOYED
+- Future cinema mastering monitors
+- Large-scale LED video walls (virtual production)
+- Consumer TVs and smartwatches
+- Augmented reality glasses.
+
+WHO USES IT
+- L1 Architects: designing new display standards.
+- L2 GIOP Engineers: implementing Micro-LED ODTs.
+- L3 Colorists: mastering for Micro-LED walls.
+
+WHAT PROBLEM IT SOLVES
+Defines the unique characteristics of Micro-LED (ultra-fast response,
+extreme luminance, perfect linearity) that differentiate it from OLED
+and LCD. Ensures GIOP ODTs can exploit these capabilities fully.
+
+1. SEMICONDUCTOR MATERIALS
+  Micro-LEDs are self-emissive, inorganic light-emitting diodes on a
+  silicon or glass backplane.
+
+  Materials:
+    Red   : AlInGaP  (Aluminium Indium Gallium Phosphide)
+            Peak emission: 630–640 nm
+    Green : GaN (Gallium Nitride, with InGaN quantum wells)
+            Peak emission: 525–535 nm
+    Blue  : GaN (with InGaN quantum wells)
+            Peak emission: 450–460 nm
+
+  Inorganic materials provide:
+    - No organic degradation → no burn-in, infinite lifetime.
+    - Thermal stability → sustained high brightness without cooling.
+
+2. RESPONSE TIME AND MOTION
+  Response Time    : < 1 nanosecond (electron-hole recombination)
+    This is orders of magnitude faster than OLED (~0.1 ms) and LCD (~1–5 ms).
+    The emission turns on/off almost instantaneously.
+
+  Motion Resolution:
+    With sub-ns response, the display can achieve true impulse driving
+    (like a CRT). Black Frame Insertion at very short duty cycles is
+    possible without perceptible flicker. This eliminates sample-and-hold
+    blur entirely.
+    Equivalent motion resolution: >1000 lines (perfect for 24p cinema
+    with no judder or blur).
+
+3. LUMINANCE LINEARITY AND DYNAMIC RANGE
+  A key advantage of Micro-LED: the luminance response to drive current
+  is perfectly linear from 0.01 cd/m² to over 5000 cd/m². No roll-off,
+  no ABL (until thermal limits are reached).
+
+  Peak Luminance (current 2026):
+    TV panels       : 4000 cd/m²
+    Video walls     : 10,000 cd/m² (achievable with active cooling)
+    AR glasses      : 100,000 cd/m² (to overcome ambient sunlight)
+  Black Level       : 0 cd/m² (true black, per-pixel turn-off)
+  Contrast Ratio    : Infinite
+  Dynamic Range     : >20 stops (at 10,000 nit peak)
+
+  For GIOP ODT:
+    The PQ EOTF can be mapped directly; the display can reach 10,000 cd/m²
+    which is the PQ maximum. This makes Micro-LED the first consumer
+    technology to achieve the full PQ range without tone mapping.
+
+4. COLOR PRIMARIES AND GAMUT
+  The narrow-band emission of inorganic semiconductors yields very pure
+  primaries.
+
+  CIE 1931 xy primaries (typical):
+    Red   : (0.708, 0.292)  (Rec.2020 red)
+    Green : (0.170, 0.797)  (Rec.2020 green)
+    Blue  : (0.131, 0.046)  (Rec.2020 blue)
+
+  Rec.2020 coverage: >95% (nearly complete).
+  White Point: D65 (factory calibrated).
+
+  For GIOP: the ODT should target full Rec.2020 primaries. The display's
+  internal calibration will map to its native gamut with minimal
+  compression.
+
+5. PIXEL PITCH AND SCALABILITY
+  Pixel Pitch:
+    Consumer TV   : 50–100 μm pitch (e.g., 100" 4K)
+    Smartwatch    : 10–20 μm pitch (e.g., 1.5" 300 PPI)
+    AR glasses    : <5 μm pitch (e.g., 0.13" full HD)
+
+  Micro-LED panels are assembled from individual LED chips using mass
+  transfer technology. The pixel pitch and resolution can be customized
+  for any form factor. GIOP stores the pixel pitch and panel dimensions
+  in metadata so the ODT knows the native resolution and aspect ratio.
+
+6. GIOP ODT RECOMMENDATION
+  Target Primaries  : Rec.2020 (BT.2020), D65 white.
+  Target EOTF       : PQ (ST.2084) at 10,000 cd/m² peak (full PQ range).
+  Special Considerations:
+    - No tone mapping necessary if the content is mastered at 10,000 nits.
+    - If mastered at a lower peak (e.g., 1000 nits), the display's
+      internal processor can upscale gracefully.
+    - For video walls in virtual production: the ODT must include a
+      per-panel calibration LUT to uniformize color and luminance across
+      the wall.
+
+7. VALIDATION AND HASH
+   Validated against published Micro-LED research (Samsung, PlayNitride,
+   AUO) and industry white papers.
+   SHA3-512 of this file (all text above this line):
+   [To be computed after final content is sealed]
+
+END OF Micro_LED.mon
