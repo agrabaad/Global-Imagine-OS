@@ -1,0 +1,71 @@
+GIOP v3.0 :: LENSES — Bio-Inspired Optical Attention Mechanism (Computational)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/computational/Bio_Inspired_Attention.opt
+
+WHAT IS THIS FILE
+The mathematical model of an optical attention mechanism inspired by human
+selective visual attention. It describes how a lens system can dynamically
+allocate its resolving power to regions of interest, mimicking the foveated
+nature of human vision.
+
+WHY IT EXISTS
+Conventional lenses image the entire field with uniform resolution, wasting
+pixels. Bio-inspired attention optics (Harbin Institute, 2025) can improve
+efficiency and reduce data rates. GIOP standardizes the model for pipeline
+integration.
+
+HOW IT WORKS
+1. Principle:
+   The human eye has high resolution only in the fovea (central ~2°). An
+   optical attention system mimics this by dynamically modulating the point
+   spread function (PSF) across the field of view.
+
+2. Implementation:
+   A deformable mirror, liquid crystal spatial light modulator, or tunable
+   acoustic gradient lens is placed at the aperture stop. This element
+   introduces a spatially varying phase:
+     φ(x,y) = α(x,y) * (x² + y²)
+   where α(x,y) defines the local focal length: f_local(x,y) = f_base + Δf * A(x,y).
+   A(x,y) ∈ [0,1] is the attention map derived from a saliency model.
+
+3. Saliency model:
+   A(x,y) is computed from image content (contrast, motion, faces). It is
+   a Gaussian mixture centered on attended regions:
+     A(x,y) = sum_i w_i exp(-((x-x_i)² + (y-y_i)²) / (2σ_i²))
+   where (x_i,y_i) are attention points from eye tracking or content analysis.
+
+4. Resulting PSF:
+   The PSF is space-variant. In attended regions, the lens is well-focused
+   (sharp, diffraction-limited). Outside, defocus blur increases proportionally
+   to (1 - A(x,y)).
+   The blur diameter b(x,y) = (Δf / f#) * (1 - A(x,y)).
+
+5. Image reconstruction:
+   The raw sensor data is blurred in a known, spatially varying manner.
+   A space-variant deconvolution (Richardson-Lucy with local kernels, or a
+   neural network trained on the attention map) restores uniform sharpness.
+
+6. Metadata:
+   The attention map A(x,y) and the PSF parameters (f_base, Δf, f#) are
+   embedded as GIOP metadata alongside the raw frame. This ensures the
+   reconstruction path is fully documented and reproducible.
+
+WHERE IT IS DEPLOYED
+- Robotics (efficient scene understanding)
+- Surveillance (high-res on faces, low-res on background for privacy/data savings)
+- Autonomous vehicles (foveated perception)
+- Smartphone cameras (processing power and battery saving)
+
+WHO USES IT
+L1 Architects designing attention-based optics; L2 Engineers implementing
+space-variant deconvolution in ISP pipelines.
+
+WHAT PROBLEM IT SOLVES
+Enables cameras to emulate human foveation without mechanical parts,
+dramatically reducing sensor readout and processing load while maintaining
+perceptual quality. GIOP captures the attention map as metadata, preserving
+the full reconstruction path and allowing downstream VFX to understand
+exactly where and how the image was sharpened.
+
+END OF Bio_Inspired_Attention.opt
