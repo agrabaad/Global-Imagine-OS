@@ -1,0 +1,72 @@
+GIOP v3.0 :: LENSES — Anamorphic Characteristics (Generic)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/anamorphic/Anamorphic_Characteristics.opt
+
+WHAT IS THIS FILE
+The generic optical model for anamorphic lenses. It defines the squeeze
+factor, elliptical bokeh model, horizontal blue streak spectral
+characteristics, and de-squeeze geometry required to restore correct
+proportions in post-production.
+
+WHY IT EXISTS
+Anamorphic lenses introduce systematic, mathematically describable
+artifacts that are often part of the creative intent. This file provides
+the single source of truth for those artifacts so they can be replicated
+synthetically or inverted accurately.
+
+HOW IT WORKS
+1. Squeeze factor S:
+   The image formed on the sensor is compressed horizontally by factor S.
+   Standard values: 1.33×, 1.5×, 1.8×, 2.0×.
+   De-squeeze restores the correct aspect ratio: width_output = width_sensor × S.
+
+2. Oval bokeh:
+   The cylindrical elements create an elliptical entrance pupil.
+   The ratio of major axis (typically vertical) to minor axis (horizontal)
+   equals the squeeze factor S. For a 2× anamorphic, out-of-focus points
+   of light appear as vertical ovals with an aspect ratio of 2:1.
+
+3. Blue streak artifact:
+   Horizontal flare caused by the cylindrical front element. The cylindrical
+   curvature concentrates stray light along the horizontal axis.
+   - Colour is predominantly blue: central wavelength λ ≈ 450 nm,
+     bandwidth ±20 nm (430–470 nm).
+   - Streak length (in pixels) approximately:
+       streak_length = (f_lens / pixel_pitch) * (incident_angle / 57.3°)
+     where incident_angle is the angle of the bright source off-axis.
+   - The streak flares symmetrically left and right; intensity decays with
+     distance from source centre following a 1/r relationship.
+
+4. Distortion characteristics:
+   Anamorphic lenses often have different radial distortion in horizontal
+   and vertical directions due to the asymmetric optical design.
+   Separate coefficients are provided:
+     Horizontal: k1_h, k2_h, k3_h
+     Vertical:   k1_v, k2_v, k3_v
+   Typical values for a 2× anamorphic:
+     k1_h = 0.015, k1_v = -0.005
+     (Horizontal barrel, vertical slight pincushion.)
+
+5. Breathing:
+   Anamorphic focus breathing is typically more pronounced than spherical
+   lenses. The squeeze factor may shift slightly during a focus pull (<2%).
+
+WHERE IT IS DEPLOYED
+- Nuke (STMap de-squeeze, streak synthesis/removal)
+- DaVinci Resolve (anamorphic desqueeze settings)
+- CGI bokeh synthesis
+- Virtual production when using anamorphic lenses on the camera array.
+
+WHO USES IT
+L2 Engineers building anamorphic pipelines; L3 Colorists ensuring proper
+de-squeeze and streak retention; VFX artists creating synthetic anamorphic
+looks.
+
+WHAT PROBLEM IT SOLVES
+Prevents incorrect de-squeeze ratios that distort frame composition.
+Provides the exact wavelength and angular spread of the iconic blue streak
+so that synthetic streak effects match real anamorphic footage. Standardizes
+the oval bokeh model for realistic CGI integration.
+
+END OF Anamorphic_Characteristics.opt
