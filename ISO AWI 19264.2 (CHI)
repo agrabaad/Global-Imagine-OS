@@ -1,0 +1,56 @@
+GIOP v3.0 :: STANDARDS — ISO/AWI 19264-2 (Cultural Heritage Imaging)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/ISO_AWI_19264_2_Cultural_Heritage.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ISO/AWI 19264‑2, which specifies
+methods for analysing the quality of imaging systems used in cultural
+heritage digitisation (museums, archives). It defines test charts,
+illumination standards, and quality metrics for colour accuracy,
+resolution, and geometric distortion.
+
+WHY IT EXISTS
+Cultural heritage imaging requires extremely high fidelity. ISO 19264‑2
+provides a normative quality assurance framework so that digitised
+artworks can be reproduced faithfully across centuries. GIOP incorporates
+this standard to validate archival imaging pipelines.
+
+HOW IT WORKS
+The standard uses colorimetric, spatial, and geometric tests. Key formulas
+for colour difference, MTF, and distortion are given below.
+
+WHERE IT IS DEPLOYED
+- Museum and archive digitisation
+- Fine art reproduction
+- GIOP archival master verification.
+
+WHO USES IT
+L2 Engineers setting up digitisation rigs; conservation scientists;
+archival colourists.
+
+WHAT PROBLEM IT SOLVES
+Ensures that digitised cultural heritage objects meet an internationally
+agreed quality level, preventing inaccurate reproduction of colour and
+detail.
+
+KEY FORMULAS
+
+1. Colour Accuracy (CIEDE2000, per ISO/CIE 11664‑6)
+   ΔE₀₀ = sqrt[ (ΔL'/k_L S_L)² + (ΔC'/k_C S_C)² + (ΔH'/k_H S_H)²
+               + R_T (ΔC'/k_C S_C) (ΔH'/k_H S_H) ]
+   where k_L = k_C = k_H = 1 for reference conditions; S_L, S_C, S_H,
+   R_T are weighting functions defined in CIE 142‑2001.
+
+2. Spatial Resolution (MTF)
+   MTF(ν) = |OTF(ν)|, measured using slanted‑edge method (ISO 12233).
+
+3. Geometric Distortion
+   Radial distortion: r_dist = r + k1 r³ + k2 r⁵
+   (measured from a grid chart, coefficients fit via least squares).
+
+4. Illumination Uniformity
+   Uniformity = (E_min / E_max) * 100%
+   where E is illuminance across the object plane.
+
+END OF ISO_AWI_19264_2_Cultural_Heritage.sci
