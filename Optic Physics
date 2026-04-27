@@ -1,0 +1,76 @@
+GIOP v3.0 :: FORMULAS — Optics Physics
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Optics_Physics.sci
+
+WHAT IS THIS FILE
+A certified collection of optical physics equations used in lens design,
+VFX simulation, and sensor characterization. It includes MTF, radial
+distortion, natural vignetting, achromatic doublet condition, lens maker's
+equation, hyperfocal distance, depth of field, Fresnel reflection, pixel
+binning, and the Nokia PureView oversampling principle.
+
+WHY IT EXISTS
+Optical formulas govern the behavior of every lens in the GIOP Lenses
+catalogue and are essential for correct STMap generation, depth‑of‑field
+simulation, and sensor noise modelling. This file provides a single
+hash‑verified reference.
+
+HOW IT WORKS
+Each formula is stated in its most general form, with variable definitions
+and typical units. Cross‑references to the relevant Kingdom are included.
+
+WHERE IT IS DEPLOYED
+- Lens simulation and distortion correction (Nuke, Resolve)
+- Camera tracking and depth estimation
+- Sensor performance modelling (SNR from binning)
+- Virtual production lens calibration.
+
+WHO USES IT
+L2 Engineers building lens correction plugins; L1 Architects validating
+new lens profiles.
+
+WHAT PROBLEM IT SOLVES
+Provides a single, unambiguous source for the physical formulas that
+govern real‑world lens behaviour, preventing the use of incompatible
+or approximate versions across different GIOP tools.
+
+1. Modulation Transfer Function (MTF)
+   MTF(ν) = |OTF(ν)|
+
+2. Radial Distortion (Brown‑Conrady)
+   r_dist = r + k1 * r^3 + k2 * r^5
+   (Tangential terms omitted for the purely radial model; full model
+   in Kingdom 04.)
+
+3. Natural Vignetting (Cos⁴ Law)
+   I_θ = I_0 * cos⁴(θ)
+
+4. Achromatic Doublet Condition
+   1 / (f1 * V1) + 1 / (f2 * V2) = 0
+   where V = Abbe number.
+
+5. Lens Maker’s Equation
+   1/f = (n – 1) * [ 1/R1 – 1/R2 + (n – 1)*d / (n * R1 * R2) ]
+
+6. Hyperfocal Distance
+   H = f² / (N * c)
+   where c = circle of confusion, N = f‑number.
+
+7. Depth of Field (Approximation)
+   DOF ≈ 2 * N * c * (u / f)²
+   where u = focus distance.
+
+8. Fresnel Reflection (Normal Incidence)
+   R = ((n1 – n2) / (n1 + n2))²
+
+9. Pixel Binning
+   I_binned = (1/B²) * Σ_i Σ_j I(x+i, y+j)
+   B = binning factor. SNR improves by factor B for shot‑noise limited.
+
+10. Nokia PureView Oversampling (Lossless Zoom)
+    R(z) = max(1, R_base / z²)
+    where z = zoom factor, R_base = base oversampling ratio (7:1).
+    At 1× zoom, R = R_base; at max zoom, R = 1 (1:1 pixel mapping).
+
+END OF Optics_Physics.sci
