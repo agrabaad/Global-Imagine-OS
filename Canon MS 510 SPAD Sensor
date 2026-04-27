@@ -1,0 +1,67 @@
+GIOP v3.0 :: NEW TECHNOLOGY — Canon MS-510 SPAD Sensor
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /bodies/Canon_MS_510.body
+
+WHAT IS THIS FILE
+The certified body profile for the Canon MS-510 multi-purpose camera
+featuring a 1-inch Single-Photon Avalanche Diode (SPAD) sensor with
+3.2 megapixels — the highest pixel count SPAD sensor for video as of
+2026. It defines the SPAD detection model, the zero-read-noise
+characteristic, the NIR sensitivity enhancement, and the night vision
+capability.
+
+WHY IT EXISTS
+SPAD sensors eliminate read noise entirely, enabling imaging in near-
+total darkness. The MS-510, launched at NAB 2026, represents the
+commercial maturation of SPAD technology. GIOP must provide a certified
+body profile to linearize and colour-manage SPAD-based footage.
+
+HOW IT WORKS
+1. SPAD Detection Model:
+   Each pixel is a Geiger-mode avalanche photodiode. A single photon
+   triggers a self-sustaining avalanche that is digitally counted.
+     P_detect = 1 - exp(-QE * N_incident)
+   where QE ≈ 0.30 (visible), QE_NIR ≈ 0.25 (850 nm).
+
+2. Zero Read Noise:
+   Because detection is digital (threshold crossing), there is no
+   analog read noise. The noise floor is purely dark count rate (DCR):
+     DCR ≈ 100 counts/second at 25°C.
+   This enables imaging at light levels below 0.001 lux.
+
+3. Sensor Specifications:
+   Type: 1-inch SPAD array
+   Effective pixels: 3.2 million (approx. 2.1 MP effective)
+   Video output: up to Full HD (1920×1080)
+   NIR sensitivity: enhanced, with movable IR cut filter.
+   Lens mount: Canon EF (interchangeable).
+
+4. Signal Model:
+   Digital count per pixel per frame:
+     Counts = P_detect * N_photons + DCR * t_exposure
+   Linear up to the saturation count (~10,000 counts per frame at
+   60 fps).
+
+5. IDT Mapping:
+   Because SPAD sensors are inherently digital and have no analog
+   gain, the linearization is direct: the digital count is proportional
+   to incident photon flux. A simple dark count subtraction and flat-
+   field correction produce linear scene-referred data.
+
+WHERE IT IS DEPLOYED
+- Security and surveillance (extreme low-light)
+- Industrial inspection
+- Scientific imaging (bioluminescence)
+- GIOP low-light camera profiles.
+
+WHO USES IT
+L2 Engineers building SPAD processing pipelines; security system
+integrators; scientific imaging researchers.
+
+WHAT PROBLEM IT SOLVES
+Provides the first GIOP body profile for a commercial SPAD sensor,
+enabling colour-accurate, noise-free imaging in conditions that would
+be impossible for conventional CMOS.
+
+END OF Canon_MS_510.body
