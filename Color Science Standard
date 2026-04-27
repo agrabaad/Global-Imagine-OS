@@ -1,0 +1,78 @@
+GIOP v3.0 :: FORMULAS — Color Science Standards
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Color_Science_Standards.sci
+
+WHAT IS THIS FILE
+A certified collection of normative color science equations that are
+referenced across multiple Kingdoms and Body profiles. It contains the
+exact mathematical definitions of the ST.2084 PQ EOTF, the HLG OETF,
+the ACES AP1 primaries, luminance coefficients, the CIEDE2000 color
+difference formula, and the Dolby Vision 2.0 bi‑directional tone mapping
+model. This file is the single source of truth for color standards
+within GIOP.
+
+WHY IT EXISTS
+Color standards are the most frequently cited equations in any imaging
+pipeline. Having them in one auditable, hash‑verified file prevents
+discrepancies between different Kingdom implementations and allows
+developers to reference a single canonical source.
+
+HOW IT WORKS
+Each section defines a standard with its mathematical formulation,
+domain of validity, and reference to the originating standards body
+(SMPTE, ITU, CIE, ISO).
+
+WHERE IT IS DEPLOYED
+- ODT design (PQ, HLG)
+- Gamut mapping (AP1 primaries)
+- Quality control (CIEDE2000)
+- Display calibration (PQ EOTF)
+- HDR mastering (Dolby Vision metadata)
+
+WHO USES IT
+L2 Engineers implementing ODTs and QC tools; L3 Colorists verifying
+color accuracy; L1 Architects referencing the standards in new
+Kingdom formulas.
+
+WHAT PROBLEM IT SOLVES
+Eliminates ambiguity about the exact constants and functional forms
+of industry‑standard color equations. Provides a single hash‑verified
+reference so that any GIOP tool produces identical color math.
+
+1. ST.2084 (PQ) EOTF
+  V = ((c1 + c2 * L^m1) / (1 + c3 * L^m1))^m2
+  L: linear light (0 to 1, where 1 = 10 000 cd/m²)
+  m1  = 2610 / 16384  = 0.1593017578125
+  m2  = 2523 / 4096 * 128 = 78.84375
+  c1  = 3424 / 4096  = 0.8359375
+  c2  = 2413 / 4096 * 32 = 18.8515625
+  c3  = 2392 / 4096 * 32 = 18.6875
+
+2. HLG (Hybrid Log‑Gamma) OETF (ITU‑R BT.2100‑2)
+  If 0 ≤ E ≤ 1/12:
+      E' = (1/2) * sqrt(3 * E)
+  Else:
+      E' = a * ln(12*E – b) + c
+  where a = 0.17883277, b = 0.28466892, c = 0.55991073
+
+3. ACES AP1 Primaries (ACEScg)
+  CIE xy coordinates:
+  Red   : (0.713, 0.293)
+  Green : (0.165, 0.830)
+  Blue  : (0.128, 0.044)
+  White : D60 (0.32168, 0.33767)
+
+4. Luminance (Rec.709)
+  Y = 0.2126 * R + 0.7152 * G + 0.0722 * B
+
+5. CIEDE2000 Color Difference (ΔE₀₀)
+  Algorithm as defined in CIE 142‑2001, with parametric factors
+  k_L = k_C = k_H = 1 for reference conditions.
+
+6. Dolby Vision 2.0 Bi‑Directional Tone Mapping
+  V_out = f(V_in, mastering_display_max, target_display_max)
+  where f is the Dolby Vision CMv4.0 mapping function, approximated
+  by a piecewise‑Bezier curve with Level 2/3/8 trim controls.
+
+END OF Color_Science_Standards.sci
