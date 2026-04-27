@@ -1,0 +1,62 @@
+GIOP v3.0 :: COMPUTING — Intel Arrow Lake (Core Ultra 9 285H)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /computing/Intel_Arrow_Lake.soc
+
+WHAT IS THIS FILE
+The certified computing profile for the Intel Core Ultra 9 285H mobile
+processor, based on the Arrow Lake architecture. It defines the hybrid
+CPU cluster (Lion Cove P-cores + Skymont E-cores), Intel Arc GPU (8 Xe
+cores), and the AI Boost NPU with 13 TOPS (INT8) throughput.
+
+WHY IT EXISTS
+Arrow Lake introduces a disaggregated tile design with Foveros 3D
+packaging, combining TSMC N3B (CPU), N5/N6 (GPU/IO) processes. GIOP
+models this as formulas so that AI-accelerated grading, rendering, and
+video encoding/decoding times are predictable on Intel-powered mobile
+workstations.
+
+HOW IT WORKS
+CPU Performance (Hybrid):
+  P_cores = 6 Lion Cove at up to 5.4 GHz (P-core)
+  E_cores = 8 Skymont at up to 4.5 GHz (E-core)
+  Low-power E-cores = 2 Skymont at up to 2.5 GHz (LP-E)
+  Multi-core throughput:
+    Perf_total = Σ (Perf_core_i * utilization_i)
+    where Perf_core_i ∝ IPC_i * f_i. IPC Lion Cove ≈ 1.13× Raptor Cove.
+  Total platform TOPS (CPU+GPU+NPU) up to 99.[reference:16][reference:17]
+
+NPU AI Boost (INT8):
+  TOPS_INT8 = 13 (dedicated NPU). Additional GPU compute: ~12 TOPS (Xe).
+  Combined AI throughput ≈ 36 TOPS.[reference:18]
+
+GPU (Intel Arc, 8 Xe cores):
+  TFLOPS_FP16 = (Xe_cores * EUs_per_Xe * 2 * f_gpu) / 1e12
+  = (8 * 16 * 2 * 2.35e9) / 1e12 ≈ 4.8 TFLOPS
+  Supports DirectML, OpenVINO, ONNX RT, WebNN for AI inference.[reference:19]
+
+Memory Bandwidth (LPDDR5x-8400):
+  BW = bus_width_bytes * f_data * 2 (DDR)
+  = 16 * 8.4e9 * 2 = 268.8 GB/s
+
+Power:
+  Base TDP: 45 W (configurable up to 115 W turbo). The runtime monitors
+  CPU/GPU/NPU power domains and throttles independently.
+
+WHERE IT IS DEPLOYED
+- High-performance laptops (Dell XPS 17, Lenovo ThinkPad X1 Extreme).
+- GIOP mobile grading workstations, on-set DIT carts, real-time AI
+  noise reduction.
+
+WHO USES IT
+L2 Engineers deploying GIOP on Windows 11 laptops; L3 Colorists performing
+on-set grades with AI assistance.
+
+WHAT PROBLEM IT SOLVES
+Models the Arrow Lake disaggregated tile architecture and its NPU as
+formulas, enabling accurate prediction of AI-accelerated grading latency
+and encoding throughput on Intel mobile platforms.
+
+SHA3-512: [To be computed after final content is sealed]
+
+END OF Intel_Arrow_Lake.soc
