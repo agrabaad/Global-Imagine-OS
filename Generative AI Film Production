@@ -1,0 +1,59 @@
+GIOP v3.0 :: NEW TECHNOLOGY — Generative AI Film Production (Utopai PAI)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Utopai_PAI_GenAI_Film.fx
+
+WHAT IS THIS FILE
+The certified software module reference for Utopai Studios' PAI
+storytelling AI platform, which achieved the industry-first capability
+of rendering 3-minute videos in 4K (April 2026). It defines the
+text-to-video pipeline, the Story Agent for shot/scene continuity,
+and the integration with real production workflows.
+
+WHY IT EXISTS
+PAI represents the convergence of generative AI with professional film
+production. Huace Film & TV's partnership with Utopai Studios (April
+2026) marks the first large-scale adoption of AI-native filmmaking.
+GIOP defines a metadata standard for AI-generated content to ensure
+provenance and quality.
+
+HOW IT WORKS
+1. Architecture:
+   PAI uses a transformer-based diffusion model with temporal attention
+   layers. Input: script, storyboard references, character descriptions.
+   Output: 4K video at 24 fps, up to 3 minutes continuous.
+
+2. Story Agent:
+   Maintains narrative continuity across shots. Tracks:
+     - Character positions, costumes, lighting
+     - Scene geography (camera angles, set layout)
+     - Emotional tone and pacing
+   Continuity constraints are encoded as cross-attention masks.
+
+3. Quality Metrics:
+   FVD (Fréchet Video Distance): < 200 (competitive with real footage).
+   Temporal consistency: optical flow warp error < 5% of frame width.
+   Colour accuracy: output graded to ACEScct with user-specified LMT.
+
+4. GIOP Metadata Schema:
+   Every AI-generated frame carries:
+     - Model version and checkpoint hash
+     - Prompt and seed chain (SHA3-512 of all conditioning inputs)
+     - C2PA manifest linking to the generation event
+
+WHERE IT IS DEPLOYED
+- AI-assisted previsualisation and postvis
+- Independent film production
+- Advertising and short-form content
+- GIOP AI content validation.
+
+WHO USES IT
+Filmmakers and creative directors; L2 Engineers integrating generative
+AI into production pipelines.
+
+WHAT PROBLEM IT SOLVES
+Enables GIOP to validate, colour-manage, and provenance-track AI-
+generated cinematic content, ensuring it meets the same standards as
+camera-captured footage.
+
+END OF Utopai_PAI_GenAI_Film.fx
