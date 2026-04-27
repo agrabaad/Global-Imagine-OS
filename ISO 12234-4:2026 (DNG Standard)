@@ -1,0 +1,56 @@
+GIOP v3.0 :: NEW TECHNOLOGY — ISO 12234-4:2026 (DNG Standard)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/ISO_12234_4_DNG.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ISO 12234-4:2026, which formally
+publishes Adobe's Digital Negative (DNG) specification as an international
+standard for RAW image data. It defines the file structure, metadata tags,
+and the linearization transform for camera RAW data.
+
+WHY IT EXISTS
+Prior to ISO 12234-4, DNG was a de facto standard but lacked the formal
+ISO imprimatur. With its publication in March 2026, DNG becomes the
+first internationally standardised RAW format, breaking the barrier of
+proprietary RAW formats. GIOP adopts it as the preferred archival RAW
+container.
+
+HOW IT WORKS
+1. File Structure:
+   DNG is based on TIFF/EP. It contains:
+     - RAW Bayer data (or demosaiced RGB)
+     - Metadata (EXIF, XMP): camera model, lens, ISO, white balance,
+       colour matrix, calibration illuminants
+     - DNG tags define the mapping from RAW to CIE XYZ.
+
+2. Color Matrix:
+   ColorMatrix1 and ColorMatrix2 (3x3 matrices) map camera native RGB
+   to CIE XYZ under two calibration illuminants (typically D65 and A).
+     XYZ = ColorMatrix * Camera_RGB
+   ForwardMatrix (3x3) maps white-balanced camera RGB to XYZ(D50).
+
+3. Linearization:
+   If the RAW data is non-linear (e.g., after a tone curve), a
+   LinearizationTable (1D LUT) is provided to restore linear values:
+     Linear[i] = lookup( RAW[i], LinearizationTable )
+
+4. GIOP Integration:
+   A DNG file carrying a GIOP-certified camera IDT can be ingested
+   directly. The GIOP runtime reads the DNG tags and applies the
+   appropriate IDT to produce linear ACES2065-1.
+
+WHERE IT IS DEPLOYED
+- Archival storage of RAW images
+- Cross-platform RAW exchange
+- GIOP VFX plate ingestion.
+
+WHO USES IT
+L2 Engineers building RAW pipelines; archivists; photographers.
+
+WHAT PROBLEM IT SOLVES
+Ends the fragmentation of proprietary RAW formats by standardising DNG
+at the ISO level, ensuring that GIOP-compliant RAW files remain readable
+and correctly interpreted in perpetuity.
+
+END OF ISO_12234_4_DNG.sci
