@@ -1,0 +1,67 @@
+GIOP v3.0 :: SOFTWARE — Adobe Camera Raw (ACR)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Adobe_Camera_Raw.fx
+
+WHAT IS THIS FILE
+The certified software module reference for Adobe Camera Raw (ACR). It
+documents the deep-learning-accelerated demosaic algorithm, the camera-
+specific DCP (Digital Camera Profile) structure (forward matrix and tone
+curve), the processing stages to linear ProPhoto RGB, and the AI-Enhanced
+Detail (Texture/Clarity) model.
+
+WHY IT EXISTS
+ACR is the default interpolation engine for millions of RAW stills. Without
+a specified pipeline, RAW development becomes a black box. This file opens
+that box, providing the exact demosaic and color reconstruction steps so
+GIOP can replicate ACR’s output exactly.
+
+HOW IT WORKS
+1. Demosaicing (Adaptive Homogeneity-Directed):
+   For each pixel, a local homogeneity map is computed to decide interpolation
+   direction (vertical, horizontal, or smooth). Missing color channels are
+   reconstructed using edge-directed weighted sums:
+     G_missing = Σ w_i G_i
+     w_i = f( |∇_edge_i| )
+   where ∇_edge is the gradient along the edge direction. This minimizes
+   color artifacts near edges.
+
+2. Color Profile (DCP):
+   A DCP file contains:
+     - A 3×3 forward matrix converting camera native RGB to CIE XYZ (D50).
+     - A tone curve (usually a 1D LUT) that maps linear to gamma-corrected
+       values for viewing.
+   ACR applies the forward matrix, then the tone curve, then converts to
+   linear ProPhoto RGB (ROMM RGB, D50) for editing.
+
+3. AI-Enhanced Detail:
+   Adobe Sensei applies a detail enhancement layer derived from a multi-
+   scale decomposition:
+     Texture slider: controls medium-frequency contrast (radius ~2 px).
+     Clarity slider: controls low-frequency contrast (radius ~10 px).
+   The enhancement is applied in linear ProPhoto space additively:
+     I_out = I_in + α * B_texture + β * B_clarity
+   where α,β are slider amplitudes and B_* are the band-pass filtered
+   luminance layers.
+
+4. Noise reduction:
+   A wavelet-based denoiser suppresses chroma and luma noise before
+   enhancement. The thresholds are adaptive to local SNR based on the
+   sensor noise model.
+
+WHERE IT IS APPLIED
+- RAW still development for VFX plates
+- HDR panorama stitching
+- Digital asset management
+- Automated batch processing.
+
+WHO USES IT
+L2 Engineers building RAW-to-ACES pipelines; L3 Colorists who develop
+starting looks in ACR.
+
+WHAT PROBLEM IT SOLVES
+Makes Adobe’s RAW processing auditably reproducible. Provides the
+mathematical definition of “Texture” and “Clarity” so they can be exactly
+recreated in Resolve or Baselight.
+
+END OF Adobe_Camera_Raw.fx
