@@ -1,0 +1,58 @@
+GIOP v3.0 :: SOFTWARE — DaVinci Resolve ACEScct Specification
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/DaVinci_Resolve_ACEScct.fx
+
+WHAT IS THIS FILE
+The certified software module reference for DaVinci Resolve’s implementation
+of the ACEScct color space. It defines the exact forward and inverse
+transforms, the parameters used by Resolve Color Management, and the
+integration with the Resolve ACES workflow.
+
+WHY IT EXISTS
+ACEScct is the standard logarithmic working space for grading in ACES.
+Subtle differences between implementations can cause highlight or shadow
+shifts. This file provides the authoritative Resolve-specific ACEScct
+specification.
+
+HOW IT WORKS
+1. Forward ACEScct transform:
+   If linear_value <= 0.0078125:
+       ACEScct = 10.540741814 * linear_value + 0.072905534
+   Else:
+       ACEScct = 0.554794520 * log(linear_value) + 0.927452333
+   Input: linear ACES AP1 (ACEScg) or AP0 (ACES 2065-1).
+   Output: ACEScct encoded value (0.0 to ~1.47 for 10 stops above mid-grey).
+
+2. Inverse ACEScct:
+   If ACEScct <= 0.155251141:
+       linear = (ACEScct - 0.072905534) / 10.540741814
+   Else:
+       linear = exp( (ACEScct - 0.927452333) / 0.554794520 )
+   This restores linear ACES data.
+
+3. Resolve implementation details:
+   Resolve applies ACEScct as the working space when "Color Science = ACEScct"
+   is selected. Input clips are transformed via IDT to ACES AP0 then to
+   ACEScct. Grading controls operate on ACEScct values. The viewer applies
+   an ODT (including RRT+ODT for SDR, or ODT for HDR) to the selected
+   display.
+
+4. GIOP compliance:
+   A GIOP-compliant ACEScct transform must match the Resolve output to within
+   +/- 1e-6 in 16-bit float over the range 0.0–100.0 scene linear.
+
+WHERE IT IS APPLIED
+- ACES grading in DaVinci Resolve
+- ACEScct as a master format for interchange
+- LMT application and archiving.
+
+WHO USES IT
+L2 Engineers setting up ACES pipelines; L3 Colorists working in ACEScct.
+
+WHAT PROBLEM IT SOLVES
+Eliminates discrepancies between Resolve’s internal ACEScct and third-party
+tools. Provides the exact numerical profile for bi-directional transform,
+enabling accurate round-tripping.
+
+END OF DaVinci_Resolve_ACEScct.fx
