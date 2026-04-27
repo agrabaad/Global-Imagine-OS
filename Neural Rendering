@@ -1,0 +1,56 @@
+GIOP v3.0 :: FORMULAS — Neural Rendering
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Neural_Rendering.sci
+
+WHAT IS THIS FILE
+The certified standalone formula reference for the core mathematical
+models of neural rendering: NeRF volume integration, 3D Gaussian
+Splatting alpha blending, and the DLSS Ray Reconstruction loss function.
+
+WHY IT EXISTS
+These equations are the computational heart of neural view synthesis
+and AI‑based denoising. A single, immutable source prevents divergent
+implementations that could break temporal stability or colour accuracy.
+
+HOW IT WORKS
+Each model is given in its standard form with the exact summation,
+transmittance, and loss terms.
+
+WHERE IT IS DEPLOYED
+- Neural rendering plugins in Nuke / Resolve
+- Real‑time path tracers (RTX, DLSS)
+- Volumetric video reconstruction
+
+WHO USES IT
+L2 Engineers implementing NeRF or 3DGS tools; L1 Architects validating
+neural rendering engines.
+
+WHAT PROBLEM IT SOLVES
+Guarantees that a NeRF trained on GIOP‑linearised data produces the
+same output colour and transmittance on any platform, because the
+rendering integral is fixed.
+
+1. NeRF Volume Rendering Integral
+   C(r) = Σ_i T_i α_i c_i
+   T_i = exp( -Σ_{j=1}^{i-1} σ_j δ_j )
+   α_i = 1 - exp( -σ_i δ_i )
+   δ_i = t_{i+1} - t_i
+   r(t) = ray, c_i = colour, σ_i = volume density.
+   Numerical integration uses the exact exponential per segment.
+
+2. 3D Gaussian Splatting (EWA α‑blending)
+   Colour per pixel:
+     C_pixel = Σ_i c_i α_i T_i
+   T_i = Π_{j < i} (1 - α_j)
+   α_i = o_i * exp( -½ (x - μ_2D)^T Σ_2D^{-1} (x - μ_2D) )
+   c_i from spherical harmonics (degree ≤ 3).
+   Σ_2D = J W Σ W^T J^T (projected covariance).
+
+3. DLSS Ray Reconstruction Loss
+   L_total = L1(C_pred, C_ref) + λ_LPIPS * LPIPS(C_pred, C_ref)
+             + λ_temp * temporal_consistency_loss
+   Temporal consistency: warp previous output by optical flow, enforce
+   coherence with current prediction.
+
+END OF Neural_Rendering.sci
