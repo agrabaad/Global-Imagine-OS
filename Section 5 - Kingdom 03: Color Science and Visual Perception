@@ -1,0 +1,238 @@
+GIOP v3.0 :: KINGDOM 03 — COLOR SCIENCE AND VISUAL PERCEPTION
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_03_Color_Science_and_Visual_Perception.sci
+
+WHAT IS THIS KINGDOM
+The domain that formalizes the representation, transformation, and
+perceptual evaluation of color in digital imaging. It defines the
+ACES 2.0 framework, gamut compression algorithms, Dolby Vision 2.0,
+the ST.2084 PQ EOTF, advanced color difference metrics, camera
+color DNA, spectral LUT modeling, white point adaptation, and skin
+tone fairness constraints. It is the normative layer that ensures
+color, from capture to display, is scientifically traceable and
+artistically consistent.
+
+WHY IT EXISTS
+Color is the emotional carrier of the image. Without a rigorous,
+perceptually uniform framework, the same RGB triplet can appear
+different on two displays, a grade can shift between suites, and
+skin tones can become distorted. This kingdom provides the single
+source of truth for all color transforms, replacing proprietary
+color science with an open, auditable protocol that honours the
+CIE and ACES standards.
+
+HOW IT IS STRUCTURED
+Eight sub-domains: ACES 2.0 Framework, Advanced Gamut Compression,
+Dolby Vision 2.0 and ST.2084 PQ, Human Visual System Modeling for
+Color, Advanced Color Metrics, Camera Color Science DNA, Spectral
+LUT and 31-Band Modeling, and White Point Adaptation with Skin Tone
+Fairness. Each section delivers the defining formulas and the
+perceptual rationale behind them.
+
+WHERE IT IS APPLIED
+On-set color management (IDT and LMT), DI grading (ACEScct working
+space), mastering for HDR (Dolby Vision trim passes), display
+calibration, VFX compositing (ACEScg linear space), AI training
+data linearization, and automated quality control (DeltaE2000,
+CAM16-UCS metrics).
+
+WHO USES IT
+Color scientists, finishing colorists, DITs, pipeline engineers
+implementing OCIO configs, and anyone responsible for color
+fidelity across the imaging chain.
+
+WHAT PROBLEM IT SOLVES
+Eradicates inconsistent color by providing a single mathematical
+definition of every color space and transform. Eliminates gamut
+clipping artifacts with perceptually smooth compression. Solves
+the HDR/SDR mismatch with Dolby Vision metadata and PQ encoding.
+Guarantees skin tone fidelity regardless of camera brand or
+lighting, through biologically validated reflectance models.
+
+1. ACES 2.0 FRAMEWORK
+The Academy Color Encoding System (ACES) 2.0 defines a complete
+color management architecture.
+
+ACES 2065-1 (AP0 primaries): the archival linear color space
+covering the entire CIE 1931 spectral locus.
+  AP0 primaries (xy):
+    Red: (0.7347, 0.2653)
+    Green: (0.0000, 1.0000)
+    Blue: (0.0001, -0.0770)
+  White point: D60 (0.32168, 0.33767)
+
+ACEScg (AP1 primaries): the linear working space for VFX and
+compositing, optimized for gamut efficiency.
+  AP1 primaries (xy):
+    Red: (0.713, 0.293)
+    Green: (0.165, 0.830)
+    Blue: (0.128, 0.044)
+  White point: D60
+
+ACEScct: a logarithmic encoding of ACES data for color grading.
+It adds a "toe" to preserve shadow detail.
+  For linear_value > 0.0078125:
+    ACEScct = 0.554794520 * log10(linear_value) + 0.927452333
+  Else:
+    ACEScct = 10.540741814 * linear_value + 0.072905534
+
+Input Device Transform (IDT): converts camera-specific RAW or log
+data to ACES 2065-1 or ACEScg. GIOP Bodies/ folder contains the
+certified IDTs for all major cameras.
+
+Look Modification Transform (LMT): a systematic, reversible color
+modification applied in ACEScct or ACEScg.
+
+Output Device Transform (ODT): renders ACES data for a specific
+display, including gamut compression and EOTF application.
+
+2. ADVANCED GAMUT COMPRESSION
+Out-of-gamut colors must be mapped to the display gamut without
+introducing hue shifts, loss of detail, or perceptual artifacts.
+
+ACES 2.0 Reference Gamut Compression operates in a perceptual
+space (JMh, derived from CAM16 or similar). The compression is
+along lines of constant hue toward the achromatic axis (J axis).
+The compression vector:
+  J = slope * M + intersectJ
+where slope and intersectJ are chosen to smoothly map the source
+gamut boundary into the destination gamut boundary. Hue
+preservation is enforced with a maximum angular deviation of less
+than 2 degrees.
+
+Perceptual uniformity ensures that equal color differences in the
+compression space correspond to equal perceived differences,
+minimizing visible distortions.
+
+3. DOLBY VISION 2.0 AND ST.2084 PQ
+Dolby Vision 2.0 is an end-to-end HDR ecosystem using the PQ
+(Perceptual Quantizer) EOTF defined in SMPTE ST 2084.
+
+ST.2084 PQ EOTF:
+  V = ((c1 + c2 * L^m1) / (1 + c3 * L^m1))^m2
+where:
+  L: linear light, 0 to 1 (1 = 10 000 cd/m^2)
+  m1 = 2610 / 16384 = 0.1593017578125
+  m2 = 2523 / 4096 * 128 = 78.84375
+  c1 = 3424 / 4096 = 0.8359375
+  c2 = 2413 / 4096 * 32 = 18.8515625
+  c3 = 2392 / 4096 * 32 = 18.6875
+
+This encoding is derived from the Barten contrast sensitivity
+function. Each code level step is at most one just-noticeable
+difference (JND).
+
+ICtCp color space for Dolby Vision:
+  I (Intensity): luma component, decorrelated from chroma.
+  Ct (blue-yellow chroma) and Cp (red-green chroma).
+The transform from linear RGB to ICtCp is a matrix followed by
+the PQ OETF on I, and a modified OETF on Ct and Cp.
+
+Dolby Vision 2.0 metadata: dynamic metadata XML (SMPTE ST 2094-10)
+carries mastering display color volume, content-dependent Level 2,
+3, 8 trims, and target display adaptation parameters. This enables
+intelligent display mapping.
+
+4. HUMAN VISUAL SYSTEM MODELING FOR COLOR
+Color perception is a function of the visual system's adaptation
+state, surround, and viewing conditions. This kingdom quantifies
+these for accurate color reproduction.
+
+Chromatic adaptation: the process by which the visual system adjusts
+to the scene illuminant. The von Kries model:
+  LMS_dest = (LMS_white_dest / LMS_white_src) * LMS_src
+The Bradford transform (used in ICC profiles) provides a more
+accurate adaptation matrix.
+
+Surround effects: the perceived contrast and colorfulness depend on
+whether the surround is dark, dim, or average. CIECAM02 and CAM16
+incorporate surround parameters c (impact of surround) and N_c
+(chromatic induction factor).
+
+5. ADVANCED COLOR METRICS
+Color differences must be quantified in perceptually uniform spaces
+to automate quality control and evaluate grading accuracy.
+
+CIEDE2000 (DeltaE00): an improved color difference formula that
+corrects for lightness, chroma, and hue weighting, as well as
+interactions between chroma and hue differences in the blue region.
+Formula defined in CIE 142-2001.
+
+CAM16-UCS: a uniform color space based on the CIECAM16 color
+appearance model. It provides improved perceptual uniformity over
+CIELAB and is used in ACES 2.0 gamut compression.
+
+ICTCP DeltaE: for HDR and wide gamut content, the ITP color
+difference metric is defined as:
+  DeltaE_ITP = 720 * sqrt((I1-I2)^2 + (Ct1-Ct2)^2 + (Cp1-Cp2)^2)
+This formula is widely used in Dolby Vision quality analysis.
+
+JzAzBz: another HDR-suited color space derived from CAM16, with
+a strong correlation to perceived color differences.
+
+6. CAMERA COLOR SCIENCE DNA
+Every camera body has a unique color response defined by the
+spectral sensitivity of its sensor and the color filter array (CFA)
+dyes. This camera color DNA is encoded as an IDT.
+
+GIOP defines for each camera body:
+  - Spectral sensitivity curves (when available)
+  - CIE XYZ primaries of the native sensor RGB
+  - Forward matrix from sensor RGB to ACES AP0 or AP1
+  - White balance presets (color temperature and tint)
+  - Log curve parameters (refer to Bodies/ domain)
+
+The IDT must be invertible (within the valid range) to allow
+linearization for VFX. Kingdom 03 provides the metric by which IDT
+accuracy is judged: the average CIEDE2000 error over a color
+checker (e.g., Macbeth ColorChecker) must be below 1.5 for a
+certified IDT.
+
+7. SPECTRAL LUT AND 31-BAND MODELING
+For the highest accuracy, color transforms should operate on
+spectral data rather than tristimulus values.
+
+Spectral sampling: 400 nm to 700 nm at 10 nm intervals produces
+31 bands.
+
+Spectral to XYZ conversion:
+  X = sum( S(lambda) * x_bar(lambda) * delta_lambda )
+  Y = sum( S(lambda) * y_bar(lambda) * delta_lambda )
+  Z = sum( S(lambda) * z_bar(lambda) * delta_lambda )
+using CIE 1931 2 degree or CIE 1964 10 degree standard observer.
+
+A 31-band spectral LUT allows accurate simulation of:
+  - Illuminant changes (D65 to A) without metameric error.
+  - Optical filter effects (ND, color enhancing filters).
+  - Sensor-specific spectral responses for virtual camera emulation.
+GIOP maintains a reference spectral LUT for the Macbeth chart and
+common natural spectra (skin, sky, foliage).
+
+8. WHITE POINT ADAPTATION AND SKIN TONE FAIRNESS
+White point adaptation ensures that colors appear correct under
+different illuminants. The standard white points are:
+  D50: (0.34567, 0.35850) — graphic arts
+  D60: (0.32168, 0.33767) — ACES
+  D65: (0.31271, 0.32902) — sRGB, BT.709
+  DCI-P3 white: (0.314, 0.351) — calibrated to D60 often.
+
+Skin tone preservation is a core ethical and aesthetic requirement.
+In CIELAB, natural human skin falls within the range:
+  L*: 40 to 85
+  a*: 5 to 25
+  b*: 5 to 25
+  Hue angle: 40 to 60 degrees (red to yellow)
+GIOP's skin tone model further parameterizes melanin and hemoglobin
+reflectance spectra, ensuring that AI-based color tools do not
+distort or bias any skin type. The SCR-AWB (Skin Color Reflectance
+Auto White Balance) algorithm uses these spectra as a prior for
+fair and accurate white balance.
+
+All GIOP color transforms are required to pass a skin tone fairness
+validation: a panel of 20 diverse skin reflectance spectra,
+simulated under illuminants D65 and A, must produce CIEDE2000
+errors below 2.0 against the reference spectral rendering, with no
+systematic shift in hue angle.
+
+END OF KINGDOM 03
