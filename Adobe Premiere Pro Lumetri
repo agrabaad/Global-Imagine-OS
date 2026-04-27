@@ -1,0 +1,62 @@
+GIOP v3.0 :: SOFTWARE — Adobe Premiere Pro Lumetri Color Engine
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Adobe_Premiere_Pro_Lumetri.fx
+
+WHAT IS THIS FILE
+The certified software module reference for the Adobe Premiere Pro Lumetri
+Color Engine. It specifies the RGB Channel Mixer matrix transform, the
+Color Space Awareness model (working space respect), HDR tone mapping
+behavior, and the LUT interpolation method used by Lumetri. This file
+enables exact reproduction of Lumetri looks in other GIOP tools.
+
+WHY IT EXISTS
+Premiere Pro is a primary editorial and finishing platform. Grading
+decisions made in Lumetri must be transportable to Resolve, Baselight, or
+Nuke without shift. This file defines the mathematical core of Lumetri so
+those transforms become portable.
+
+HOW IT WORKS
+1. RGB Channel Mixer (matrix transform):
+     R_out = R_in * R_red + G_in * R_green + B_in * R_blue
+     G_out = R_in * G_red + G_in * G_green + B_in * G_blue
+     B_out = R_in * B_red + G_in * B_green + B_in * B_blue
+   Coefficients are normalized (sum to 1.0, but may exceed for creative
+   effects). Applied via Lumetri Color panel > Channel Mixer.
+
+2. Color Space Awareness:
+   Lumetri respects the Sequence Working Color Space (e.g., Rec.709, P3,
+   Rec.2100 PQ). The engine converts the input clip to the sequence space,
+   applies corrections, then outputs to the sequence space. If the export
+   color space differs, Lumetri applies the appropriate ODT (e.g., Rec.709
+   to BT.2100 HLG).
+
+3. HDR Tone Mapping:
+   When sequence color space is HDR (PQ/HLG), the Lumetri Scopes display
+   values in nits. The Tone Mapping control (Lumetri Color > Creative)
+   compresses scene highlights to fit the mastering display peak luminance,
+   using a soft shoulder curve:
+     y = x * (1 + (x/x0)^k) / (1 + (x/x0)^(k+1))
+   where x0 is the inflection point, k is the roll-off steepness.
+
+4. Look (LUT) application:
+   LUTs are applied in the sequence working space. The interpolation
+   between LUT grid points is trilinear. GIOP specifies the exact
+   interpolation coefficients so that a given LUT produces identical output.
+
+WHERE IT IS APPLIED
+- Editorial grading
+- Dailies creation
+- Final conform if staying in Premiere
+- Export presets for social media.
+
+WHO USES IT
+L3 Colorists doing preliminary grading; L2 Engineers implementing Lumetri-
+compatible DCTL transforms; DITs generating on-set looks.
+
+WHAT PROBLEM IT SOLVES
+Ensures that a Lumetri grade exported as a LUT or AMF can be faithfully
+reproduced on another GIOP system. Defines the exact tone mapping formula
+used by Lumetri, ending the inconsistency between Adobe and other platforms.
+
+END OF Adobe_Premiere_Pro_Lumetri.fx
