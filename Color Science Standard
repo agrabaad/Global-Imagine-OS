@@ -1,0 +1,91 @@
+GIOP v3.0 :: FORMULAS — Color Science Standards
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /formulas/Color_Science_Standards.sci
+
+WHAT IS THIS FILE
+The certified standalone formula reference for core color science and HDR
+standards. It contains the ST.2084 (PQ) EOTF, HLG OETF, ACES AP1 primaries,
+CIEDE2000 color difference, Dolby Vision bi‑directional tone mapping, and
+the luminance calculation for Rec.709. These are the foundational equations
+that underpin colour transforms across the entire GIOP ecosystem.
+
+WHY IT EXISTS
+Scattering these equations across different Kingdoms creates ambiguity.
+A single, hard‑coded reference ensures every GIOP tool uses identical
+constants and identical arithmetic for the most critical transfer functions
+and colour metrics. This file is the numeric backbone of HDR and colour
+accuracy.
+
+HOW IT WORKS
+Each formula is presented with its defining equation, constants, domain,
+and a usage note. Where applicable, the inverse is also given.
+
+WHERE IT IS DEPLOYED
+- All ODT calculations (PQ, HLG)
+- Gamut mapping and display characterisation
+- Automated quality control (CIEDE2000)
+- Dolby Vision metadata authoring
+
+WHO USES IT
+- L2 Engineers implementing GIOP transforms
+- L3 Colorists needing a trusted reference for the numbers behind the tools
+
+WHAT PROBLEM IT SOLVES
+Eradicates constant‑drift between implementations by fixing every decimal
+place of every constant. Guarantees that “PQ” means exactly the same
+function in Resolve, Nuke, Baselight, and a GIOP firmware module.
+
+1. ST.2084 (PQ) EOTF
+   Definition (SMPTE ST 2084):
+     V = ((c1 + c2 * L^m1) / (1 + c3 * L^m1))^m2
+   where:
+     L   : linear light, 0 ≤ L ≤ 1 (1 = 10 000 cd/m²)
+     m1  = 2610 / 16384        = 0.1593017578125
+     m2  = 2523 / 4096 * 128   = 78.84375
+     c1  = 3424 / 4096         = 0.8359375
+     c2  = 2413 / 4096 * 32    = 18.8515625
+     c3  = 2392 / 4096 * 32    = 18.6875
+   Inverse:
+     L = ((max(V^(1/m2) - c1, 0)) / (c2 - c3 * V^(1/m2)))^(1/m1)
+
+2. HLG (Hybrid Log‑Gamma) OETF (ITU‑R BT.2100‑2)
+   Input: scene‑referred linear light E (0.0 to >1.0)
+   If 0 ≤ E ≤ 1/12:
+       E' = (1/2) * sqrt(3 * E)
+   Else:
+       E' = a * ln(12*E - b) + c
+       where a = 0.17883277, b = 0.28466892, c = 0.55991073
+
+3. ACES AP1 Primaries (ACEScg)
+   CIE xy coordinates:
+     Red   : (0.713, 0.293)
+     Green : (0.165, 0.830)
+     Blue  : (0.128, 0.044)
+   White point: D60 (0.32168, 0.33767)
+   The matrix from ACES AP1 to CIE XYZ (D60) is derived from these
+   primaries and is a fixed 3×3.
+
+4. Luminance (Rec.709)
+   Y = 0.2126 * R_linear + 0.7152 * G_linear + 0.0722 * B_linear
+   This weights the RGB channels to the standard observer’s luminance
+   response. Used in saturation adjustments and exposure calculations.
+
+5. CIEDE2000 Color Difference (ΔE₀₀)
+   Defined in CIE 142‑2001. Input: L*, a*, b* of two samples.
+   The formula corrects for lightness, chroma, and hue weighting, and
+   includes a rotation term for the blue region. GIOP implements the
+   full published algorithm without approximation.
+
+6. Dolby Vision 2.0 Bi‑Directional Tone Mapping
+   The mapping is a content‑dependent function:
+     V_out = f(V_in, mastering_display_max, target_display_max)
+   where f is a piecewise rational function with parameters carried in
+   the Dolby Vision XML metadata (Level 1/2/3/8 trims). The exact
+   coefficients are defined in SMPTE ST 2094‑10 and are not reproduced
+   here to avoid duplication; this file provides the top‑level
+   functional signature and mandates that any GIOP implementation
+   produce identical output to the official Dolby SDK for the same
+   metadata.
+
+END OF Color_Science_Standards.sci
