@@ -1,0 +1,55 @@
+GIOP v3.0 :: STANDARDS — ITU-R BT.2100 (HLG and HDR Colorimetry)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/ITU_R_BT2100_HLG.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ITU‑R BT.2100, which defines the
+Hybrid Log‑Gamma (HLG) transfer function and the colourimetry for HDR
+television.
+
+WHY IT EXISTS
+HLG is the primary HDR format for broadcast. GIOP must implement its
+OETF and OOTF exactly to deliver compatible SDR/HDR signals.
+
+HOW IT WORKS
+The standard provides the OETF for scene‑referred linear light, the
+OOTF for display rendering, and system colourimetry based on Rec.2020
+primaries.
+
+WHERE IT IS DEPLOYED
+- Broadcast HDR encoding
+- Consumer television and streaming
+- GIOP ODT for HLG delivery.
+
+WHO USES IT
+L2 Engineers implementing HLG ODTs; broadcast colourists.
+
+WHAT PROBLEM IT SOLVES
+Ensures that HLG signals authored on a GIOP system are fully compliant
+with ITU‑R BT.2100 and display correctly on consumer televisions.
+
+KEY FORMULAS
+
+1. HLG OETF (scene‑referred)
+   If 0 ≤ E ≤ 1/12:
+       E' = (1/2) * sqrt(3 * E)
+   Else:
+       E' = a * ln(12*E – b) + c
+   where:
+     a = 0.17883277
+     b = 0.28466892
+     c = 0.55991073
+
+2. HLG OOTF (opto‑optical transfer function for display)
+   R_D = α * (R_S)^(γ‑1) * R_S  (similarly for G,B)
+   α = L_W^(1/γ – 1)
+   γ = 1.2 + 0.42 * log10(L_W / 1000)
+   L_W = nominal peak luminance of the display in cd/m².
+
+3. System Colourimetry
+   Primaries: Rec.2020 (BT.2020)
+   White Point: D65
+   Matrix to/from CIE XYZ as defined in Rec.2020 specification.
+
+END OF ITU_R_BT2100_HLG.sci
