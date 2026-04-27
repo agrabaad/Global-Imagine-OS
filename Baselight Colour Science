@@ -1,0 +1,63 @@
+GIOP v3.0 :: SOFTWARE — Baselight Colour Science
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Baselight_Colour_Science.fx
+
+WHAT IS THIS FILE
+The certified software module reference for FilmLight Baselight’s Truelight
+Colour Space. It describes the native working space “FilmLight T-Log /
+E-Gamut”, the custom Display Rendering Transform (DRT) with gamut
+compression in perceptually uniform space, format support (ACESclip, AMF,
+Dolby Vision XML, HDR10+ dynamic metadata), and the Python 3 / C++ SDK
+for automation.
+
+WHY IT EXISTS
+Baselight is a dominant grading platform in high-end DI. Its internal
+color science differs from ACES and Resolve. This file provides the open
+specification so that Baselight grades can be faithfully translated into
+other GIOP systems.
+
+HOW IT WORKS
+1. Working space:
+   Baselight’s native working space is “FilmLight T-Log / E-Gamut”. T-Log
+   is a wide-gamut log curve similar to ACEScct but with a modified toe.
+   E-Gamut primaries encompass Rec.2020 and extend slightly beyond.
+   Transform to/from ACES AP0 is provided by the Truelight CMS.
+
+2. Display Rendering Transform (DRT):
+   Baselight uses a custom DRT that combines tone mapping and gamut
+   compression in a perceptually uniform space (derived from CAM16). The
+   DRT is applied automatically when viewing; it can be exported as a LUT
+   or an AMF for use in other systems.
+
+3. Format support:
+   - ACESclip and AMF: full read/write.
+   - Dolby Vision XML (level 2/3/8 trim metadata).
+   - HDR10+ dynamic metadata JSON.
+   IMF, DCP, EXR, TIFF16, ProRes, DNxHR.
+
+4. SDK:
+   Python 3 (blg module) and C++ API for full automation. The API allows
+   loading sequences, applying grades, exporting AMF, and performing
+   hash-based validation.
+
+5. GIOP interlock:
+   GIOP provides a Baselight-specific plug-in that loads a .body file as
+   an IDT and a .mon file as an ODT, mapping them into Truelight CMS
+   spaces. This allows Baselight to directly use GIOP-certified profiles.
+
+WHERE IT IS APPLIED
+- HDR and SDR mastering in Baselight
+- Dolby Vision and HDR10+ authoring
+- Cross-facility color interchange.
+
+WHO USES IT
+L2 Engineers developing Baselight plug-ins; L3 Colorists mastering in
+Baselight.
+
+WHAT PROBLEM IT SOLVES
+Ends the opacity of Baselight’s internal color science by specifying the
+T-Log/E-Gamut and DRT mathematically. Enables a Baselight grade to be
+exactly reproduced on a GIOP system.
+
+END OF Baselight_Colour_Science.fx
