@@ -1,0 +1,230 @@
+GIOP v3.0 :: KINGDOM 08 — VIDEO ENGINEERING AND BROADCAST STANDARDS
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_08_Video_Engineering_Broadcast.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines the compression, transport, quality
+assessment, and synchronization standards that govern video from
+acquisition to distribution. It contains the core tools of modern
+codecs (H.266/VVC, AV1, AV2), video quality metrics (PSNR, SSIM,
+VMAF), SMPTE timecode and synchronization protocols, IP-based
+transport (ST 2110), and the rate-distortion optimization
+frameworks that balance bandwidth and quality. It is the layer
+that ensures a video signal remains mathematically intact and
+temporally coherent from camera to screen.
+
+WHY IT EXISTS
+A perfectly graded image is worthless if compression destroys
+its color fidelity or if a frame drops in broadcast. This kingdom
+provides the engineering standards that preserve the visual
+integrity established by all preceding Kingdoms. It replaces
+empirical compression tuning with mathematically defined
+rate-distortion optimization, defines the timecode and sync
+protocols that keep multi-camera arrays in lockstep, and
+establishes objective quality metrics that correlate with
+human perception.
+
+HOW IT IS STRUCTURED
+Seven sub-domains: Codec Compression Tools (VVC and AV1/AV2),
+Rate-Distortion Optimization, Video Quality Metrics (PSNR, SSIM,
+VMAF), SMPTE Timecode and Synchronization, IP Transport (ST 2110),
+High Dynamic Range in Broadcast, and Codec-Aware Color Management.
+Each section provides the normative formulas, their derivation,
+and their GIOP implementation requirements.
+
+WHERE IT IS APPLIED
+Broadcast encoding (ATSC 3.0, DVB-T2), OTT streaming (Netflix,
+YouTube), IMF mastering and packaging, live production (12G-SDI,
+ST 2110), archival preservation, and quality control automation.
+
+WHO USES IT
+Broadcast engineers, encoding specialists, QC technicians,
+streaming service architects, and anyone responsible for
+delivering video content without loss of visual quality.
+
+WHAT PROBLEM IT SOLVES
+Eliminates codec-induced color shifts by mandating codec-aware
+color management. Prevents frame drops and lip-sync errors in
+broadcast via rigorous timecode and PTP sync. Replaces subjective
+quality assessment with perceptually validated objective metrics,
+enabling automated, reproducible quality control at scale.
+
+1. CODEC COMPRESSION TOOLS (VVC, AV1, AV2)
+Modern codecs achieve compression through a combination of
+prediction, transform, quantization, and entropy coding.
+
+H.266/VVC (Versatile Video Coding):
+  Block structure: quadtree plus multi-type tree (QT+MTT) enables
+  flexible block partitioning down to 4x4 luma samples.
+  Intra prediction: 67 directional modes plus wide-angle extensions.
+  Inter prediction: affine motion compensation, bi-directional
+  optical flow (BDOF), decoder-side motion vector refinement (DMVR).
+
+  Cross-Component Linear Model (CCLM): predicts chroma samples from
+  reconstructed luma samples using a linear model:
+    pred_C[i,j] = a * L'[i,j] + b
+  where (a,b) are derived by linear regression from neighboring
+  reconstructed samples:
+    a = (N * sum(L'*C) - sum(L') * sum(C)) / (N * sum(L'^2) - (sum(L'))^2)
+    b = (sum(C) - a * sum(L')) / N
+  CCLM reduces chroma residual energy by approximately 40% compared
+  to HEVC, with no side information beyond the mode flag.
+
+  Transform: Multiple Transform Selection (MTS) with DCT-II, DST-VII,
+  and DCT-VIII. Low-Frequency Non-Separable Transform (LFNST) for
+  secondary transform on low-frequency coefficients.
+
+  Loop filters: Deblocking filter, Sample Adaptive Offset (SAO),
+  Adaptive Loop Filter (ALF). The neural loop filter (VVC-AI, 2025)
+  adds a CNN-based filter conditioned on QP.
+
+AV1 (AOMedia Video 1):
+  Block partitioning: 10-way partition tree, up to 128x128 superblocks.
+  Intra prediction: directional, smooth, recursive filtering modes.
+  Inter prediction: compound prediction (two references averaged),
+  warped motion (affine), overlapped block motion compensation (OBMC).
+  Transform: DCT, ADST, flipADST, identity.
+  Loop filters: deblocking, Constrained Directional Enhancement
+  Filter (CDEF), Loop Restoration (Wiener and self-guided).
+
+AV2 (AOMedia Video 2, expected final 2026):
+  Extends AV1 with improved rate-distortion optimization (Lagrangian
+  with perceptual lambda), neural post-filter, and enhanced film
+  grain synthesis. Targets 40% bitrate reduction over AV1 at
+  equivalent VMAF.
+
+2. RATE-DISTORTION OPTIMIZATION (RDO)
+Encoding decisions are governed by minimizing a Lagrangian cost:
+  J = D + lambda * R
+where D is distortion (e.g., Sum of Squared Errors, SSE), R is
+rate in bits, and lambda is the Lagrange multiplier.
+
+Lambda derivation in VVC and AV1:
+  lambda = lambda_base * Q_scale[QP][temporal_layer]
+For SDR content, lambda_base is proportional to QP^2.
+For HDR content, an additional luminance-weighted distortion term
+biases lambda to preserve shadow detail. Perceptual RDO uses
+SSIM or VMAF-inspired weighting in the distortion term D.
+
+GIOP specification: any GIOP-certified encoder must report the
+lambda values and perceptual weighting curves used, enabling
+decoder-side fidelity verification against the original scene-
+referred master.
+
+3. VIDEO QUALITY METRICS (PSNR, SSIM, VMAF)
+Objective metrics enable automated quality control. GIOP mandates
+a suite of three complementary metrics.
+
+PSNR (Peak Signal-to-Noise Ratio):
+  MSE = (1/MN) * sum_x sum_y (I(x,y) - I'(x,y))^2
+  PSNR = 10 * log10((2^bitdepth - 1)^2 / MSE)
+Limitations: purely pixel-based, does not model perception.
+
+SSIM (Structural Similarity Index):
+  SSIM(x,y) = ((2*mu_x*mu_y + C1)*(2*sigma_xy + C2)) /
+              ((mu_x^2 + mu_y^2 + C1)*(sigma_x^2 + sigma_y^2 + C2))
+Combines luminance, contrast, and structure. Better correlation
+with subjective quality than PSNR.
+
+VMAF (Video Multimethod Assessment Fusion, Netflix):
+  Three elementary metrics per frame:
+    VIF: Visual Information Fidelity (4-level steerable pyramid).
+    ADM: Additive Detail Metric (DWT domain).
+    Motion: temporal difference magnitude, normalized.
+  Feature vector F = [VIF, ADM, Motion] is fused via a pre-trained
+  SVM:
+    VMAF = sum_i w_i * K(F, support_vector_i) + b
+  Trained on the Netflix public dataset (>10,000 clips, >100,000
+  human ratings). Pearson correlation with subjective MOS is
+  approximately 0.98.
+
+GIOP requires VMAF as the primary metric for any codec evaluation.
+The VMAF model version, training dataset, and viewing conditions
+(display, distance) must be recorded in the QC report.
+
+4. SMPTE TIMECODE AND SYNCHRONIZATION
+SMPTE ST 12-1 defines timecode formats for frame-accurate editing.
+
+Drop-Frame Timecode (30/1.001 fps = 29.97002997 Hz):
+  Frames are counted from 00:00:00;00.
+  Rule: drop two frame numbers every minute except minutes divisible
+  by 10.
+  dropped_frames = 2 * (minutes - floor(minutes/10))
+  N_drop_frame = N_total - dropped_frames
+  Time in seconds: T = N_drop_frame / 29.97002997
+
+Non-drop-frame timecode: all frame numbers are counted sequentially.
+Time in seconds = N_total / fps.
+
+Genlock and PTP (IEEE 1588 Precision Time Protocol):
+  SMPTE ST 2059 defines PTP profiles for broadcast. Sub-microsecond
+  accuracy is achievable on managed Ethernet networks. PTP locks
+  the sample clock, frame sync, and timecode across all devices in
+  a facility.
+
+GIOP requires timecode to be embedded as ACESclip metadata for
+every frame, along with the PTP grandmaster ID and the frame's
+capture or rendering timestamp in TAI (International Atomic Time).
+
+5. IP TRANSPORT (SMPTE ST 2110)
+SMPTE ST 2110 separates video, audio, and ancillary data into
+separate IP streams.
+
+ST 2110-10: System timing and definitions. PTP for synchronization.
+ST 2110-20: Uncompressed video transport. RTP payload format for
+  video essence, up to 8K 120p. 10-bit and 12-bit 4:2:2 color
+  sampling is typical. Colorimetry signaled via SDP parameters
+  referencing ITU-R BT.2100 or ST 2084.
+ST 2110-21: Traffic shaping and delivery timing. Defines narrow
+  (N), wide-synchronous (W), and asynchronous (A) senders.
+ST 2110-30: PCM digital audio transport.
+ST 2110-40: Ancillary data transport (timecode, captions, metadata).
+
+GIOP's interlock with ST 2110: the SDP (Session Description Protocol)
+must include a GIOP color space identifier, the IDT used, the LMT
+stack, and the ODT target. This enables automated color pipeline
+configuration in receiving devices.
+
+6. HIGH DYNAMIC RANGE IN BROADCAST
+Broadcast HDR is standardized in ITU-R BT.2100.
+
+Formats:
+  PQ (ST 2084): absolute luminance, 0 to 10 000 cd/m^2.
+  HLG (Hybrid Log-Gamma): relative luminance, backward compatible
+    with SDR displays.
+
+BT.2111 specifies HDR color bar test patterns for signal chain
+alignment.
+
+BT.2408 provides operational practices for HDR television production,
+including down-mapping to SDR and the concept of "reference white"
+(203 cd/m^2 for PQ, 75% HLG signal).
+
+GIOP encodes all broadcast deliverables with a metadata track
+specifying the HDR format, mastering display peak luminance
+(in cd/m^2), MaxFALL (Maximum Frame Average Light Level), and
+MaxCLL (Maximum Content Light Level), following SMPTE ST 2086.
+
+7. CODEC-AWARE COLOR MANAGEMENT
+Codecs can introduce color shifts if the internal encoding color
+space does not match the grading or display color space.
+
+GIOP codec-aware color management mandates:
+  a. The encoder operates in a perceptually uniform encoding
+     (ICtCp for HDR, or a GIOP-defined log space for SDR),
+     minimizing visible quantization artifacts per bit.
+  b. The encoder's internal color transform is signaled in the
+     bitstream or container metadata, enabling the decoder to
+     invert it exactly and reconstruct the original scene-referred
+     or display-referred signal.
+  c. Chroma subsampling (4:2:0, 4:2:2) filters must use GIOP-
+     defined anti-aliasing kernels that preserve color fidelity
+     at subpixel edges, with the kernel coefficients recorded
+     in metadata.
+  d. A GIOP-certified decoder must output linear ACES2065-1 or
+     the specified display-referred color space, with certification
+     verified by comparing decoded output to the original master
+     using VMAF and CIEDE2000 on a standard test suite.
+
+END OF KINGDOM 08
