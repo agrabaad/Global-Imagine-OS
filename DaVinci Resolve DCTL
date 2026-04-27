@@ -1,0 +1,64 @@
+GIOP v3.0 :: SOFTWARE — DaVinci Resolve DCTL Color Transforms
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/DaVinci_Resolve_DCTL.fx
+
+WHAT IS THIS FILE
+The certified software module reference for DaVinci Color Transform Language
+(DCTL). It specifies the DCTL syntax, the GPU execution model, the
+mandatory __DEVICE__ float3 transform() function signature, optimization
+rules (register pressure, reciprocal multiplication), and the standard
+header for GIOP-compliant DCTL files.
+
+WHY IT EXISTS
+DCTL is the native programming language for Resolve’s color page, allowing
+pixel-level GPU operations. Without a standard reference, DCTL developers
+write code that may break on different GPU architectures or Resolve
+versions. This file ensures cross-platform determinism.
+
+HOW IT WORKS
+1. File structure:
+   __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y,
+                                float3 p_Pixel)
+   {
+       float3 rgb = p_Pixel;
+       // modify R = rgb.x, G = rgb.y, B = rgb.z
+       return make_float3(R, G, B);
+   }
+   Save as .dctl in Resolve LUT folder. The function is called for every
+   pixel, executed on GPU.
+
+2. Optimisation rules:
+   - Use __DEVICE__ to ensure GPU occupancy.
+   - Minimize register pressure: limit float3 intermediates to <32 registers.
+   - Prefer reciprocal multiplication over division.
+   - Use fast intrinsics: __sinf(), __cosf(), __expf(), __logf().
+   - Avoid branching; use lerp() and conditional moves.
+
+3. Color space:
+   Input pixel p_Pixel is in the timeline working color space (e.g., ACEScct).
+   Output must be in the same space, or the user must set the DCTL’s color
+   space tag accordingly.
+
+4. GIOP extensions:
+   GIOP defines additional macros:
+     - GIOP_LINEARIZE(pixel, IDT_hash) : linearizes a pixel using a GIOP
+       certified IDT body file.
+     - GIOP_DISPLAY(pixel, ODT_hash) : applies a GIOP ODT.
+   These load the corresponding .body or .mon file from the GIOP library.
+
+WHERE IT IS APPLIED
+- Custom color transforms in Resolve
+- Gamut compression, tone mapping
+- ACES RRT replacements
+- Creative look development.
+
+WHO USES IT
+L2 Engineers writing DCTL plugins; L3 Colorists using custom DCTL looks.
+
+WHAT PROBLEM IT SOLVES
+Standardizes DCTL syntax and optimizations so that a GIOP-certified DCTL
+produces identical output across Windows/macOS/Linux, AMD/NVIDIA GPUs.
+Provides macros that directly integrate GIOP IDTs and ODTs into Resolve.
+
+END OF DaVinci_Resolve_DCTL.fx
