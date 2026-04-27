@@ -1,0 +1,70 @@
+GIOP v3.0 :: STANDARDS — ISO 22028-5:2026 (HDR Stills Encoding)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/ISO_22028_5_2026_HDR.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ISO/TS 22028‑5:2026. It defines the
+encoding and metadata for HDR/WCG still images, specifying mandatory and
+optional metadata fields, reference viewing conditions, and the colour
+space encoding model aligned with ITU‑R BT.2100 and SMPTE ST 2084.
+
+WHY IT EXISTS
+HDR still photography lacks a universal metadata standard, leading to
+incorrect display rendering. ISO 22028‑5 provides a normative framework
+so that an HDR still carries all necessary information for accurate
+reproduction on any device. GIOP integrates it as the still‑image
+counterpart to video HDR standards.
+
+HOW IT WORKS
+The core encoding is based on BT.2100 colour spaces (PQ or HLG). Metadata
+specifies mastering display luminance, MaxCLL, MaxFALL, content light
+levels, and creative intent. The file contains the formulas that define
+these quantities.
+
+WHERE IT IS DEPLOYED
+- HDR still capture and display
+- Archival preservation
+- GIOP still‑image ingest for VFX plates.
+
+WHO USES IT
+L2 Engineers building HDR still pipelines; L3 Colorists grading HDR
+stills; archivists.
+
+WHAT PROBLEM IT SOLVES
+Provides a single internationally recognised metadata standard for HDR
+stills, ensuring consistent display rendering and long‑term preservation.
+
+KEY FORMULAS
+
+1. PQ EOTF (SMPTE ST 2084, referenced by ISO 22028‑5)
+   V = ((c1 + c2 * L^m1) / (1 + c3 * L^m1))^m2
+   where:
+     m1 = 2610 / 16384 = 0.1593017578125
+     m2 = 2523 / 4096 * 128 = 78.84375
+     c1 = 3424 / 4096 = 0.8359375
+     c2 = 2413 / 4096 * 32 = 18.8515625
+     c3 = 2392 / 4096 * 32 = 18.6875
+   L: linear luminance (0 to 1, 1 = 10 000 cd/m²).
+
+2. HLG OETF (ITU‑R BT.2100, referenced by ISO 22028‑5)
+   If 0 ≤ E ≤ 1/12:
+       E' = (1/2) * sqrt(3 * E)
+   Else:
+       E' = a * ln(12*E – b) + c
+   where:
+     a = 0.17883277
+     b = 0.28466892
+     c = 0.55991073
+
+3. MaxCLL (Maximum Content Light Level) – defined as the highest pixel
+   luminance in cd/m² of any frame in a sequence (for stills: the single
+   image). Calculation:
+     MaxCLL = max( L_pixel ) * mastering_display_peak
+   where L_pixel is the linear relative luminance (0–1) after OOTF.
+
+4. MaxFALL (Maximum Frame Average Light Level) – average of the frame’s
+   pixel luminance in cd/m²:
+     MaxFALL = (1/N_pixels) * Σ L_pixel * mastering_display_peak
+
+END OF ISO_22028_5_2026_HDR.sci
