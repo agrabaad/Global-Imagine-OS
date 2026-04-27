@@ -1,0 +1,40 @@
+GIOP v3.0 :: LENSES — Optical Breathing Suppression
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/anamorphic/Optical_Breathing_Suppression.opt
+
+WHAT IS THIS FILE
+The mathematical model of focus breathing and the multi‑group floating cam
+system that suppresses it. It defines the condition ∂f_eff/∂object_distance = 0
+and how specific lens groups move to maintain constant field of view.
+
+WHY IT EXISTS
+Focus breathing breaks compositing and virtual production when a focus pull
+changes the apparent focal length. Understanding the suppression mechanism
+allows GIOP to certify „zero‑breathing” lenses and to simulate residual
+breathing accurately.
+
+HOW IT WORKS
+- Breathing caused by total refractive power shift when unit‑focus lenses move.
+- Suppression uses three moving groups:
+    Group A (front, focusing) changes object conjugate; introduces focal
+    length variation.
+    Group B (middle, compensator) counter‑moves to nullify the shift.
+    Group C (rear, fixed) maintains telecentricity and image plane stability.
+- Design constraint: coupled lens equations solved so that ∂f_eff/∂d_object = 0.
+- Breathing measured as percentage change in AFoV: < 1% (e.g., Zeiss Compact
+  Zoom, Fujinon Premista).
+
+WHERE IT IS DEPLOYED
+Virtual production lens calibration, VFX camera tracking, CGI focus pulls.
+
+WHO USES IT
+L1 Architects defining new lens designs; L2 Engineers implementing breathing
+compensation in tracking software.
+
+WHAT PROBLEM IT SOLVES
+Eliminates inaccurate camera solves caused by unaccounted breathing. Provides
+the mathematical proof that a lens branded „zero‑breathing” truly meets the
+claim.
+
+END OF Optical_Breathing_Suppression.opt
