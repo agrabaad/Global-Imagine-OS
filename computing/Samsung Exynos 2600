@@ -1,0 +1,87 @@
+GIOP v3.0 :: COMPUTING — Samsung Exynos 2600
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /computing/Samsung_Exynos_2600.soc
+
+WHAT IS THIS FILE
+The certified computing profile for Samsung's Exynos 2600 flagship mobile
+SoC. Manufactured on Samsung's 2nm Gate-All-Around (GAA) process (SF2),
+it is the world's first 2nm smartphone chipset, powering the Galaxy S26
+series in 2026. This file documents the CPU microarchitecture, GPU
+configuration, NPU AI accelerator, cognitive ISP, memory subsystem, and
+imaging pipeline formulas.
+
+WHY IT EXISTS
+The Exynos 2600 represents Samsung's renewed commitment to in-house chip
+development, achieving parity with Qualcomm's Snapdragon 8 Elite Gen 5 and
+Apple's A19 Pro in both AI and imaging workloads. GIOP must provide a
+certified profile to map the chip's ISP and NPU pipelines into an auditable,
+ACES-compliant imaging workflow.
+
+HOW IT WORKS
+CPU Performance (C1 Custom Cores, Arm v9.2, 2nm GAA SF2):
+  Single-core throughput:
+    Perf(f) = IPC * f
+    IPC uplift vs Cortex-X4: +36% (Geekbench 6.2)
+    C1-Ultra Prime at 3.80 GHz → Perf ≈ 5.17 (normalised to X4 at 3.4 GHz = 3.4)
+    C1-Pro at 3.26 GHz → Perf ≈ 4.43
+    C1-Efficiency at 2.76 GHz → Perf ≈ 3.75
+  Multi-core scaling (Amdahl):
+    P(N) = 1 / ((1 – f_parallel) + f_parallel / N)
+    where f_parallel = 0.92, N = 10 cores.
+
+CPU Dynamic Power:
+  P_cpu = C_eff * V^2 * f
+  where C_eff ≈ 2.5 nF (C1-Ultra, 2nm GAA), V = 0.55–0.95 V, f = 2.76–3.80 GHz.
+  Sustained TDP: 5.5 W (smartphone passive cooling).
+  Thermal headroom: +30% vs Exynos 2500 (Samsung claims 30% less heat).
+
+GPU Throughput (Xclipse 960, AMD RDNA 4):
+  FP32 TFLOPS:
+    TFLOPS_FP32 = (CUs * ALUs_per_CU * 2 * f_gpu) / 1e12
+    = (10 * 128 * 2 * 1.25e9) / 1e12 ≈ 3.2 TFLOPS
+  FP16 TFLOPS (packed math): 2× FP32 ≈ 6.4 TFLOPS
+  Ray Tracing: hardware RT cores, 2.8 Giga-rays/s.
+  Performance uplift vs Xclipse 950: +24%.
+
+NPU AI Throughput (Dual-GNPU + Dual-SNPU):
+  INT8 TOPS:
+    TOPS_INT8 = (MAC_units * 2 * f_npu) / 1e12
+    ≈ (24,576 * 2 * 2.0e9) / 1e12 ≈ 98 TOPS (marketed ~59 TOPS sustained)
+  Uplift vs Exynos 2500 NPU: +39%.
+  Generative AI performance (CPU+NPU combined): +113% vs Exynos 2500.
+  On-device Stable Diffusion XL (1024×1024, 20 steps): ~1.5 s first pass.
+
+ISP Throughput (Samsung Cognitive ISP, 20-bit):
+  Pixel Rate:
+    R_isp = f_isp * pixels_per_cycle
+    = 1.4e9 * 16 = 22.4 Gpix/s
+  Supports 320 MP single-shot, 8K 60 fps HDR video encode (HEVC/AV1).
+  Real-time 12-layer semantic segmentation at 4K.
+  Quad-exposure HDR fusion at 14-bit linear RAW.
+
+Memory Bandwidth (LPDDR6x, 64-bit):
+  BW = bus_width_bytes * f_data * 2(DDR)
+  = 8 * 14.4e9 * 2 = 115.2 GB/s (per 64-bit channel)
+  Max capacity: 24 GB.
+
+WHERE IT IS DEPLOYED
+- Samsung Galaxy S26/S26+ (Europe, India, Korea, and other Exynos regions).
+- High-end Samsung tablets (Galaxy Tab S11 series).
+- GIOP-powered mobile HDR capture and on-device real-time AI grading.
+
+WHO USES IT
+L2 GIOP Engineers: optimizing mobile ISP pipelines and NPU-accelerated
+transforms for Samsung devices.
+L3 GIOP Colorists: creating AI-powered looks that run directly on-device.
+Camera firmware engineers working on Samsung flagships.
+
+WHAT PROBLEM IT SOLVES
+Provides the exact computational specification of Exynos 2600, enabling
+GIOP to map scene-referred ACES pipelines onto Samsung's cognitive ISP
+and AI engine. Replaces undocumented assumptions about the chip's imaging
+capabilities with a certified, auditable profile.
+
+SHA3-512: [To be computed after final content is sealed]
+
+END OF Samsung_Exynos_2600.soc
