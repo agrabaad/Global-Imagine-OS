@@ -1,0 +1,66 @@
+GIOP v3.0 :: NEW TECHNOLOGY — Achromatic Electrically Switchable Metalens
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /lenses/computational/Achromatic_Metalens_2D_3D.opt
+
+WHAT IS THIS FILE
+The certified optical profile for the achromatic, electrically switchable
+metalens developed by POSTECH and Samsung, published in Nature (April
+2026). It defines the metasurface lenticular lens array, the voltage-
+controlled polarisation switching between 2D and 3D modes, the achromatic
+design (visible band 450–650 nm), and the performance parameters (1.2 mm
+thickness, 100° viewing angle).
+
+WHY IT EXISTS
+This is the first metalens that can switch between 2D and glasses-free
+3D display modes. Its achromatic design overcomes the severe chromatic
+aberration that plagued earlier metalenses. GIOP integrates this profile
+to support next-generation switchable 2D/3D smartphone and monitor
+displays.
+
+HOW IT WORKS
+1. Metasurface Design:
+   The metalens comprises TiO₂ nanofins on a glass substrate. Each
+   nanofin acts as a half-wave plate, imparting a phase shift:
+     φ(x,y) = (2π/λ_design) * (f - √(x² + y² + f²))
+   where f is the design focal length (1.2 mm), λ_design = 530 nm.
+
+2. Achromatic Correction:
+   Multi-wavelength phase matching uses dispersion-engineered nanofin
+   geometries. The phase profile is optimised for three wavelengths
+   (450, 530, 630 nm) simultaneously via adjoint optimisation, achieving
+   Δφ < 0.1π across the visible band.
+
+3. Voltage-Controlled Switching:
+   A liquid crystal (LC) layer above the metalens acts as a polarisation
+   controller. Without voltage, the LC rotates incoming polarisation to
+   match the metalens's 2D mode. With voltage applied, polarisation
+   shifts to the 3D lenticular mode. Switching time < 10 ms.
+
+4. Optical Performance:
+   Thickness: 1.2 mm (metalens + LC + substrate).
+   Viewing angle: 100° (horizontal), enabling multi-viewer glasses-free 3D.
+   Efficiency: η > 80% (transmission at design wavelength).
+   Resolution: achieves full display native resolution in 2D mode.
+
+5. Lenticular 3D Model:
+   In 3D mode, the metalens acts as a lenticular array with lens pitch
+   p = 0.4 mm. Each lenslet directs light from alternating pixel columns
+   to left/right eyes, creating stereoscopic parallax.
+     angular_resolution = arctan(p / f) ≈ 18° per view.
+
+WHERE IT IS DEPLOYED
+- Glasses-free 3D smartphones and tablets
+- 3D monitors and digital signage
+- GIOP spatial computing displays.
+
+WHO USES IT
+L1 Architects designing next-gen display profiles; L2 Engineers
+implementing 2D/3D switching in rendering pipelines.
+
+WHAT PROBLEM IT SOLVES
+Enables GIOP to support switchable 2D/3D displays with a certified
+metalens model, eliminating the need for glasses and overcoming the
+traditional trade-off between 3D quality and viewing angle.
+
+END OF Achromatic_Metalens_2D_3D.opt
