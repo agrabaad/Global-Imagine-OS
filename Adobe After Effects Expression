@@ -1,0 +1,68 @@
+GIOP v3.0 :: SOFTWARE — Adobe After Effects Expressions
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Adobe_After_Effects_Expressions.fx
+
+WHAT IS THIS FILE
+The certified software module reference for Adobe After Effects Expressions.
+It defines the core expression language (JavaScript/ExtendScript), the
+available math functions, wiggle procedural noise, vector math operations,
+and the standard timeline-driven variables (time, frame, value). This file
+serves as the normative guide for implementing GIOP-compliant motion
+graphics and dynamic parameter linking.
+
+WHY IT EXISTS
+After Effects expressions are the backbone of procedural animation in motion
+design and VFX. Without a canonical reference, different artists use
+inconsistent implementations of noise, loops, and easing. This file provides
+a single, deterministic specification so that any expression-based effect
+can be exactly reproduced in a GIOP pipeline.
+
+HOW IT WORKS
+1. Language: JavaScript (ExtendScript) with a set of built-in AE-specific
+   objects and functions.
+2. Time-based variables:
+     time          : current composition time in seconds.
+     frame         : current frame number (1-based).
+     value         : current property value before expression.
+3. Interpolation:
+     linear(t, tMin, tMax, valueAtTMin, valueAtTMax)
+     ease(t, tMin, tMax, valueAtTMin, valueAtTMax)
+     easeIn, easeOut : optional ease-type variants.
+   All map input t from [tMin, tMax] to output range, clamped.
+4. Trigonometric functions:
+     Math.sin(angle)    : angle in radians.
+     Math.cos(angle)
+     Math.tan(angle)
+     Math.atan2(y, x)
+5. Procedural noise:
+     wiggle(freq, amp, octaves=1, amp_mult=0.5, t=time)
+     Generates Perlin noise at frequency freq (Hz), amplitude amp (in
+     property units). octaves controls fractal detail; amp_mult scales
+     successive octave amplitudes.
+6. Vector math:
+     add(vec1, vec2), sub(vec1, vec2), mul(vec1, scalar), div(vec1, scalar)
+     dot(vec1, vec2), cross(vec1, vec2)  (for 3D)
+     normalize(vec), length(vec)
+7. Random number generation:
+     seedRandom(seed, timeless=false) : sets seed for repeatable randomness.
+     random(minVal, maxVal)
+     gaussRandom(minVal, maxVal) : Gaussian distribution.
+
+WHERE IT IS APPLIED
+- Motion graphics templates (MOGRTs)
+- Automated parameter linking across layers
+- Procedural animation without keyframes
+- VFX pre-comps that require frame-accurate calculations.
+
+WHO USES IT
+L2 Engineers building automated After Effects workflows; L3 Compositors
+and motion designers using expressions for dynamic content.
+
+WHAT PROBLEM IT SOLVES
+Provides a deterministic reference for AE expressions, ensuring that a
+wiggle() call with a specific seed produces identical output in any GIOP-
+compliant environment. Eliminates ambiguity in vector math and easing
+functions.
+
+END OF Adobe_After_Effects_Expressions.fx
