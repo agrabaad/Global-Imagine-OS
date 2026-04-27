@@ -1,0 +1,60 @@
+GIOP v3.0 :: SOFTWARE — Nuke Python API Core
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Nuke_Python_API.fx
+
+WHAT IS THIS FILE
+The certified software module reference for the Foundry Nuke Python API.
+It specifies the core API patterns for node creation, knob manipulation,
+lens distortion workflows, and stereoscopic tools (JoinViews,
+SideBySide). This file is the normative guide for building GIOP-compliant
+Nuke pipelines.
+
+WHY IT EXISTS
+The Nuke Python API is the backbone of automated VFX workflows. An
+ambiguous API leads to broken scripts and unreproducible comps. This file
+defines the minimum certified API set and GIOP-specific extensions.
+
+HOW IT WORKS
+1. Core paradigm:
+     nuke.createNode('Grade', 'label MyGrade')
+     nuke.toNode('Grade1')['whitepoint'].setValue(1.0)
+   Nodes are identified by name or object reference.
+
+2. Commonly used nodes (GIOP-certified subset):
+     Merge, Blur, Transform, Roto, RotoPaint, ColorCorrect, ZDefocus,
+     VectorBlur, DeepRecolor, ScanlineRender, Camera, Scene, Read, Write.
+
+3. Lens distortion workflow:
+     lens = nuke.createNode('LensDistortion')
+     lens['k1'].setValue(0.01)
+     lens['k2'].setValue(-0.02)
+   Or solved from a grid shot:
+     nuke.solveLensDistortion(node)
+
+4. Stereoscopic tools:
+     nuke.nodes.JoinViews()   – combines left/right streams.
+     nuke.nodes.SideBySide()  – for MV-HEVC conform and review.
+
+5. GIOP API extensions:
+     giop.apply_idt(node, 'GIOP_Body_File.body')
+       – inserts the correct IDT node chain for a given camera body.
+     giop.apply_odt(node, 'GIOP_Display_File.mon')
+       – inserts the ODT for a specific mastering display.
+     giop.verify_hash('file.sci')
+       – returns True/False if the file’s SHA3-512 matches the registry.
+
+WHERE IT IS APPLIED
+- Nuke pipeline automation
+- On-set to post data ingestion
+- Stereo 3D and deep compositing.
+
+WHO USES IT
+L2 Engineers writing Nuke toolkits; Pipeline TDs.
+
+WHAT PROBLEM IT SOLVES
+Defines the exact Python API functions certified for GIOP, reducing
+pipeline fragmentation. Adds GIOP hash verification directly in script,
+enabling auditable comps.
+
+END OF Nuke_Python_API.fx
