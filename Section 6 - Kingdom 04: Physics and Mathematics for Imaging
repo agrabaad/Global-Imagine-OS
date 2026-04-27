@@ -1,0 +1,255 @@
+GIOP v3.0 :: KINGDOM 04 — PHYSICS AND MATHEMATICS FOR IMAGING
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_04_Physics_and_Mathematics_for_Imaging.sci
+
+WHAT IS THIS KINGDOM
+The domain that houses the core physical and mathematical engines
+underpinning image synthesis, optical simulation, and quantitative
+image analysis. It contains physically based rendering (PBR) theory,
+wave and geometric optics, statistical image models, multi-bounce
+illumination, energy conservation, geometric invariance, Fourier
+analysis, spectral rendering, biological surface models, and the
+inverse pipeline linearization that returns any image to scene-
+referred linear light.
+
+WHY IT EXISTS
+Rendering a photorealistic image or simulating a lens requires an
+uncompromising mathematical foundation. Empirical approximations
+break down at extreme scales. This kingdom provides the exact
+integrals, reflectance models, and conservation laws that guarantee
+every simulated photon behaves correctly. It is the mathematical
+backbone of GIOP, ensuring that synthetic imagery is physically
+indistinguishable from captured imagery.
+
+HOW IT IS STRUCTURED
+Eleven sub-domains: Advanced PBR Theory, Wave Optics, Geometric
+Optics, Statistical Image Analysis, Multi-Bounce Illumination,
+Energy Conservation, Geometric Invariance, Fourier Analysis,
+Spectral Rendering, Biological Face and Fabric Physics, and
+Inverse Pipeline Linearization. Each sub-domain presents the
+governing equations, their boundary conditions, and their role
+in a production imaging pipeline.
+
+WHERE IT IS APPLIED
+Path-tracing renderers, real-time ray tracing (NVIDIA RTX), lens
+simulation (STMap, bokeh), digital asset validation (white furnace
+test), multi-view stereo, 3D face tracking, fabric relighting,
+and the inverse transform that linearizes any camera log footage
+for VFX compositing.
+
+WHO USES IT
+Rendering engineers, shader writers, pipeline TDs who implement
+renderers, compositors who require inverse linearization, and
+anyone needing to guarantee physical plausibility of synthetic
+elements.
+
+WHAT PROBLEM IT SOLVES
+Eliminates physically implausible renders via energy conservation
+and white furnace auditing. Provides the exact wave-optics model
+for diffraction and interference, essential for simulating fine
+lens artifacts. Anchors all image analysis in statistical rigor,
+separating signal from noise with mathematical precision. Ensures
+that every log-to-linear conversion in GIOP is mathematically
+invertible and free of quantization errors.
+
+1. ADVANCED PBR THEORY
+Physically based rendering models the interaction of light with
+surfaces using the microfacet Cook-Torrance BRDF:
+
+  f(omega_i, omega_o) = (D(h) * G(omega_i, omega_o, h) * F(omega_i, h))
+                         / (4 * (n·omega_i) * (n·omega_o))
+
+Normal Distribution Function (NDF) — GGX (Trowbridge-Reitz):
+  D(h) = alpha^2 / (pi * ((n·h)^2 * (alpha^2 - 1) + 1)^2)
+where alpha = roughness^2.
+
+Geometric attenuation — Smith height-correlated masking-shadowing:
+  G(omega_i, omega_o, h) = G1(omega_i) * G1(omega_o)
+  G1(v) = (n·v) / ((n·v) * (1 - k) + k)
+  k = (roughness + 1)^2 / 8  (direct lighting)
+  k = roughness^4 / 2         (IBL)
+
+Fresnel term — Schlick approximation:
+  F = F0 + (1 - F0) * (1 - cos(theta))^5
+where F0 is the specular reflectance at normal incidence.
+For metals, F0 is RGB and complex; for dielectrics, F0 ≈ 0.04.
+
+2. WAVE OPTICS
+When the scale of detail approaches the wavelength of light,
+geometric optics fails and wave effects dominate.
+
+Diffraction: single-slit intensity
+  I(theta) = I0 * (sin(beta)/beta)^2
+  beta = (pi * a * sin(theta)) / lambda
+where a is slit width. Airy disk from circular aperture:
+  I(r) = I0 * (2 * J1(k * a * r / f) / (k * a * r / f))^2
+where J1 is the first-order Bessel function.
+
+Interference: constructive when optical path difference = m*lambda,
+destructive when = (m + 1/2)*lambda. Thin-film interference
+generates the color shifts in lens coatings and soap bubbles.
+
+Polarization: Malus's law  I = I0 * cos^2(theta) for intensity
+through an analyzer. Stokes parameters (S0, S1, S2, S3) and
+Mueller calculus enable simulation of all polarization-dependent
+phenomena, essential for polarimetric imaging and glare reduction.
+
+3. GEOMETRIC OPTICS
+For macroscopic lenses, geometric optics provides the foundation.
+
+Reflection law: theta_i = theta_r.
+Snell's law: n1 * sin(theta1) = n2 * sin(theta2).
+
+Lens maker's equation (thick lens):
+  1/f = (n - 1) * [1/R1 - 1/R2 + (n - 1)*d / (n * R1 * R2)]
+where R1, R2 are radii of curvature, d is center thickness.
+
+Thin lens equation: 1/f = 1/u + 1/v.
+Magnification: M = -v/u.
+
+Circle of confusion (CoC) for a defocused point:
+  CoC = |d - D| / d * f^2 / (N * (D - f))
+where d is focus distance, D is object distance, f is focal length,
+N is f-number.
+
+4. STATISTICAL IMAGE ANALYSIS
+Quantitative extraction of signal and noise from pixel data.
+
+Image histogram: probability distribution of intensity values.
+Mean: mu = (1/N) * sum(I_i).
+Variance: sigma^2 = (1/N) * sum((I_i - mu)^2).
+Skewness and kurtosis for higher-order texture characterization.
+
+Signal-to-Noise Ratio (SNR):
+  SNR_dB = 20 * log10(mu / sigma)
+
+Noise models:
+  Gaussian: additive sensor noise, mean 0, variance sigma^2.
+  Poisson: photon shot noise, variance equals mean.
+  Salt-and-pepper: dead or hot pixels, modeled as impulse noise.
+
+5. MULTI-BOUNCE ILLUMINATION
+Global illumination requires solving the rendering equation:
+
+  L_o(x, omega_o) = L_e(x, omega_o) + integral_{Omega}
+    f_r(x, omega_i, omega_o) * L_i(x, omega_i) * (omega_i·n) d_omega_i
+
+Path tracing: unbiased Monte Carlo integration. Sample random
+directions to solve the integral recursively.
+
+Photon mapping: two-pass method. First pass traces photons from
+light sources and stores them in a kd-tree. Second pass performs
+radiance estimation at camera hits using nearest-neighbor density:
+  L_o ≈ (1 / (pi * r^2)) * sum( f_r * Delta_Phi_p )
+
+ReSTIR (Reservoir-based Spatiotemporal Importance Resampling):
+shares light path samples across pixels and frames, dramatically
+improving convergence for direct lighting from many sources.
+
+6. ENERGY CONSERVATION
+Any physically valid material must not reflect more light than
+it receives.
+
+BRDF energy conservation:
+  for all omega_i: integral_{Omega} f_r(omega_i, omega_o) * (n·omega_o)
+  d_omega_o <= 1
+
+White furnace test: place an object in a uniform white environment.
+If the material is energy conserving, the object becomes invisible,
+regardless of roughness. This test is mandatory for certifying any
+new BRDF in GIOP.
+
+Helmholtz reciprocity: f_r(omega_i, omega_o) = f_r(omega_o, omega_i).
+All GIOP BRDFs must be reciprocal.
+
+7. GEOMETRIC INVARIANCE
+Understanding geometric transformations is essential for VFX,
+tracking, and multi-view geometry.
+
+Euclidean (rigid): 3 DOF, preserves lengths and angles.
+Similarity: 4 DOF, adds uniform scaling.
+Affine: 6 DOF, preserves parallelism.
+Projective (homography): 8 DOF, preserves cross-ratio.
+
+Cross-ratio of four collinear points A,B,C,D:
+  (A,B;C,D) = (AC * BD) / (BC * AD)
+This is invariant under any projective transformation.
+
+Fundamental matrix F (epipolar geometry):
+  x'^T F x = 0
+Essential matrix E = K'^T F K, where K, K' are intrinsic matrices.
+These are the foundations of structure-from-motion and stereo.
+
+8. FOURIER ANALYSIS
+The Fourier transform decomposes an image into its frequency
+components, essential for filtering, compression, and denoising.
+
+2D Discrete Fourier Transform (DFT):
+  F(u,v) = sum_x sum_y f(x,y) * e^{-j * 2pi * (ux/M + vy/N)}
+
+Inverse DFT:
+  f(x,y) = (1/MN) * sum_u sum_v F(u,v) * e^{j * 2pi * (ux/M + vy/N)}
+
+Convolution theorem:
+  F{f * g} = F * G
+Spatial convolution can be performed as frequency-domain
+multiplication, accelerating filtering.
+
+Applications:
+  Low-pass filter: attenuates high frequencies (smoothing, anti-aliasing).
+  High-pass filter: attenuates low frequencies (edge detection).
+  Band-pass: extracts specific frequency ranges (texture analysis).
+
+9. SPECTRAL RENDERING
+To eliminate metamerism, rendering must be performed at the
+spectral level.
+
+Spectral rendering equation:
+  L_o(x, omega_o, lambda) = L_e(x, omega_o, lambda) +
+    integral_{Omega} f_r(x, omega_i, omega_o, lambda) *
+    L_i(x, omega_i, lambda) * (omega_i·n) d_omega_i
+
+Sellmeier equation for wavelength-dependent refractive index:
+  n^2(lambda) = 1 + sum_i (B_i * lambda^2) / (lambda^2 - C_i)
+This governs dispersion (rainbow splitting) in lenses.
+
+Spectral power distribution (SPD) for light sources and materials
+are sampled at 31 bands (400-700 nm, 10 nm step). The final
+tristimulus values are obtained by integration with CIE CMFs.
+
+10. BIOLOGICAL FACE LOCK AND FABRIC PHYSICS
+3D Morphable Model (3DMM) for face geometry:
+  S = S_mean + sum(alpha_i * A_id,i) + sum(beta_j * A_exp,j)
+where alpha_i are identity coefficients, beta_j are expression
+coefficients. Constraints: inter-ocular drift < 1%, RMS error < 2%,
+asymmetry preservation > 90%.
+
+Fabric physics-based relighting uses the Kajiya-Kay anisotropic
+BRDF:
+  f_r = k_d * (rho/pi) + k_s * ((N·H)^n) * ((T·H)^m)
+where T is the tangent direction aligned with thread direction.
+Albedo-shading decomposition:
+  rho = I_orig / (max(0, N·L_orig) + ambient_orig)
+
+11. INVERSE PIPELINE LINEARIZATION
+Any camera output must be revertible to linear scene light for
+VFX and cross-pipeline compositing.
+
+General inverse pipeline steps:
+  1. Apply inverse log curve (e.g., inverse S-Log3, inverse LogC4).
+  2. Apply inverse color space matrix to reach sensor native RGB.
+  3. White balance multiplication (inverse of as-shot gains).
+  4. Output is linear, scene-referred, in the camera's native
+     color space, ready for IDT to ACEScg.
+
+sRGB inverse gamma for consumer images:
+  If C <= 0.04045: C_linear = C / 12.92
+  Else: C_linear = ((C + 0.055) / 1.055)^2.4
+
+The inverse log functions for all certified camera bodies are
+provided in the GIOP Bodies/ domain. This kingdom mandates that
+every inverse transform is mathematically exact to within 10^-6
+relative error over the valid input range.
+
+END OF KINGDOM 04
