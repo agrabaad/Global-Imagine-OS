@@ -1,0 +1,118 @@
+GIOP v3.0 :: DISPLAYS — Samsung Dynamic AMOLED 2X
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /displays/Samsung_Dynamic_AMOLED_2X.mon
+
+WHAT IS THIS FILE
+The certified display profile for the Samsung Dynamic AMOLED 2X mobile
+display technology. It defines the 100% DCI-P3 mobile color volume, peak
+brightness up to 1609 nits, LTPO 1-120Hz adaptive refresh, subpixel
+layout (Diamond PenTile RGBG), contrast ratio, color accuracy (JNCD),
+and HDR certification (HDR10+ Adaptive). This file is the authoritative
+reference for GIOP ODTs targeting flagship Samsung smartphones and
+tablets.
+
+WHY IT EXISTS
+Mobile HDR displays are now primary consumption devices for streaming
+content. A GIOP-compliant ODT must know the exact primaries, peak
+luminance, and EOTF of these displays to deliver creator-intent images.
+This file provides the certified specifications, replacing guesswork
+with auditable device parameters.
+
+HOW IT WORKS
+This file specifies:
+  1. Panel technology (AMOLED, subpixel layout).
+  2. Peak luminance and HDR capabilities.
+  3. Color gamut and accuracy (JNCD < 0.4).
+  4. Refresh rate behaviour and its impact on flicker/ghosting.
+  5. EOTF and HDR format support.
+
+WHERE IT IS DEPLOYED
+- Samsung Galaxy S and Tab series (2026 models).
+- OTT streaming apps providing device-specific ODTs.
+- Mobile HDR mastering QA.
+
+WHO USES IT
+- L2 GIOP Engineers: creating mobile ODTs.
+- L3 Colorists: previewing mobile deliverables.
+- Streaming service encoding teams.
+
+WHAT PROBLEM IT SOLVES
+Defines the exact color volume and peak luminance of Samsung's flagship
+AMOLED panel, enabling automated creation of mobile-specific trim passes.
+Removes the discrepancy between studio mastering monitors and mobile OLEDs.
+
+1. PANEL TECHNOLOGY
+  Type             : Dynamic AMOLED 2X (emissive OLED)
+  Subpixel Layout  : Diamond PenTile RGBG
+  Resolution       : up to 1440 x 3200 (WQHD+)
+  Typical Size     : 6.8 inch (diagonal)
+  Pixel Density    : ~500 PPI
+
+  Diamond PenTile:
+    Each pixel has 2 subpixels (Green + alternating Red/Blue).
+    Subpixel rendering is handled by the display driver; effective
+    resolution for green is full, for red/blue is half. GIOP ODT must
+    account for this when rendering fine text/patterns to avoid color
+    fringing; a box filter or custom anti-aliasing kernel should be
+    applied.
+
+2. PEAK LUMINANCE AND HDR
+  Peak Brightness   : 1609 cd/m² (HDR highlight, small area)
+  Sustained Brightness : 1200 cd/m² (full-screen white)
+  Black Level       : 0 cd/m² (true black, per-pixel emissive off)
+  Contrast Ratio    : 2,000,000:1 (certified by VDE)
+  HDR Certification : HDR10+ Adaptive with dynamic tone mapping.
+                      Vision Booster: enhances visibility under high
+                      ambient light (up to 100,000 lux).
+
+  HDR10+ Adaptive:
+    Uses real-time ambient light sensor data and content metadata to
+    dynamically adjust the tone curve. GIOP provides the MaxCLL/MaxFALL
+    metadata and the mastering display peak (e.g., 1000/4000 nit) via
+    Dolby Vision XML or HDR10+ JSON. The display's internal processor
+    applies the adaptive mapping.
+
+3. COLOR VOLUME AND ACCURACY
+  Color Gamut       : 100% DCI-P3 (mobile color volume)
+  Color Accuracy    : JNCD < 0.4 (Just Noticeable Color Difference)
+  White Point       : D65 (factory calibrated)
+  Bit Depth         : 10-bit (internal processing, 8-bit panel + FRC
+                      to simulate 10-bit smoothness)
+
+  DCI-P3 primaries (CIE 1931 xy):
+    Red   : (0.680, 0.320)
+    Green : (0.265, 0.690)
+    Blue  : (0.150, 0.060)
+    White : D65 (0.3127, 0.3290)
+
+  For GIOP ODT: target DCI-P3 primaries with D65 white point. If the
+  content is Rec.2020 or ACES AP1, gamut compression to DCI-P3 is
+  required.
+
+4. REFRESH RATE AND LTPO
+  Technology        : LTPO (Low-Temperature Polycrystalline Oxide)
+  Refresh Rate      : 1 Hz – 120 Hz (adaptive)
+    The display dynamically switches refresh rate based on content:
+      - 1 Hz : static image (always-on display)
+      - 24/30/60/120 Hz : video and gaming
+    This has no impact on color but affects perceived motion smoothness.
+    GIOP metadata can signal the intended frame rate (24, 30, 60) to
+    help the display select an appropriate refresh mode.
+
+5. GIOP ODT RECOMMENDATION
+  Target Primaries  : DCI-P3, D65 white
+  Target EOTF       : PQ (ST.2084) for HDR, sRGB for SDR
+  Peak Luminance    : 1600 nit (PQ), 100 nit (SDR)
+  Special Considerations:
+    - Apply subpixel-aware anti-aliasing for UI/text overlays.
+    - Embed HDR10+ dynamic metadata for adaptive tone mapping.
+    - If the content is graded on a 4000 nit BVM-HX3110, a trim pass
+      mapping 4000 → 1600 nit must be applied (Level 2 trim).
+
+6. VALIDATION AND HASH
+   Validated against Samsung Display published specifications.
+   SHA3-512 of this file (all text above this line):
+   [To be computed after final content is sealed]
+
+END OF Samsung_Dynamic_AMOLED_2X.mon
