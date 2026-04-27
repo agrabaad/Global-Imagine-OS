@@ -1,0 +1,54 @@
+GIOP v3.0 :: NEW TECHNOLOGY — HDR Vivid (UWA / DVB)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/HDR_Vivid.sci
+
+WHAT IS THIS FILE
+The certified standard reference for HDR Vivid, the HDR format developed
+by the UHD World Association (UWA) of China and adopted by DVB. It defines
+the dynamic metadata pipeline, the tone mapping algorithm, and the
+colourimetry based on BT.2020 and ST.2084 PQ. HDR Vivid is poised to become
+an ETSI global standard in 2026.
+
+WHY IT EXISTS
+HDR Vivid provides an open, royalty-free alternative to Dolby Vision and
+HDR10+ for broadcast and OTT. With DVB publishing updated BlueBooks in
+March 2026 incorporating T/UWA 005, HDR Vivid is now part of the global
+broadcast infrastructure. GIOP includes it to ensure compatibility with
+Chinese and DVB-compliant HDR content.
+
+HOW IT WORKS
+1. Dynamic Metadata:
+   HDR Vivid uses display adaptation metadata similar to Dolby Vision
+   Level 2/3 trims. Metadata includes:
+     - Mastering display peak luminance
+     - MaxCLL, MaxFALL per scene
+     - Tone mapping curve parameters (lift, gamma, gain)
+   The metadata format is defined in T/UWA 005 and is embedded as SEI
+   messages in HEVC/VVC bitstreams or as JSON sidecar.
+
+2. Tone Mapping Model:
+   V_out = f(V_in, mastering_display_max, target_display_max, trim_params)
+   The function f is a piecewise-Bezier curve parameterised by the trim
+   metadata, ensuring smooth highlight roll-off and shadow preservation.
+
+3. Colour Space:
+   Primaries: BT.2020 (Rec.2020)
+   Transfer function: ST.2084 PQ (or HLG for broadcast compatibility)
+   White point: D65
+
+WHERE IT IS DEPLOYED
+- DVB broadcast and OTT services
+- Chinese UHD television and streaming (CCTV, iQiyi, Tencent Video)
+- GIOP HDR delivery pipelines.
+
+WHO USES IT
+Broadcast engineers; streaming service architects; L2 Engineers
+implementing HDR ODTs; L3 Colorists mastering for HDR Vivid delivery.
+
+WHAT PROBLEM IT SOLVES
+Provides an open HDR metadata standard now adopted by DVB, enabling
+GIOP to deliver HDR content to the Chinese and global broadcast markets
+without proprietary license fees.
+
+END OF HDR_Vivid.sci
