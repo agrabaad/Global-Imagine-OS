@@ -1,0 +1,53 @@
+GIOP v3.0 :: NEW TECHNOLOGY — JPEG 360 (ISO/IEC 19566-6:2026)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/JPEG_360.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ISO/IEC 19566-6:2026, the
+international standard for omnidirectional/360-degree still and motion
+content using the JPEG Systems framework. It defines the metadata for
+equirectangular projection, cubemap format, and spherical spatial
+metadata.
+
+WHY IT EXISTS
+360-degree content (stills and video) is widely used in VR, AR, and
+virtual tours, yet lacked a standardised JPEG file format. ISO/IEC
+19566-6, published February 2026, provides this. GIOP adopts it as
+the reference container for 360-degree imagery.
+
+HOW IT WORKS
+1. Projection Metadata:
+   The JPEG 360 file carries XMP metadata specifying:
+     - ProjectionType: equirectangular, cubemap, or custom mesh.
+     - Field of View: full 360°, or partial (< 360° for panoramas).
+     - Initial Viewpoint: yaw, pitch, roll in degrees.
+
+2. Cubemap Encoding (optional):
+   For cubemap projection, the six faces are stored as a grid (e.g.,
+   3×2 tiles) within a single JPEG frame. Metadata defines the face
+   ordering (right, left, up, down, front, back).
+
+3. Stereoscopic Support:
+   Stereo 360 content stores left and right eye images as two
+   independent JPEG 360 files or as a top-bottom/left-right frame
+   pair within a single file.
+
+4. Colour Space:
+   Recommended: Rec.2020 primaries with PQ EOTF for HDR, or Rec.709
+   with sRGB gamma for SDR.
+
+WHERE IT IS DEPLOYED
+- VR/AR content creation
+- Virtual tours and real estate
+- GIOP immersive capture pipelines.
+
+WHO USES IT
+L2 Engineers building 360-degree processing tools; VR content creators.
+
+WHAT PROBLEM IT SOLVES
+Standardises the metadata for 360-degree JPEG content, enabling
+GIOP-compliant tools to correctly interpret and render spherical
+images and videos.
+
+END OF JPEG_360.sci
