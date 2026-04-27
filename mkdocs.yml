@@ -1,0 +1,22 @@
+site_name: "Global Imagine OS Protocol (GIOP)"
+site_description: "The unified, formula-defined imaging protocol."
+site_author: "GIOP Architect"
+repo_url: https://github.com/agrabaad/Global-Imagine-OS
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: deep purple
+    accent: amber
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
