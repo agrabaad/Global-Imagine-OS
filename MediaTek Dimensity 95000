@@ -1,0 +1,95 @@
+GIOP v3.0 :: COMPUTING — MediaTek Dimensity 9500
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /computing/MediaTek_Dimensity_9500.soc
+
+WHAT IS THIS FILE
+The certified computing profile for MediaTek’s Dimensity 9500 flagship
+mobile SoC. It defines the Arm C1‑Ultra “Blackhawk” CPU cluster (custom
+implementation of Arm v9.2), the 12‑core Mali G1‑Ultra GPU, the NPU 990
+AI accelerator (~100 TOPS), the Imagiq 1190 ISP, and the LPDDR5x memory
+subsystem. Every subsystem is expressed through auditable formulas.
+
+WHY IT EXISTS
+The Dimensity 9500 is the first mobile SoC to break the 4.2 GHz clock
+barrier using a custom “C1” implementation of the Cortex‑X925. Its
+26 MB combined cache (16 MB L3 + 10 MB SLC) and ~100 TOPS NPU make
+it a primary compute target for GIOP on‑device AI grading, text‑to‑LUT
+generation, and real‑time HDR fusion. GIOP must model these resources
+as formulas to predict processing latency and thermal behaviour.
+
+HOW IT WORKS
+CPU Frequency Scaling (C1‑Ultra):
+  Perf(f) = Perf_base * (f / f_base)^α
+  where α ≈ 0.85 (sub‑linear due to memory wall), f_base = 2.7 GHz,
+  f_max = 4.21 GHz (C1‑Ultra). Perf_base = 1.0. Single‑core Geekbench 6
+  ≈ 3 600 at 4.21 GHz.
+
+CPU Multi‑Core Throughput (Amdahl):
+  P(N) = 1 / ((1 – f_parallel) + f_parallel / N)
+  where f_parallel = 0.91, N = 8 (1×C1‑Ultra + 3×C1‑Premium + 4×C1‑Pro).
+  Measured multi‑core Geekbench 6 ≈ 12 500.
+
+CPU Cache Hierarchy:
+  C1‑Ultra: 2 MB private L2 → hit rate ≈ 0.94
+  C1‑Premium: 1 MB private L2 → hit rate ≈ 0.89
+  C1‑Pro: 512 KB private L2 → hit rate ≈ 0.82
+  16 MB shared L3 + 10 MB SLC → effective L3 miss rate < 2%.
+  Effective access time = hit_L2 * 18 + miss_L2 * (hit_L3 * 50 +
+  miss_L3 * 250) cycles.
+
+CPU Dynamic Power:
+  P_cpu = C_eff * V^2 * f
+  where C_eff ≈ 2.6 nF (C1‑Ultra, 3 nm N3P), V = 0.60–1.00 V,
+  f = 2.70–4.21 GHz. Sustained TDP: 6 W (smartphone passive cooling).
+
+GPU Throughput (Mali G1‑Ultra, 12 cores):
+  FP32 TFLOPS:
+    TFLOPS_FP32 = (cores * ALUs_per_core * 2 * f_gpu) / 1e12
+    = (12 * 128 * 2 * 1.1e9) / 1e12 ≈ 3.4 TFLOPS
+  FP16 TFLOPS:
+    TFLOPS_FP16 = 2 * TFLOPS_FP32 ≈ 6.8 TFLOPS
+  Ray Tracing: hardware RT cores deliver 2.4 Giga‑rays/s.
+  Efficiency: +42% perf/W over Immortalis‑G925.
+
+NPU 990 AI Throughput:
+  INT8 TOPS:
+    TOPS_INT8 = (MAC_units * 2 * f_npu) / 1e12
+    ≈ (24 576 * 2 * 2.0e9) / 1e12 ≈ 98 TOPS (~100 TOPS marketed).
+  INT4 TOPS:
+    TOPS_INT4 = 2 * TOPS_INT8 ≈ 196 TOPS.
+  Stable Diffusion (512×512, 20 steps):
+    t_gen = (Total_FLOPs / TOPS_INT8) + memory_latency
+    ≈ (2.8e11 / 98e9) + 0.3 s ≈ 2.9 s + 0.3 s ≈ 3.2 s (first pass).
+  Subsequent passes benefit from cached U‑Net: ~1.2 s.
+  Agentic AI: real‑time LMT suggestion, text‑to‑LUT generation, on‑device
+  auto‑grade via transformer decoder.
+
+ISP Imagiq 1190 Throughput:
+  Pixel Rate:
+    R_isp = f_isp * pixels_per_cycle
+    = 1.2e9 * 16 = 19.2 Gpix/s
+  Supports 200 MP single‑shot, 4K 60 fps portrait video with continuous
+  AF tracking. 18‑bit internal pipeline for HDR fusion.
+
+Memory Bandwidth (LPDDR5x‑10667, 64‑bit):
+  BW = bus_width_bytes * f_data * 2(DDR)
+  = 8 * 10.667e9 * 2 = 170.7 GB/s
+  For 200 MP RAW (16‑bit): frame size ≈ 400 MB; transfer time ≈ 2.3 ms.
+
+WHERE IT IS DEPLOYED
+- vivo X400/X400 Pro, OPPO Find X9/X9 Pro, HONOR Magic7 Pro.
+- GIOP on‑device AI grading, real‑time text‑to‑LUT, HDR fusion pipelines.
+
+WHO USES IT
+L2 Engineers targeting MediaTek‑powered devices; L3 Colorists working
+with on‑device AI grading tools.
+
+WHAT PROBLEM IT SOLVES
+Models the C1‑Ultra custom core, 26 MB combined cache, and NPU 990 as
+formulas, enabling precise prediction of AI grading latency, HDR fusion
+throughput, and thermal headroom on MediaTek Dimensity 9500 flagships.
+
+SHA3‑512: [To be computed after final content is sealed]
+
+END OF MediaTek_Dimensity_9500.soc
