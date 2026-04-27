@@ -1,0 +1,250 @@
+GIOP v3.0 :: KINGDOM 10 — IMMERSIVE AND VOLUMETRIC CAPTURE
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_10_Immersive_Volumetric_Capture.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines the capture, reconstruction, and
+representation of three-dimensional and immersive visual content
+beyond the traditional 2D frame. It encompasses MPEG Immersive
+Media standards (MPEG-I Visual), volumetric video capture and
+compression, 3D Gaussian Splatting for dynamic scene reconstruction,
+physics-aware volumetric reconstruction (PAVR), light-field
+capture systems, and point cloud processing pipelines. It is the
+layer that enables a scene to be captured once and experienced
+from any viewpoint, on any display, with full parallax and
+preserved lighting fidelity.
+
+WHY IT EXISTS
+The future of visual storytelling is not a fixed rectangle. From
+virtual production on LED volumes to Apple Vision Pro immersive
+video, the industry needs a protocol that handles three-dimensional
+scene data with the same rigor that GIOP brings to 2D imagery.
+This kingdom ensures that volumetric content is color-accurate,
+temporally coherent, physically plausible, and interoperable
+across all viewing platforms.
+
+HOW IT IS STRUCTURED
+Six sub-domains: MPEG Immersive Media and 6DoF Standards,
+Volumetric Video Pipelines, 3D Gaussian Splatting for Dynamic
+Captures, Physics-Aware Volumetric Reconstruction (PAVR),
+Light-Field Capture and Rendering, and Point Cloud Processing
+and Compression. Each section defines the mathematical models,
+file formats, and quality constraints.
+
+WHERE IT IS APPLIED
+Virtual production stages, volumetric capture studios, sports
+broadcast (multi-view replay), immersive filmmaking (Apple
+Immersive Video), cultural heritage digitization, telepresence
+and holoportation, and next-generation spatial computing
+applications.
+
+WHO USES IT
+Volumetric capture engineers, VFX supervisors, immersive
+experience designers, and pipeline architects building the next
+generation of 3D media.
+
+WHAT PROBLEM IT SOLVES
+Replaces proprietary volumetric formats with a single, open,
+GIOP-based representation that preserves the full color pipeline.
+Ensures that a volumetric capture matches the look of the
+corresponding 2D camera captures within ACES. Defines quality
+metrics for geometric accuracy and view-dependent color fidelity.
+
+1. MPEG IMMERSIVE MEDIA AND 6DOF STANDARDS
+MPEG-I (ISO/IEC 23090) is the first international standard for
+immersive media, targeting 6 degrees of freedom (6DoF) viewing.
+
+MPEG-I Visual (Part 12): defines a bitstream format that supports
+view-dependent streaming of immersive video. The scene is
+represented as a combination of:
+  - A geometric model (mesh or point cloud).
+  - Atlas data: patches of texture packed into video streams.
+  - Metadata: camera parameters, depth maps, and rendering hints.
+
+The viewer position and orientation determine which patches
+are streamed at what resolution, similar to adaptive bitrate
+streaming for 2D video.
+
+GIOP defines the color pipeline within MPEG-I:
+  - Textures are encoded in ACES2065-1 linear or ACEScct log.
+  - The AMF (Kingdom 09) is embedded per atlas, specifying the
+    IDT of the capture cameras, any LMTs applied, and the
+    mastering display ODT if pre-rendered for a specific display.
+  - The geometric model is in scene-linear units, with the
+    reflectance (albedo) separated from the incident illumination
+    using intrinsic decomposition. This enables relighting of
+    the captured scene.
+
+6DoF audio: MPEG-I Audio (Part 4) provides object-based and
+scene-based audio that responds to listener position. GIOP
+synchronizes audio and visual metadata via SMPTE timecode.
+
+2. VOLUMETRIC VIDEO PIPELINES
+A volumetric video pipeline captures a dynamic 3D scene, typically
+using an array of synchronized cameras, and reconstructs a
+time-varying 3D representation.
+
+Capture: a dome or cylinder of cameras (typ. 16 to 100+ cameras,
+global shutter, genlocked) captures the scene from all angles.
+Cameras are calibrated geometrically (intrinsics, extrinsics) and
+colorimetrically (per-camera IDT to ACES2065-1). GIOP mandates
+that the calibration data for every camera be stored as a
+certified GIOP Body profile.
+
+Reconstruction: Multi-View Stereo (MVS) and depth map fusion
+produce a dense 3D mesh or point cloud. The mesh is textured
+using the camera images, with per-vertex or per-texel color
+in ACES2065-1. Intrinsic decomposition separates albedo and
+shading under the capture illumination.
+
+Post-production: the volumetric sequence is edited, graded,
+and optionally relit. GIOP-compliant volumetric tools allow
+the colorist to apply looks in ACEScct to a reference viewpoint;
+the look is then propagated to all viewpoints via the scene's
+geometric and reflectance representation, ensuring consistent
+color across all viewing angles.
+
+Compression and delivery: the volumetric video is compressed
+using MPEG-I Visual, 3D Gaussian Splatting (Section 3), or
+a point cloud codec (Section 6). The compressed bitstream
+carries the full ACES color pipeline metadata.
+
+3. 3D GAUSSIAN SPLATTING FOR DYNAMIC CAPTURES
+3D Gaussian Splatting (3DGS, see Kingdom 07 Section 2) is
+extended to dynamic (4D) captures for real-time novel view
+synthesis.
+
+A dynamic scene is represented as a collection of 3D Gaussians
+with time-varying parameters: position mu(t), covariance Sigma(t),
+opacity o(t), and SH coefficients for color c(t). The temporal
+evolution is modeled either by:
+  - Per-Gaussian learned trajectories (polynomials or splines).
+  - A deformation field: a neural network predicts the offset
+    from a canonical pose: delta_mu = MLP(mu_canonical, t).
+
+Training objectives for dynamic scenes:
+  - L1 and D-SSIM loss on all training views and time instants.
+  - Temporal consistency loss: penalize large changes in Gaussian
+    parameters between adjacent frames, weighted by the magnitude
+    of scene motion (derived from 2D optical flow or 3D scene flow).
+  - Flow alignment loss (Edge4DGS, MotionScale 2025): the 3D
+    motion of each Gaussian center, projected to 2D, must match
+    the observed optical flow.
+
+GIOP defines a standard container for a 4DGS asset:
+  - The canonical Gaussians and the deformation model weights.
+  - The ACES2065-1 color space for the SH coefficients.
+  - A reference camera rig (positions, orientations) that matches
+    the capture array, allowing GIOP to query any novel view with
+    the same camera model as physical cameras.
+
+Quality metrics for dynamic 3DGS:
+  - PSNR, SSIM, and LPIPS evaluated on held-out views.
+  - Temporal flicker index: standard deviation of pixel values of
+    a static region over time, must be below JND threshold.
+  - Color accuracy: CIEDE2000 on a ColorChecker placed in the scene,
+    compared to ground-truth captures, must average below 2.0.
+
+4. PHYSICS-AWARE VOLUMETRIC RECONSTRUCTION (PAVR)
+PAVR frameworks reconstruct not just the visual appearance but
+the underlying physical properties of a scene, enabling physically
+plausible relighting and material editing.
+
+Input: calibrated multi-view images under controlled or known
+illumination.
+
+Output:
+  - Per-point or per-surface-patch albedo (diffuse reflectance).
+  - Surface normals.
+  - Specular parameters (roughness, F0).
+  - An environment map of the capture illumination.
+
+The forward rendering model:
+  Rendered_color = albedo * (N·L) * diffuse_lighting +
+                   specular_BRDF(roughness, F0) * specular_lighting +
+                   ambient
+
+Reconstruction loss: photometric error between rendered and
+captured images, summed over all viewpoints and illumination
+conditions if available.
+
+GIOP integration:
+  - The reconstructed albedo is stored in ACES2065-1.
+  - The illumination is stored as an HDR environment map
+    (linear radiance, ACES2065-1) and as a GIOP-certified
+    light source profile.
+  - Relighting is performed by replacing the environment map
+    and re-rendering. The result remains in the ACES pipeline
+    and is directly comparable to 2D camera footage shot under
+    the new lighting.
+
+PAVR is the preferred workflow for virtual production, where
+captured actors must be seamlessly lit by the LED volume's
+virtual environment.
+
+5. LIGHT-FIELD CAPTURE AND RENDERING
+A light-field camera captures the radiance along rays passing
+through a plane or volume, enabling post-capture refocus and
+parallax.
+
+Plenoptic function (Adelson & Bergen, 7D):
+  L(x, y, z, theta, phi, lambda, t)
+Practical light-field cameras sample a 4D subset (x, y, u, v),
+where (x,y) is the spatial coordinate and (u,v) is the angular
+coordinate.
+
+Micro-lens array based light-field camera (e.g., Lytro, Raytrix):
+  d = (f_MLA * b) / (b - f_MLA)
+where d is the distance from the micro-lens array to the sensor,
+f_MLA is the focal length of each micro-lens, and b is the distance
+from the main lens to the micro-lens array.
+
+Light-field processing in GIOP:
+  - Raw light-field images are linearized using the camera's IDT.
+  - Depth maps are extracted from the 4D data using defocus
+    correspondence or phase-based methods.
+  - The light-field can be rendered to any virtual aperture,
+    focus distance, and depth of field, with all rendering
+    occurring in ACEScct or ACEScg to maintain color fidelity.
+  - The light-field file (.lfr) includes per-ray color
+    in ACES2065-1, depth, and confidence. GIOP defines the
+    .lfr container as an open format.
+
+Applications: visual effects (re-focus without re-shooting),
+depth-based compositing, and virtual cinematography where the
+camera's focus and iris are animated in post.
+
+6. POINT CLOUD PROCESSING AND COMPRESSION
+Point clouds are an alternative volumetric representation,
+particularly for real-time applications.
+
+Geometry: a set of 3D points (x, y, z), optionally with color
+(R,G,B or Y,Cb,Cr), normals, and reflectance.
+
+Compression standards:
+  - V-PCC (Video-based Point Cloud Compression, MPEG): projects
+    the point cloud onto 2D patches, encodes the patches as a
+    video stream (HEVC or VVC), and encodes the geometry as a
+    supplementary depth video. Achieves high compression ratios.
+  - G-PCC (Geometry-based Point Cloud Compression, MPEG): encodes
+    the point cloud directly using octree decomposition and
+    attribute prediction. Suitable for sparse, non-surface-like
+    point clouds (e.g., LiDAR).
+
+GIOP color encoding: point cloud attributes (color, reflectance)
+must be encoded in a GIOP-defined log space (ACEScct recommended)
+to match the perceptual uniformity of the rest of the pipeline.
+For V-PCC, the 2D patches are encoded with GIOP codec-aware
+color management (Kingdom 08 Section 7). For G-PCC, the attribute
+prediction residual is compressed losslessly or with visually
+lossless quantization defined by an ITU-R BT.2124-based model.
+
+Point cloud quality metrics:
+  - Geometric error: point-to-point (D1) and point-to-plane (D2)
+    Hausdorff distances.
+  - Color error: CIEDE2000 between the compressed and original
+    colors, evaluated on a reference rendering of the point cloud
+    from a set of standard viewpoints.
+
+END OF KINGDOM 10
