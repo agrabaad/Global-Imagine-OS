@@ -1,0 +1,61 @@
+GIOP v3.0 :: STANDARDS — ISO/WD 24942 (Machine Vision Camera Specs)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/ISO_WD_24942_Machine_Vision.sci
+
+WHAT IS THIS FILE
+The certified standard reference for ISO/WD 24942, which standardises the
+specification parameters for cameras and image sensors used in machine
+vision. It defines measurement methods and reporting formats for key
+performance metrics, ensuring comparability across devices.
+
+WHY IT EXISTS
+Machine vision cameras lack a uniform datasheet standard, making it
+difficult to compare sensitivity, noise, and speed. ISO 24942 harmonises
+these specifications using EMVA 1288‑based methods, extending them for
+industrial and AI vision. GIOP adopts it to certify machine vision
+sensors within its body profiles.
+
+HOW IT WORKS
+The standard prescribes measurement protocols and formulas for quantum
+efficiency, read noise, dynamic range, dark current, and geometric
+accuracy. Key formulas are provided below; the full procedure is in the
+standard itself.
+
+WHERE IT IS DEPLOYED
+- Industrial inspection, robotics, autonomous vehicles
+- GIOP sensor metrology (Kingdom 02)
+
+WHO USES IT
+L1 Architects certifying machine vision sensors; L2 Engineers developing
+machine vision pipelines.
+
+WHAT PROBLEM IT SOLVES
+Enables apples‑to‑apples comparison of machine vision cameras by providing
+standardised metrics defined through auditable formulas.
+
+KEY FORMULAS
+
+1. Quantum Efficiency (QE)
+   QE(λ) = μ_e / μ_p
+   μ_e = average electrons collected per pixel per exposure
+   μ_p = average incident photons per pixel per exposure
+
+2. Read Noise
+   N_read = σ_dark  (standard deviation of dark signal at minimum exposure)
+
+3. Dynamic Range
+   DR = 20 * log10( FWC / N_read )  [dB]
+   FWC = full well capacity (electrons)
+
+4. Dark Current
+   D = ( μ_e_dark / t_int )  [e‑/s]
+   where μ_e_dark is mean dark signal at exposure time t_int.
+
+5. Signal‑to‑Noise Ratio
+   SNR = μ_e / sqrt( μ_e + N_read² + D * t_int )
+
+6. Geometric Accuracy (e.g., pixel pitch)
+   Pixel_pitch = sensor_width / N_active_pixels_horizontal
+
+END OF ISO_WD_24942_Machine_Vision.sci
