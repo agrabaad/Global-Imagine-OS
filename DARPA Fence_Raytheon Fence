@@ -1,0 +1,65 @@
+GIOP v3.0 :: NEW TECHNOLOGY — DARPA FENCE Event-Based MWIR Camera
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /bodies/Raytheon_FENCE.body
+
+WHAT IS THIS FILE
+The certified body profile for the Raytheon event-based mid-wave infrared
+(MWIR) camera developed under DARPA's Fast Event-based Neuromorphic Camera
+and Electronics (FENCE) program. It defines the event-based sensing model,
+the neuromorphic readout architecture, the pixel-level motion detection
+formula, and the spectral sensitivity range (3–5 μm MWIR).
+
+WHY IT EXISTS
+Traditional infrared cameras generate enormous data rates (Gbps) by
+streaming full frames at high speed. The FENCE camera transmits only
+pixel-level changes (events), reducing bandwidth and power by orders of
+magnitude. This enables real-time tracking of high-speed targets with
+minimal processing. GIOP includes this as the first neuromorphic sensor
+profile in its Bodies catalogue.
+
+HOW IT WORKS
+1. Event Generation Model:
+   A pixel (x,y) generates an event at time t if:
+     |log(I(x,y,t)) - log(I(x,y,t_last))| > threshold
+   where I is the incident irradiance, threshold is the contrast
+   sensitivity (typically 15-20% for MWIR).
+
+2. Event Format:
+   Each event is a tuple: (x, y, t, polarity)
+   polarity = +1 (ON event, intensity increase)
+   polarity = -1 (OFF event, intensity decrease)
+   Temporal resolution: microsecond (event timestamp).
+
+3. Bandwidth Reduction:
+   Conventional MWIR: 640×512 @ 1000 fps, 16-bit = ~5.2 Gbps.
+   FENCE camera: events/second depend on scene motion. For typical
+   tracking scenarios, data rate is 10-100 Mbps (50-500× reduction).
+
+4. Spectral Sensitivity:
+   Wavelength range: 3 μm – 5 μm (MWIR, thermal imaging).
+   Detects thermal emissions from engines, exhausts, and other heat
+   sources.
+
+5. Reconstruction:
+   To produce conventional frames, events are accumulated over a time
+   window Δt and rendered as an intensity image:
+     I_accum(x,y) = Σ events(x,y) * polarity
+   Alternatively, neural reconstruction (E2VID) can produce high-
+   quality video from event streams.
+
+WHERE IT IS DEPLOYED
+- Military target tracking and missile defence
+- Industrial monitoring (high-speed machinery)
+- GIOP event-based imaging pipelines.
+
+WHO USES IT
+L1 Architects defining neuromorphic sensor profiles; L2 Engineers
+building event-to-video reconstruction pipelines.
+
+WHAT PROBLEM IT SOLVES
+Introduces event-based neuromorphic sensing to GIOP, enabling ultra-
+low-bandwidth, high-speed MWIR imaging for applications where
+conventional frame-based cameras are infeasible.
+
+END OF Raytheon_FENCE.body
