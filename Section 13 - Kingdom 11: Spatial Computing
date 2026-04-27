@@ -1,0 +1,257 @@
+GIOP v3.0 :: KINGDOM 11 — SPATIAL COMPUTING
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_11_Spatial_Computing.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines the visual pipelines, display models,
+and interaction protocols for spatial computing devices. It
+encompasses head-mounted displays (Apple Vision Pro, Meta Quest,
+Varjo), holographic light-field displays, real-time cloud
+rendering (NVIDIA CloudXR), foveated transport, and the spatial
+adaptation of color appearance models. It extends GIOP's color
+and luminance guarantees into three-dimensional, user-centric
+viewing environments where the observer is inside the scene.
+
+WHY IT EXISTS
+Spatial computing dissolves the frame boundary. Virtual objects
+must match the color, contrast, and dynamic range of the physical
+world seen through passthrough cameras or optical see-through
+displays. Without a perceptual foundation, AR overlays look
+disconnected, HDR highlights break immersion, and motion-to-
+photon latency causes discomfort. This kingdom provides the
+mathematical and perceptual rules that ensure virtual content
+is visually indistinguishable from reality, regardless of the
+viewing device or user pose.
+
+HOW IT IS STRUCTURED
+Seven sub-domains: Head-Mounted Display Architecture and
+Rendering Parameters, Foveated Rendering and Transport, Varifocal
+and Light-Field Displays, Real-Time Cloud Rendering (CloudXR),
+Spatial Color Appearance and Passthrough Matching, Timewarp and
+Synchronization, and Holographic and Holoportation Displays.
+Each section defines the device models, performance constraints,
+and color pipeline integration points.
+
+WHERE IT IS APPLIED
+Apple Vision Pro rendering pipelines, NVIDIA CloudXR streaming
+servers, Unreal Engine and Unity XR plug-ins, foveated video
+codecs, holographic telepresence systems, and calibration tools
+for spatial displays.
+
+WHO USES IT
+Spatial computing engineers, XR pipeline architects, immersive
+experience designers, and color scientists extending their
+work to 3D environments.
+
+WHAT PROBLEM IT SOLVES
+Eliminates the visual seam between real and virtual by enforcing
+a device-independent spatial color pipeline. Prevents motion
+sickness from incorrect luminance adaptation by modeling the
+user's visual state. Guarantees that a spatial experience
+authored on one headset renders identically on another, with
+the same ACES-based color fidelity. Provides the latency and
+bandwidth models for cloud-rendered immersive content that meets
+broadcast quality standards.
+
+1. HEAD-MOUNTED DISPLAY ARCHITECTURE AND RENDERING PARAMETERS
+An HMD renders two views with asymmetric projections and applies
+lens distortion correction.
+
+Apple Vision Pro reference specifications (2026):
+  - Panel: micro-OLED, 3660 x 3200 pixels per eye (nominal),
+    2200 x 2200 rendering resolution per eye (foveated transport).
+  - Frame rate: 30 fps nominal, up to 60 fps; platform refresh
+    96 Hz with timewarp.
+  - Color: Rec.709 8-bit for streaming; P3-D65 10-bit for local
+    and high-quality immersive playback.
+  - Peak luminance: 1000 cd/m^2 (HDR highlights), 100 cd/m^2
+    typical full-screen.
+  - Passthrough: stereo color cameras, 12 ms latency, matched
+    to display color primaries.
+
+General HMD projection model (per eye):
+  Projection matrix: defined by asymmetric frustum with
+  left, right, top, bottom, near, far. The view matrix
+  includes interpupillary distance (IPD) offset and per-eye
+  pose. Lens distortion is modeled by a radial polynomial
+  (Brown-Conrady) applied per color channel to correct
+  chromatic aberration.
+
+GIOP mandates that any HMD rendering engine output linear
+ACEScg color, then apply the ODT specific to that headset's
+display characteristics. The ODT includes:
+  - The display EOTF (typically PQ or a modified gamma for
+    OLED).
+  - Gamut mapping from ACEScg to the display's native gamut
+    (P3 or wider).
+  - Lens distortion correction compensation.
+
+2. FOVEATED RENDERING AND TRANSPORT
+To save bandwidth and computation, only the region around the
+gaze point is rendered at full resolution.
+
+Foveation model: the visual acuity falls off with eccentricity
+(e) from the fovea. Acuity threshold A(e) is approximately:
+  A(e) = A_0 / (1 + k * e)
+where A_0 is foveal resolution (60 pixels per degree) and k
+determines fall-off rate. The rendering resolution per region
+is set to match this acuity, typically using a log-polar or
+multi-resolution grid.
+
+Foveated video encoding (e.g., for cloud-rendered streams):
+  - The frame is partitioned into a high-resolution central
+    tile (20 degree field) and progressively lower-resolution annuli.
+  - Each tile is encoded with a quality factor proportional to
+    the required acuity.
+  - Eye tracking data is sent as metadata; the decoder composites
+    the tiles, updating within the motion-to-photon latency
+    budget (approximately 10-20 ms).
+
+GIOP defines the foveated transport container: a single video
+stream carrying the tiles, with an SEI message per frame
+specifying the gaze point (normalized 2D coordinates) and
+a timestamp. The color encoding of each tile is in a GIOP
+log space (ACEScct) to exploit perceptual uniformity for
+compression. The decoder inverses the log, applies the headset
+ODT, and composites the tiles into the final viewports.
+
+3. VARIFOCAL AND LIGHT-FIELD DISPLAYS
+Varifocal displays adjust the focal plane to match the vergence
+of the eyes, solving the vergence-accommodation conflict.
+
+Models: mechanically movable lenses, liquid crystal lenses, or
+multi-plane focal stacks (up to 4 planes) with depth-weighted
+blending. Depth maps per frame drive the focal plane selection.
+
+Light-field HMDs: use microlens arrays or holographic optical
+elements to project a 4D light-field, allowing the eye to
+accommodate naturally. Rendering pipeline: generate a set of
+viewpoints (angular samples), each rendered in ACEScg, then
+interleaved and displayed. The display's EOTF is applied after
+the light-field reconstruction.
+
+GIOP color pipeline for multifocal and light-field HMDs:
+  - Depth-dependent tone mapping: objects at different depths
+    may have different effective brightness due to the optical
+    stack's attenuation. The ODT includes a depth-dependent
+    luminance model.
+  - Color calibration: each focal plane or angular sample may
+    have slightly different color reproduction. GIOP requires
+    per-plane/per-view color matrices stored in the headset
+    profile to equalize them to a common P3-D65 reference.
+
+4. REAL-TIME CLOUD RENDERING (CloudXR)
+NVIDIA CloudXR 6.0 (2026) enables server-side rendering of high-
+fidelity immersive content streamed to thin clients.
+
+Pipeline:
+  a. Application renders frames in ACEScg on a cloud GPU
+     (e.g., RTX 5090).
+  b. Frames are tone-mapped by the server to the target
+     display's color space using an ODT appropriate for the
+     specific headset model.
+  c. Encoded with HEVC or AV1 at very low latency (tuned for
+     I-frame-only or short GOP, zero B-frames).
+  d. Streamed over 5G-Advanced or Wi-Fi 7 to the headset.
+  e. Decoded, lens-distortion corrected, timewarped, and
+     displayed.
+
+Latency budget (glass-to-glass): < 20 ms to prevent motion
+sickness. GIOP defines the maximum accumulated color processing
+latency to be < 2 ms, requiring heavily optimized ODT shaders
+and hardware-accelerated LUTs.
+
+GIOP streaming profile: the server sends an SDP (Session
+Description Protocol) containing the headset's GIOP profile
+hash, display primaries, EOTF, and current ambient illuminance
+(from the headset's light sensor). The server selects the
+appropriate ODT and surround adaptation model.
+
+5. SPATIAL COLOR APPEARANCE AND PASSTHROUGH MATCHING
+In passthrough AR, the viewer sees the real world through cameras.
+The virtual content must match the real world in brightness, color,
+and contrast.
+
+Passthrough camera pipeline:
+  a. Cameras capture the environment with a known IDT to ACEScg.
+  b. The virtual content is rendered in ACEScg.
+  c. Both are composited in ACEScg.
+  d. The composite is transformed by the headset's ODT to the
+     display.
+
+Challenges: the camera's dynamic range may differ from the
+display's, requiring local tone mapping that respects the
+real-world luminance. GIOP defines a "passthrough match ODT"
+that applies a spatially varying tone curve: where the real-world
+luminance exceeds display peak, highlights are rolled off; where
+it is below, the display's native black level is compensated
+by adding a dither pattern matched to the HVS threshold.
+
+Surround adaptation: the user's adaptation luminance changes as
+they move. The headset provides an ambient light estimate (lux).
+The CAM16 surround parameters are adjusted dynamically:
+  - F (surround impact) from 1.0 (dark) to 0.8 (dim) to 0.6
+    (average) based on ambient illuminance.
+  - c (chromatic induction) similarly scaled.
+This ensures that virtual objects appear consistently colored
+regardless of the real-world background.
+
+6. TIMEWARP AND SYNCHRONIZATION
+Timewarp (Asynchronous Spacewarp) reprojects the last rendered
+frame to match the latest head pose just before scanout, reducing
+perceived latency.
+
+Algorithm:
+  - The application renders left and right eye views at time t0.
+  - At scanout time t1, the actual head pose is sampled.
+  - The rendered image is warped using a homography derived from
+    the rotational difference between t0 and t1 poses.
+  - For translational motion, depth-aware reprojection is used:
+    each pixel is treated as a 3D point and re-projected.
+
+Color correctness during timewarp:
+  - The warp must operate in linear light to avoid edge artifacts.
+    If the rendered image has an OETF applied, it is first
+    inverse-transformed to linear ACEScg, warped, then re-encoded
+    with the OETF.
+  - GIOP mandates that timewarp hardware support at least 16-bit
+    floating-point linear precision to avoid banding.
+
+Synchronization of multiple devices (multi-user spatial):
+  PTP (IEEE 1588) synchronizes all headsets, rendering servers,
+  and audio devices to a common sub-microsecond clock. GIOP
+  timestamps every rendered frame with the TAI time and the
+  predicted display scanout time, enabling a shared spatial
+  experience with zero perceptible drift.
+
+7. HOLOGRAPHIC AND HOLOPORTATION DISPLAYS
+Holographic displays reconstruct the full light-field of a scene,
+allowing multiple viewers to see correct perspective without
+headsets.
+
+Technologies: spatial light modulators (SLMs) with phase-only
+modulation, tensor displays (stacked LCDs), and acoustic-
+optical modulators. They reproduce the scene's wavefront.
+
+Color reproduction in holographic displays:
+  - Three primary wavelengths (typ. 638 nm, 520 nm, 450 nm)
+    are modulated separately.
+  - The diffraction efficiency varies by wavelength; a color
+    calibration matrix maps the requested ACEScg color to
+    the SLM drive levels.
+  - GIOP treats the holographic display as an ODT with a
+    per-wavelength primary matrix and a diffraction efficiency
+    compensation LUT.
+
+Holoportation: real-time volumetric capture of a remote person
+displayed as a hologram. The capture side uses Kingdom 10
+volumetric reconstruction. The display side renders the
+volumetric stream using the holographic display's ODT. GIOP
+defines the end-to-end latency and color pipeline for
+holoportation:
+  - Capture to display latency < 200 ms for natural conversation.
+  - The AMF from the capture side is transmitted to the display
+    side, ensuring the color pipeline is end-to-end consistent.
+
+END OF KINGDOM 11
