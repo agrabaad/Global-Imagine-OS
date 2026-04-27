@@ -1,0 +1,57 @@
+GIOP v3.0 :: SOFTWARE — Nuke TCL Expression Math
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /software/Nuke_TCL_Math.fx
+
+WHAT IS THIS FILE
+The certified software module reference for Foundry Nuke TCL expressions.
+It lists all built-in math functions, the variable evaluation context
+(frame, time, node parameters), and the syntax for embedding TCL
+expressions in knob fields.
+
+WHY IT EXISTS
+Nuke TCL expressions are deeply embedded in VFX pipelines to drive warps,
+color corrections, and procedural effects. A canonical reference prevents
+incompatibility between Nuke versions and custom tools.
+
+HOW IT WORKS
+1. Context variables:
+     frame         : current frame number.
+     time          : current time in seconds (= frame / fps).
+     width, height : image dimensions.
+     x, y          : pixel coordinates (available in STMap contexts).
+
+2. Math function list:
+     abs, acos, asin, atan2, ceil, clamp, cos, cosh, degrees, exp, floor,
+     fmod, hypot, log, log10, max, min, pow, radians, random, round, sin,
+     sinh, sqrt, tan, tanh.
+
+3. Syntax:
+   Entered directly in any knob field. Example:
+     sin(frame * 0.1) * 0.5
+   will evaluate to an oscillating value between -0.5 and 0.5.
+
+4. Node parameter referencing:
+   Knobs of other nodes are accessible via:
+     [node_name.knob_name]
+   Example: [Blur1.size] evaluates to the size parameter of Blur1.
+
+5. GIOP integration:
+   TCL expressions can be used to drive GIOP transforms; however, the
+   expression engine is not color-managed. The color pipeline must be
+   handled by surrounding nodes.
+
+WHERE IT IS APPLIED
+- Driving noise patterns
+- Automating node parameters
+- Procedural warping.
+
+WHO USES IT
+L2 Engineers and compositors writing Nuke expressions.
+
+WHAT PROBLEM IT SOLVES
+Provides the exhaustive list of TCL math functions and their exact
+semantics, ensuring a TCL expression can be ported to any GIOP-supported
+environment without interpretation errors.
+
+END OF Nuke_TCL_Math.fx
