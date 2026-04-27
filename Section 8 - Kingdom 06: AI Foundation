@@ -1,0 +1,261 @@
+GIOP v3.0 :: KINGDOM 06 — AI FOUNDATION
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: Kingdom_06_AI_Foundation.sci
+
+WHAT IS THIS KINGDOM
+The domain that defines how artificial intelligence is architected,
+trained, and deployed within the imaging pipeline. It covers the
+fundamental neural network building blocks (CNN, Transformer), the
+generative models that synthesize or restore images (Diffusion,
+Generative Adversarial Networks), the emerging AI-native ISP that
+replaces traditional hardware pipelines, AI-driven color grading
+systems, generative video and film production tools, the standards
+that govern AI in media (JPEG AI, ISO/IEC 6048-1, C2PA), and the
+ethical frameworks that ensure authenticity, fairness, and bias
+mitigation.
+
+WHY IT EXISTS
+AI is no longer an optional post-processing step. It is becoming
+the primary processor of raw sensor data, the engine of creative
+image synthesis, and the arbiter of automated quality control. An
+imaging protocol that ignores AI is blind to the single largest
+shift in the industry since the CCD. This kingdom provides the
+mathematical literacy required to design, validate, and govern
+AI systems in the GIOP ecosystem, ensuring they are accurate,
+explainable, and ethically sound.
+
+HOW IT IS STRUCTURED
+Ten sub-domains: CNN and Transformer Foundations, Diffusion Models
+and Generative Imaging, Generative Adversarial Networks, AI-Native
+ISP Pipeline, AI Color Grading and Appearance, Generative Video
+and Film Production, AI Standards and Certification, AI Ethics and
+Authenticity, AI Training Data and Bias Mitigation, and AI Model
+Validation and Auditing. Each section provides the core equations,
+architectural principles, and validation criteria.
+
+WHERE IT IS APPLIED
+On-camera AI-ISP (Snapdragon Spectra, Apple Neural Engine),
+cloud-based image restoration, generative fill in editing
+software, automated dailies color grading, deepfake detection
+and content authentication, JPEG AI compression, and AI-driven
+quality control in broadcast and streaming.
+
+WHO USES IT
+Machine learning engineers, AI researchers in imaging, pipeline
+TDs integrating AI models, color scientists evaluating AI-driven
+grading, and anyone responsible for the trustworthy deployment
+of AI in professional media production.
+
+WHAT PROBLEM IT SOLVES
+Replaces black-box AI with auditable, standards-compliant neural
+imaging. Eliminates AI bias in skin tone and texture reproduction
+through rigorous training data specifications. Prevents deepfake
+contamination of media pipelines via C2PA provenance and GIOP
+authenticity verification. Provides the mathematical basis for
+loss functions that respect perceptual color metrics, ensuring
+AI-enhanced images are visually faithful, not just numerically
+plausible.
+
+1. CNN AND TRANSFORMER FOUNDATIONS
+Convolutional Neural Networks (CNNs) remain the workhorse for
+spatial image processing tasks: denoising, demosaicing, super-
+resolution, and local tone mapping.
+
+Convolution Layer:
+  Output[y, x, k] = sum_c sum_i sum_j Input[y+i, x+j, c] * Kernel[i, j, c, k] + Bias[k]
+
+Activation Functions:
+  ReLU: f(x) = max(0, x)
+  Leaky ReLU: f(x) = x if x > 0 else alpha * x, alpha = 0.01
+  GELU: f(x) = x * Phi(x), where Phi is the Gaussian CDF.
+  SiLU/Swish: f(x) = x * sigmoid(x)
+
+Residual Block (ResNet): Output = Input + F(Input), where F is a
+small sub-network (typically two conv layers). Enables training of
+very deep networks (100+ layers) without vanishing gradients.
+
+Transformer Attention for image restoration (e.g., DLSS Ray
+Reconstruction, image inpainting):
+  Scaled Dot-Product Attention:
+    Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V
+
+  Multi-Head Self-Attention (MHSA):
+    MultiHead(Q, K, V) = Concat(head_1, ..., head_h) W^O
+    where head_i = Attention(Q W_i^Q, K W_i^K, V W_i^V)
+
+  Vision Transformer (ViT): image is split into patches, each patch
+  is linearly embedded into a token, and a standard Transformer
+  encoder processes the set of tokens. Positional encoding preserves
+  spatial structure.
+
+2. DIFFUSION MODELS AND GENERATIVE IMAGING
+Denoising Diffusion Probabilistic Models (DDPM) are the dominant
+generative paradigm for high-quality image synthesis.
+
+Forward Process (gradually add Gaussian noise):
+  q(x_t | x_{t-1}) = N(x_t; sqrt(1 - beta_t) * x_{t-1}, beta_t * I)
+  q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0, (1 - alpha_bar_t) * I)
+  where alpha_t = 1 - beta_t, alpha_bar_t = prod_{s=1}^{t} alpha_s.
+
+Reverse Process (learn to denoise):
+  p_theta(x_{t-1} | x_t) = N(x_{t-1}; mu_theta(x_t, t), sigma_t^2 * I)
+  The network epsilon_theta(x_t, t) predicts the added noise.
+
+Simplified training loss (Ho et al. 2020):
+  L = E_{t, x_0, epsilon} [ || epsilon - epsilon_theta(x_t, t) ||^2 ]
+
+Applications in GIOP:
+  - Super-resolution: condition on low-res image.
+  - HDR reconstruction: generate clipped highlights from SDR input.
+  - Text-to-image: condition on CLIP text embeddings for creative
+    previsualization and concept art.
+
+3. GENERATIVE ADVERSARIAL NETWORKS (GANs)
+GANs remain relevant for fast, single-pass image enhancement.
+
+Architecture: Generator G and Discriminator D play a minimax game:
+  min_G max_D E_{x~p_data}[log D(x)] + E_{z~p_z}[log(1 - D(G(z)))]
+
+Perceptual loss for image-to-image translation: combine L1/L2
+pixel loss with VGG feature-space loss:
+  L_perceptual = L_pixel + lambda * sum ||VGG_i(G(x)) - VGG_i(y)||^2
+
+GIOP-approved use cases:
+  - Fast RAW-to-RGB conversion for previews.
+  - Style transfer for dailies look development.
+  - Texture synthesis for VFX patch repair.
+
+4. AI-NATIVE ISP PIPELINE
+Traditional ISPs use a fixed sequence of hand-tuned algorithms.
+AI-native ISPs replace most or all of these stages with a single
+trained neural network.
+
+Input: RAW Bayer data (linear, unprocessed).
+Output: final viewable RGB or scene-referred linear ACEScg.
+
+Architecture typically consists of:
+  - A U-Net backbone with multi-scale feature extraction.
+  - A Transformer or ResNet bottleneck for global context.
+  - Dedicated heads for demosaicing, white balance, noise reduction,
+    and local tone mapping, trained jointly.
+
+GIOP mandates that any AI-ISP must also output:
+  - A linearized, scene-referred intermediate (the "digital negative")
+    before the tone curve is applied.
+  - A confidence map indicating regions where the AI's reconstruction
+    may be unreliable (e.g., specular highlights, fine text).
+
+Leading implementations (2026): Visionary.ai, Chips&Media AI-ISP,
+Qualcomm Spectra Cognitive ISP.
+
+5. AI COLOR GRADING AND APPEARANCE
+AI agents are now capable of performing complete color grades.
+
+Agentic grading workflow (LumiVideo, AceTone 2026):
+  Perception: analyze shot content, recognize faces, skin, sky.
+  Reasoning: compare against a reference look library or textual
+    description ("golden hour, warm, soft contrast").
+  Execution: apply primary corrections (exposure, contrast,
+    saturation, white balance) followed by secondary masks and
+    qualifiers.
+  Reflection: compare result to reference, iterate.
+
+Text-to-LUT generation: a diffusion or transformer model generates
+a 3D LUT (e.g., 33^3 cube) from a descriptive text prompt. GIOP
+validates generated LUTs for:
+  - Smoothness (no discontinuities).
+  - Gamut legality (no values exceed BT.2020 or chosen target).
+  - Skin tone preservation (error < CIEDE2000 threshold on a
+    standard skin tone panel).
+
+6. GENERATIVE VIDEO AND FILM PRODUCTION
+Models such as Alibaba Wan2.7-Video, Meta Movie Gen, and OpenAI
+Sora represent the frontier of generative video.
+
+Capabilities:
+  - Text-to-video with temporal coherence.
+  - Video inpainting and object removal.
+  - Frame interpolation and super-resolution.
+  - Virtual cinematography (camera path synthesis).
+
+GIOP defines a metadata standard for generative video:
+  - The prompt and model version are embedded as ACESclip metadata.
+  - A hash of the starting noise seed and all conditioning inputs
+    is recorded for reproducibility.
+  - Generative content is flagged with a C2PA manifest.
+
+7. AI STANDARDS AND CERTIFICATION
+Several international standards govern AI in imaging.
+
+JPEG AI (ISO/IEC 6048-1): a learning-based image compression
+standard achieving up to 60% bitrate reduction over JPEG 2000
+at equivalent quality. GIOP provides the reference IDT-to-display
+pipeline for JPEG AI evaluation.
+
+SMPTE AI Engineering Document: best practices for AI in broadcast
+and cinema, including model card templates, dataset documentation,
+and performance reporting.
+
+C2PA (Coalition for Content Provenance and Authenticity):
+cryptographically binds metadata (creator, date, camera, edits,
+AI operations) to the image or video asset. GIOP mandates C2PA
+compliance for any AI-augmented deliverable.
+
+8. AI ETHICS AND AUTHENTICITY
+AI in imaging carries ethical responsibilities.
+
+Deepfake detection: forensic analysis of spatial and temporal
+artifacts. GIOP endorses detectors based on frequency-domain
+analysis and physiological signal consistency (heart rate from
+facial micro-color changes).
+
+Bias mitigation: AI models trained on imbalanced datasets can
+distort skin tones, facial features, or textures for under-
+represented groups. GIOP requires:
+  - Training data with demonstrated diversity of skin tones
+    (Fitzpatrick scale coverage), age, and gender.
+  - Validation on standardized fairness benchmarks.
+  - Reporting of per-group accuracy metrics.
+
+Content authenticity: GIOP-certified cameras embed a hardware root
+of trust at capture time. Any AI operation subsequent to capture
+must be recorded in the C2PA manifest, creating an auditable chain
+from photon to pixel.
+
+9. AI TRAINING DATA AND BIAS MITIGATION
+The quality and fairness of an AI model are bounded by its
+training data.
+
+Dataset requirements for GIOP certification:
+  - Minimum 100,000 images or 10,000 video clips.
+  - Coverage of all 12 Fitzpatrick skin types.
+  - Scene types: indoor, outdoor, studio, night, mixed.
+  - Illuminants: D65, A, fluorescent, LED, mixed.
+  - Demographics: balanced age, gender, ethnicity.
+
+Bias auditing: a held-out test set with equal representation of
+each subgroup is used to measure per-group PSNR, SSIM, and
+CIEDE2000. Any group showing an error more than 20% above the
+global average triggers mandatory model retraining.
+
+10. AI MODEL VALIDATION AND AUDITING
+Before an AI model is allowed in a GIOP-certified pipeline, it
+must pass a battery of tests.
+
+Synthetic test signals: known inputs (e.g., linear ramps, color
+charts, resolution wedges) are passed through the model. Outputs
+are verified for:
+  - Linearity preservation (no unintended tone curve).
+  - Color accuracy (CIEDE2000 < 2.0 on ColorChecker).
+  - Resolution (MTF > 50% at Nyquist).
+
+Stress tests: extreme exposures, high ISO noise, specular
+highlights, fine repetitive patterns (moire risk), and low-light
+scenes are evaluated for artifacts.
+
+Continual monitoring: in production, a subset of frames is
+periodically extracted and tested against the original validation
+metrics to detect model drift or data poisoning.
+
+END OF KINGDOM 06
