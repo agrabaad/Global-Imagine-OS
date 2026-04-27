@@ -1,0 +1,55 @@
+GIOP v3.0 :: NEW TECHNOLOGY — VVC 4th Edition (H.266)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/VVC_4th_Edition.sci
+
+WHAT IS THIS FILE
+The certified standard reference for the 4th edition of ITU-T H.266
+(VVC), approved January 2026. It defines the 15 new SEI (Supplemental
+Enhancement Information) messages, the two neural-network post-filter
+(NNPF) SEI messages, and the encoder optimisation information.
+
+WHY IT EXISTS
+The 4th edition adds critical metadata capabilities to VVC, including
+SEI processing order, encoder optimisation information, and neural
+post-filter signalling. GIOP updates its VVC profile to leverage
+these new features for improved quality and efficiency.
+
+HOW IT WORKS
+1. New SEI Messages (15 total):
+   Key additions:
+     - SEI processing order (controls which SEI messages are processed
+       before/after decoding).
+     - Processing order nesting (hierarchical SEI ordering).
+     - Encoder optimisation information (exposes encoder tuning
+       decisions for decoder-side enhancement).
+     - Neural-network post-filter (NNPF) activation and characteristics.
+
+2. NNPF SEI Messages (updated):
+   The two NNPF SEI messages specify:
+     - NNPF type: which neural network architecture is used (e.g., CNN
+       based on VVC-AI).
+     - NNPF parameters: filter strength, QP mapping, and bitstream
+       constraints.
+   This allows decoders to apply AI-enhanced deblocking and super-
+   resolution in a standardised way.
+
+3. Rate-Distortion Impact:
+   The NNPF can reduce bitrate by up to 15% at equivalent quality
+   (DSIS, DSCQS tests, ITU-R BT.500). The filter is applied in-loop,
+   so the filtered frame becomes a reference for subsequent frames.
+
+WHERE IT IS DEPLOYED
+- Next-generation broadcast (DVB, ATSC 3.0)
+- OTT streaming
+- GIOP codec-aware colour management.
+
+WHO USES IT
+L2 Encoding engineers; codec developers; streaming platform architects.
+
+WHAT PROBLEM IT SOLVES
+Provides GIOP with the latest VVC metadata and neural filtering
+capabilities, enabling AI-enhanced compression without sacrificing
+colour fidelity or introducing bitstream incompatibility.
+
+END OF VVC_4th_Edition.sci
