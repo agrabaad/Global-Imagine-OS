@@ -1,0 +1,144 @@
+GIOP v3.0 :: DISPLAYS — Apple Pro Display XDR
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /displays/Apple_Pro_Display_XDR.mon
+
+WHAT IS THIS FILE
+The certified display profile for the Apple Pro Display XDR. It defines
+the 32-inch IPS LCD panel with 6016 × 3384 resolution, 10-bit true color,
+peak brightness (1600 nits HDR highlights, 1000 nits sustained full screen),
+factory-calibrated Reference Modes (HDTV Video, HDR Video, Digital Cinema,
+Photography, Internet & Web), and the EOTF and gamut parameters for each
+mode. This file is the single source of truth for GIOP ODTs targeting the
+Pro Display XDR.
+
+WHY IT EXISTS
+The Pro Display XDR is a widely used mastering and reference monitor in
+design, photography, and independent filmmaking. Its multiple Reference
+Modes define precise color spaces and EOTFs. Without this certified profile,
+an ODT may not correctly activate the right mode or may exceed the display's
+sustained luminance limits. This file provides the auditable model.
+
+HOW IT WORKS
+This file specifies:
+  1. Panel technology and native characteristics.
+  2. The five Reference Modes, each with primaries, white point, EOTF,
+     and peak luminance.
+  3. Factory calibration and Delta-E guarantee.
+  4. Interface (Thunderbolt 3) and its impact on signal format.
+  5. GIOP ODT configuration per mode.
+
+WHERE IT IS DEPLOYED
+- Color grading suites (DaVinci Resolve, Final Cut Pro)
+- VFX review (Nuke)
+- Photography and print proofing (Photoshop, Lightroom)
+- Design studios.
+
+WHO USES IT
+- L3 GIOP Colorists (primarily independent and boutique post houses).
+- L2 GIOP Engineers: configure ODTs for Pro Display XDR.
+- Calibration technicians.
+
+WHAT PROBLEM IT SOLVES
+Ensures that the exact Reference Mode settings (primaries, EOTF, peak
+luminance) are known to the GIOP ODT, eliminating mode mismatch errors.
+Provides the sustained vs. peak luminance distinction, which is critical
+for grading HDR content that must not exceed 1000 nits full-screen.
+
+1. PANEL TECHNOLOGY
+  Type             : IPS LCD with direct backlight (576 blue LEDs)
+  Resolution       : 6016 × 3384 (20.4 million pixels)
+  Screen Size      : 32 inch (diagonal)
+  Pixel Pitch      : 0.116 mm
+  Bit Depth        : 10-bit (true 10-bit, no FRC)
+  Native Contrast  : ~1,000,000:1 (with local dimming)
+  Backlight        : 2D array of 576 individually controlled zones
+                     (local dimming for HDR contrast)
+
+2. REFERENCE MODES
+   The Pro Display XDR provides factory-calibrated Reference Modes. Each
+   mode sets primaries, white point, EOTF, and peak luminance to match a
+   specific imaging standard.
+
+   Mode 1: HDTV Video (BT.709)
+     Primaries   : BT.709 (sRGB/Rec.709)
+     White Point : D65
+     EOTF        : BT.1886 (gamma 2.4)
+     Peak Luminance : 100 cd/m² (user-adjustable)
+     Use Case    : SDR broadcast and web video.
+
+   Mode 2: HDR Video (P3-ST.2084)
+     Primaries   : DCI-P3
+     White Point : D65
+     EOTF        : ST.2084 (PQ)
+     Peak Luminance : 1000 cd/m² (sustained full screen),
+                      1600 cd/m² (peak highlights, up to 25% of screen)
+     Use Case    : HDR mastering for cinema and streaming.
+
+   Mode 3: Digital Cinema (P3-DCI)
+     Primaries   : DCI-P3
+     White Point : D63 (DCI white)
+     EOTF        : Gamma 2.6 (pure power, approximately 48 cd/m² reference)
+     Peak Luminance : 48 cd/m² (nominal, for cinema projection emulation)
+     Use Case    : Digital cinema grading preview.
+
+   Mode 4: Photography (P3-D65)
+     Primaries   : DCI-P3
+     White Point : D65
+     EOTF        : Gamma 2.2
+     Peak Luminance : 100 cd/m² (adjustable)
+     Use Case    : Still photography and print proofing.
+
+   Mode 5: Internet & Web (sRGB)
+     Primaries   : sRGB (BT.709)
+     White Point : D65
+     EOTF        : sRGB (approximately gamma 2.2 with linear toe)
+     Peak Luminance : 100 cd/m² (adjustable)
+     Use Case    : Web graphics and UI design.
+
+   All modes support user fine-tuning of luminance and white point.
+
+3. FACTORY CALIBRATION
+   Calibration Method:
+     Each display is individually characterised at the factory using a
+     spectroradiometer and a 3D LUT.
+   Accuracy:
+     ΔE < 1.0 (average) against the target Reference Mode, measured
+     across a 33-patch test chart.
+   Calibration Data:
+     Stored in the display's firmware. The host OS (macOS) automatically
+     selects the correct ICC/ColorSync profile.
+
+   For GIOP, an ODT targeting the Pro Display XDR must read the active
+   Reference Mode from macOS metadata (or be manually set) and configure
+   the output primaries, EOTF, and peak luminance accordingly.
+
+4. INTERFACE
+   Connection       : Thunderbolt 3 (USB-C)
+     - Provides power (up to 96W to host laptop).
+     - Carries DisplayPort 1.4 signal (for video).
+     - Carries USB 3.1 data (for calibration and firmware updates).
+   Signal Format    : 6016 × 3384 @ 60 Hz, 10-bit 4:4:4 RGB
+     (Dual-link SST via two DP streams over Thunderbolt).
+   Additional Ports : 3x USB-C (USB 3.1 Gen 1) on the monitor for
+                      peripherals.
+
+5. GIOP ODT RECOMMENDATION
+   For each Reference Mode, the GIOP ODT target is:
+     - HDTV Video: scene-linear → BT.709 primaries → BT.1886 EOTF (100 nit).
+     - HDR Video : scene-linear → ACES RRT+ODT for P3-D65 PQ 1000 nit.
+     - Digital Cinema: scene-linear → DCI-P3 D63 gamma 2.6 (48 nit).
+     - Photography: scene-linear → P3-D65 gamma 2.2 (100 nit).
+     - Internet & Web: scene-linear → sRGB EOTF (100 nit).
+
+   The ODT shall respect the peak luminance limit: no frame shall have a
+   full-screen average exceeding 1000 nit (HDR mode) or the specified SDR
+   luminance.
+
+6. VALIDATION AND HASH
+   Validated against Apple's published Reference Mode specifications and
+   third-party colorimeter measurements.
+   SHA3-512 of this file (all text above this line):
+   [To be computed after final content is sealed]
+
+END OF Apple_Pro_Display_XDR.mon
