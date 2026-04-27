@@ -1,0 +1,52 @@
+GIOP v3.0 :: STANDARDS — AOM AV2 (Next-Gen Video Codec)
+5W1H PROTOCOL DOCUMENT
+LEVEL: CERTIFIED GOLDEN
+FILE: /standards/AOM_AV2.sci
+
+WHAT IS THIS FILE
+The certified standard reference for the AOMedia Video 2 (AV2) codec.
+It specifies the core coding tools, rate‑distortion optimisation, and
+film grain synthesis techniques that achieve 40% bitrate reduction
+over AV1 at equal quality.
+
+WHY IT EXISTS
+AV2 will be the primary royalty‑free codec for 2026+ streaming. GIOP
+must define its reference encoder configuration to ensure consistent
+quality across platforms.
+
+HOW IT WORKS
+AV2 extends AV1 with improved RDO lambda, neural post‑filter, and
+enhanced film grain synthesis. The key formulas for Lagrangian
+optimisation and the neural loop filter are provided.
+
+WHERE IT IS DEPLOYED
+- OTT streaming (Netflix, YouTube)
+- GIOP codec‑aware colour management.
+
+WHO USES IT
+L2 Encoding engineers; streaming service architects.
+
+WHAT PROBLEM IT SOLVES
+Provides the exact RDO and post‑processing formulas so that GIOP‑encoded
+AV2 streams maintain colour fidelity and grain texture as intended.
+
+KEY FORMULAS
+
+1. Rate‑Distortion Lagrangian
+   J = D + λ * R
+   where D = distortion (e.g., SSE), R = rate (bits).
+   λ = λ_base * Q_scale[QP][temporal_layer]
+   For HDR, perceptual weighting: D = Σ w_i * SSE_i, where w_i depends
+   on luminance (shadow preservation).
+
+2. Neural Loop Filter (post‑decode)
+   P_final = CNN(I_reconstructed, QP_map)
+   CNN: lightweight convolutional network (U‑Net style) that reduces
+   coding artefacts.
+
+3. Film Grain Synthesis
+   Grain = f_grain(I_decoded, grain_params)
+   Parameters: seed, intensity, chroma blend, generated via a frequency‑
+   domain model.
+
+END OF AOM_AV2.sci
